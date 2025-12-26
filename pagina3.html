@@ -104,29 +104,35 @@ font-size:16px;
 margin-top:6px;
 }
 
-.selected-match{
-background:#e0e7ff;
-padding:12px;
-border-radius:12px;
-margin-bottom:16px;
+.selected-box{
+background:#eef2ff;
+padding:14px;
+border-radius:14px;
 font-weight:600;
+margin-bottom:20px;
 }
 
 .nav-home{
 display:inline-block;
-padding:14px 26px;
+padding:14px 28px;
 border-radius:30px;
 background:#fff;
 color:var(--blue);
 font-weight:700;
 text-decoration:none;
-box-shadow:0 10px 20px rgba(0,0,0,.1);
+box-shadow:0 10px 20px rgba(0,0,0,.12);
 transition:.3s;
 }
 
 .nav-home:hover{
 transform:scale(1.08);
-background:#eef2ff;
+background:#e0e7ff;
+}
+
+.version{
+margin-top:14px;
+font-size:14px;
+color:#64748b;
 }
 </style>
 </head>
@@ -154,8 +160,8 @@ background:#eef2ff;
 <div id="competitions">Nenhuma competição carregada.</div>
 </div>
 
-<div class="card" id="selectedBox" style="display:none;">
-<div class="selected-match" id="selectedText"></div>
+<div class="card" id="selectedCard" style="display:none;">
+<div class="selected-box" id="selectedMatch"></div>
 </div>
 
 <div class="card">
@@ -165,7 +171,8 @@ background:#eef2ff;
 </div>
 
 <nav>
-<a class="nav-home" href="index.html">⬅ Página Principal</a>
+<a class="nav-home" href="index.html">⬅ Página Inicial</a>
+<div class="version">NOX Football Analytics • v0.4</div>
 </nav>
 
 </main>
@@ -214,8 +221,10 @@ document.querySelectorAll(".match").forEach(x=>x.classList.remove("selected"));
 md.classList.add("selected");
 selectedFixture=m.fixtureId;
 
-document.getElementById("selectedBox").style.display="block";
-document.getElementById("selectedText").textContent =
+/* minimiza lista */
+document.getElementById("competitionsCard").style.display="none";
+document.getElementById("selectedCard").style.display="block";
+document.getElementById("selectedMatch").textContent =
 `Partida selecionada: ${m.home} vs ${m.away}`;
 };
 div.appendChild(md);
@@ -254,7 +263,7 @@ return;
 out.innerHTML+=`<p><strong>${data.home} vs ${data.away}</strong></p>`;
 out.innerHTML+=`<p>📈 Jogos H2H: ${data.h2hGames}</p>`;
 
-/* 🔒 ÚNICA MUDANÇA REAL: filtro visual */
+/* 🔒 filtro visual seguro */
 for(const k in data.means){
 const key = k.toLowerCase();
 if(key.includes("cart") || key.includes("escante")) continue;
