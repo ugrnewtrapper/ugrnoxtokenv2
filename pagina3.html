@@ -1,227 +1,253 @@
-export default {
-async fetch(request) {
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>NOX Football Analytics • v0.3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* ========= CORS (CORREÇÃO OBRIGATÓRIA) ========= /
-if (request.method === "OPTIONS") {
-return new Response(null, {
-status: 204,
-headers: {
-"Access-Control-Allow-Origin": "",
-"Access-Control-Allow-Methods": "POST, OPTIONS",
-"Access-Control-Allow-Headers": "Content-Type"
-}
-});
-}
-
-if (request.method !== "POST") {
-return new Response(
-JSON.stringify({ error: "Use POST" }),
-{
-status: 405,
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+<style>
+:root{
+  --blue:#0a4cff;
+  --blue-dark:#0836b3;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
 }
 
-const body = await request.json();
-const { apiKey, date, fixtureId } = body;
+*{box-sizing:border-box}
 
-if (!apiKey || !date) {
-return new Response(
-JSON.stringify({ error: "apiKey e date são obrigatórios" }),
-{
-status: 400,
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+body{
+  margin:0;
+  font-family:Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  text-align:center;
 }
 
-const BASE_URL = "https://v3.football.api-sports.io";
-const HEADERS = { "x-apisports-key": apiKey };
-
-/* ================= HELPERS ================= */
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-const requestGet = async (url, params = {}, tries = 3) => {
-let lastErr;
-for (let i = 0; i < tries; i++) {
-try {
-const qs = new URLSearchParams(params).toString();
-const res = await fetch(${url}?${qs}, { headers: HEADERS });
-return await res.json();
-} catch (e) {
-lastErr = e;
-await sleep(400 * (i + 1));
-}
-}
-throw lastErr;
-};
-
-/* ==========================================================
-
-1. MODO LISTAGEM → COMPETIÇÕES + PARTIDAS
-========================================================== */
-if (!fixtureId) {
-const fxData = await requestGet(${BASE_URL}/fixtures, { date });
-const fixtures = fxData.response || [];
-
-
-
-if (!fixtures.length) {
-return new Response(
-JSON.stringify({ competitions: [] }),
-{
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+header{
+  background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+  padding:22px;
+  color:#fff;
+  animation:fadeDown .6s ease;
 }
 
-const competitions = {};
-
-for (const fx of fixtures) {
-const league = fx.league;
-const lid = league.id;
-
-if (!competitions[lid]) {    
-  competitions[lid] = {    
-    leagueId: lid,    
-    league: league.name,    
-    country: league.country || "",    
-    matches: []    
-  };    
-}    
-
-competitions[lid].matches.push({    
-  fixtureId: fx.fixture.id,    
-  home: fx.teams.home.name,    
-  away: fx.teams.away.name,    
-  time: fx.fixture.date?.substring(11, 16) || ""    
-});
-
+header img{
+  max-height:64px;
+  margin-bottom:10px;
 }
 
-return new Response(
-JSON.stringify({ competitions: Object.values(competitions) }),
-{
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+main{
+  max-width:1000px;
+  margin:30px auto;
+  padding:0 20px;
 }
 
-/* ==========================================================
-2) MODO ANÁLISE → FIXTURE + H2H + MÉDIAS
-========================================================== */
-
-const fxData = await requestGet(${BASE_URL}/fixtures, { id: fixtureId });
-const fx = fxData.response?.[0];
-
-if (!fx) {
-return new Response(
-JSON.stringify({ error: "Fixture não encontrada" }),
-{
-status: 404,
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:22px;
+  margin-bottom:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,.08);
+  animation:fadeUp .6s ease;
 }
 
-const home = fx.teams.home.name;
-const away = fx.teams.away.name;
-const homeId = fx.teams.home.id;
-const awayId = fx.teams.away.id;
-
-/* ================= H2H ROBUSTO ================= */
-const baseH2H = ${BASE_URL}/fixtures/headtohead;
-let h2h = [];
-
-const tryH2H = async (a, b) =>
-(await requestGet(baseH2H, { h2h: ${a}-${b}, last: 30 })).response || [];
-
-h2h = await tryH2H(homeId, awayId);
-if (!h2h.length) h2h = await tryH2H(awayId, homeId);
-
-if (!h2h.length) {
-return new Response(
-JSON.stringify({ error: "Sem histórico H2H" }),
-{
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
+input,button{
+  padding:12px 14px;
+  margin:8px;
+  border-radius:12px;
+  border:1px solid #cbd5e1;
+  font-size:15px;
 }
 
-const collect = {
-tg: [], gc: [], gv: [], esc: [], ght: [], ghtc: [], ghtv: [], cart: []
-};
-
-for (const f of h2h) {
-const gh = f.goals?.home;
-const ga = f.goals?.away;
-if (gh != null && ga != null) {
-collect.tg.push(gh + ga);
-collect.gc.push(gh);
-collect.gv.push(ga);
+button{
+  background:var(--blue);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  transition:.3s;
 }
 
-const ht = f.score?.halftime;
-if (ht?.home != null && ht?.away != null) {
-collect.ght.push(ht.home + ht.away);
-collect.ghtc.push(ht.home);
-collect.ghtv.push(ht.away);
+button:hover{
+  background:var(--blue-dark);
+  transform:scale(1.05);
 }
 
-collect.cart.push(
-(f.events || []).filter(e =>
-(e.type || "").toLowerCase().includes("card")
-).length
-);
+.competition{
+  margin-top:16px;
+  text-align:left;
 }
 
-const mean = arr =>
-arr.length
-? Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2))
-: null;
+.comp-title{
+  font-weight:700;
+  margin:18px 0 8px;
+}
 
-return new Response(
-JSON.stringify({
-home,
-away,
-h2hGames: h2h.length,
-means: {
-"Total de gols (partida)": mean(collect.tg),
-"Casa total de gols": mean(collect.gc),
-"Visitante total de gols": mean(collect.gv),
-"Total de escanteios": mean(collect.esc),
-"Gols 1º tempo total": mean(collect.ght),
-"Gols 1º tempo casa": mean(collect.ghtc),
-"Gols 1º tempo visitante": mean(collect.ghtv),
-"Cartões total": mean(collect.cart)
+.match{
+  padding:10px;
+  border-radius:10px;
+  margin-top:6px;
+  background:#eef2ff;
+  cursor:pointer;
+  transition:.25s;
 }
-}),
-{
-headers: {
-"Content-Type": "application/json",
-"Access-Control-Allow-Origin": "*"
-}
-}
-);
 
+.match:hover{
+  background:#dbeafe;
+  transform:translateX(6px);
 }
-};
+
+.match.selected{
+  background:var(--blue);
+  color:#fff;
+}
+
+.result{
+  font-size:16px;
+  margin-top:6px;
+}
+
+nav{
+  margin:30px 0;
+}
+
+nav a{
+  text-decoration:none;
+  color:var(--blue);
+  font-weight:600;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="images/logo.png" alt="NOX Logo">
+  <h1>⚽ NOX Football Analytics</h1>
+  <p>H2H • Médias • Estatística Avançada</p>
+</header>
+
+<main>
+
+  <div class="card">
+    <h2>🔐 Configuração</h2>
+    <input id="apiKey" placeholder="API Key API-Football">
+    <input id="date" type="date">
+    <br>
+    <button onclick="loadCompetitions()">📅 Carregar Competições</button>
+  </div>
+
+  <div class="card">
+    <h2>🏆 Competições & Partidas</h2>
+    <div id="competitions">Nenhuma competição carregada.</div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Análise da Partida</h2>
+    <button onclick="analyzeMatch()">⚡ Analisar Partida</button>
+    <div id="analysis"></div>
+  </div>
+
+  <nav>
+    <a href="index.html">⬅ Index • Página Inicial</a>
+  </nav>
+
+</main>
+
+<script>
+const BACKEND_URL = "https://backendnoxv2.srrimas2017.workers.dev/";
+let selectedFixture = null;
+
+async function loadCompetitions(){
+  const apiKey = document.getElementById("apiKey").value;
+  const date = document.getElementById("date").value;
+  const box = document.getElementById("competitions");
+
+  if(!apiKey || !date){
+    alert("Informe API Key e Data");
+    return;
+  }
+
+  box.innerHTML = "⏳ Carregando competições...";
+
+  const res = await fetch(BACKEND_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ apiKey, date })
+  });
+
+  const data = await res.json();
+  box.innerHTML = "";
+
+  if(!data.competitions?.length){
+    box.innerHTML = "Nenhuma competição encontrada.";
+    return;
+  }
+
+  data.competitions.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="competition";
+    div.innerHTML=`<div class="comp-title">🏆 ${c.league} (${c.country})</div>`;
+
+    c.matches.forEach(m=>{
+      const md=document.createElement("div");
+      md.className="match";
+      md.textContent=`⚽ ${m.home} vs ${m.away} — ${m.time}`;
+      md.onclick=()=>{
+        document.querySelectorAll(".match").forEach(x=>x.classList.remove("selected"));
+        md.classList.add("selected");
+        selectedFixture=m.fixtureId;
+      };
+      div.appendChild(md);
+    });
+
+    box.appendChild(div);
+  });
+}
+
+async function analyzeMatch(){
+  if(!selectedFixture){
+    alert("Selecione uma partida.");
+    return;
+  }
+
+  const apiKey=document.getElementById("apiKey").value;
+  const date=document.getElementById("date").value;
+  const out=document.getElementById("analysis");
+
+  out.innerHTML="⏳ Analisando partida...";
+
+  const res=await fetch(BACKEND_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ apiKey, date, fixtureId:selectedFixture })
+  });
+
+  const data=await res.json();
+  out.innerHTML="";
+
+  if(!data.means){
+    out.innerHTML="Sem dados para análise.";
+    return;
+  }
+
+  out.innerHTML+=`<p><strong>${data.home} vs ${data.away}</strong></p>`;
+  out.innerHTML+=`<p>📈 Jogos H2H: ${data.h2hGames}</p>`;
+
+  for(const k in data.means){
+    out.innerHTML+=`<div class="result">📊 ${k}: <strong>${data.means[k]}</strong></div>`;
+  }
+}
+</script>
+
+</body>
+</html>
