@@ -1,0 +1,6 @@
+name = "ugrnoxtoken v2"
+compatibility_date = "2025-01-01"
+
+# Logs ativos (Pages Functions)
+[observability]
+enabled = true
