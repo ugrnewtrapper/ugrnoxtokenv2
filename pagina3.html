@@ -152,9 +152,9 @@ async function loadCompetitions() {
 function toggleComp(idx) {
   const el = document.getElementById(`comp-${idx}`);
 
-  document.querySelectorAll(".matches").forEach(m=>{
-    if(m!==el) m.style.display="none";
-  });
+  document.querySelectorAll(".matches").forEach(m => {
+  if (m !== el.parentElement) m.style.display = "none";
+});
 
   el.style.display = el.style.display==="block" ? "none" : "block";
   openedCompetition = idx;
