@@ -169,15 +169,7 @@ function toggleComp(idx) {
   openedCompetition = idx;
 }
 
-  // Fecha todas
-  document.querySelectorAll(".matches").forEach(m => {
-    m.style.display = "none";
-  });
 
-  // Abre apenas a selecionada
-  el.style.display = "block";
-  openedCompetition = idx;
-      }
 function selectMatch(el) {
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
   el.classList.add("selected");
