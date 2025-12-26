@@ -1,0 +1,18 @@
+# Images
+
+Esta pasta contém os **arquivos de imagem públicos** do projeto.
+
+Ela fica **na raiz do projeto**, fora da pasta `src`, para ser servida diretamente como conteúdo estático.
+
+Uso:
+- Logos
+- Ícones
+- Imagens estáticas da interface
+
+Boas práticas:
+- Preferir SVG quando possível
+- Usar nomes simples e em inglês
+- Evitar imagens grandes ou não utilizadas
+
+Exemplo de uso no HTML:
+<img src="/images/logo.svg" alt="Logo">
