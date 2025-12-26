@@ -1,223 +1,242 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NOX Football Analytics</title>  <style>
-    :root {
-      --blue: #0d6efd;
-      --blue-dark: #084298;
-      --bg: #f4f8ff;
-    }
+<meta charset="UTF-8">
+<title>NOX Football Analytics ⚽</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #0a2cff, #0d6efd);
+  color: #fff;
+  text-align: center;
+}
 
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #eaf2ff, #ffffff);
-      color: #0b1c33;
-      text-align: center;
-    }
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
 
-    header {
-      padding: 25px 15px 15px;
-      animation: fadeIn 1s ease;
-    }
+.logo {
+  max-width: 180px;
+  animation: pulse 2s infinite;
+}
 
-    header img {
-      max-width: 140px;
-      margin-bottom: 10px;
-      animation: pulse 3s infinite;
-    }
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
 
-    header p {
-      max-width: 720px;
-      margin: 0 auto;
-      font-size: 1rem;
-      opacity: 0.9;
-    }
+h1 {
+  margin-top: 10px;
+}
 
-    main {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 0 15px 40px;
-    }
+p {
+  opacity: 0.9;
+}
 
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      margin: 15px 0;
-      box-shadow: 0 10px 25px rgba(13,110,253,0.15);
-      animation: slideUp 0.6s ease;
-    }
+input, button {
+  padding: 12px;
+  margin: 8px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
 
-    label { display: block; font-weight: bold; margin-top: 10px; }
+input {
+  width: 260px;
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #cbd9ff;
-      font-size: 1rem;
-    }
+button {
+  background: #00d4ff;
+  color: #003;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
 
-    button {
-      margin-top: 15px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
-      color: #fff;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 8px 20px rgba(13,110,253,0.35);
-    }
+button:hover {
+  background: #00ffff;
+  transform: scale(1.05);
+}
 
-    button:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 12px 30px rgba(13,110,253,0.45);
-    }
+.section {
+  margin-top: 25px;
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 12px;
+}
 
-    .link {
-      display: inline-block;
-      margin-top: 10px;
-      color: var(--blue);
-      font-weight: bold;
-      text-decoration: none;
-    }
+.competition {
+  margin-top: 10px;
+  text-align: left;
+}
 
-    .competitions { text-align: left; }
+.competition h3 {
+  cursor: pointer;
+  color: #00ffff;
+}
 
-    .league {
-      margin-top: 15px;
-      border-left: 4px solid var(--blue);
-      padding-left: 10px;
-    }
+.match {
+  margin-left: 15px;
+  cursor: pointer;
+  padding: 5px;
+}
 
-    .league h3 { margin: 5px 0; }
+.match:hover {
+  background: rgba(255,255,255,0.15);
+}
 
-    .match {
-      padding: 8px;
-      margin: 5px 0;
-      background: #f1f6ff;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background .2s;
-    }
+.selected {
+  background: rgba(0,255,255,0.3);
+}
 
-    .match:hover { background: #dbe7ff; }
+.footer {
+  margin-top: 40px;
+  font-size: 14px;
+  opacity: 0.8;
+}
 
-    .selected { background: #c7dcff !important; font-weight: bold; }
+a {
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+</style>
+</head>
 
-    pre {
-      text-align: left;
-      background: #0b1c33;
-      color: #e6edff;
-      padding: 15px;
-      border-radius: 12px;
-      overflow-x: auto;
-    }
+<body>
 
-    footer {
-      padding: 20px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
+<div class="container">
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-  </style></head><body><header>
-  <img src="images/logo.png" alt="NOX Logo" />
-  <p>⚽ Análise avançada de futebol com dados reais da API-Football. Selecione a competição, escolha a partida e gere estatísticas completas automaticamente. 🚀</p>
-</header><main>  <div class="card">
-    <label>🔑 API Key (API-Football)</label>
-    <input id="apiKey" placeholder="Cole sua API Key aqui" /><label>📅 Data da competição</label>
-<input id="date" type="date" />
+<img src="images/logo.png" class="logo" alt="NOX Logo">
 
-<button onclick="loadCompetitions()">📊 Carregar Competições</button>
-<br />
-<a class="link" href="https://www.api-football.com/register" target="_blank">👉 Criar conta na API-Football</a>
+<h1>NOX Football Analytics ⚽📊</h1>
 
-  </div>  <div class="card competitions" id="competitions"></div>  <div class="card" id="analyzeCard" style="display:none">
-    <button onclick="analyzeMatch()">🔍 Analisar Partida</button>
-  </div>  <div class="card" id="result" style="display:none">
-    <h3>📈 Resultado da Análise</h3>
-    <pre id="output"></pre>
-  </div>  <div class="card">
-    <button onclick="location.reload()">🏠 Index – Página Inicial</button>
-  </div></main><footer>
-  🔵 NOX Football Analytics – Versão 1.0 Pro
-</footer><script>
-  const BACKEND = "https://backendnoxv2.srrimas2017.workers.dev/";
-  let selectedFixture = null;
+<p>
+Plataforma profissional para análise de partidas de futebol.<br>
+Conectada em tempo real com a <strong>API-Football</strong> e motor estatístico avançado.
+</p>
 
-  async function loadCompetitions() {
-    const apiKey = apiKeyEl.value;
-    const date = dateEl.value;
+<div class="section">
+  <input type="text" id="apiKey" placeholder="🔑 Sua API Key">
+  <input type="date" id="date">
+  <br>
+  <button onclick="loadCompetitions()">📅 Carregar Competições</button>
+</div>
 
-    if (!apiKey || !date) return alert("Informe API Key e data");
+<div id="competitions" class="section"></div>
 
-    competitions.innerHTML = "⏳ Carregando competições...";
+<div class="section">
+  <button onclick="analyzeMatch()">📊 Analisar Partida</button>
+</div>
 
-    const res = await fetch(BACKEND, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey, date })
-    });
+<div id="result" class="section"></div>
 
-    const data = await res.json();
-    competitions.innerHTML = "";
+<div class="section">
+  <button onclick="location.href='index.html'">🏠 Página Inicial</button>
+  <br><br>
+  <a href="https://www.api-football.com/" target="_blank">➡️ Criar API Football</a>
+</div>
 
-    (data.competitions || []).forEach(l => {
-      const div = document.createElement("div");
-      div.className = "league";
-      div.innerHTML = `<h3>${l.league} (${l.country})</h3>`;
+<div class="footer">
+  Versão 1.0 Pro 🚀
+</div>
 
-      l.matches.forEach(m => {
-        const md = document.createElement("div");
-        md.className = "match";
-        md.textContent = `⏱ ${m.time} – ${m.home} x ${m.away}`;
-        md.onclick = () => selectMatch(md, m.fixtureId);
-        div.appendChild(md);
-      });
+</div>
 
-      competitions.appendChild(div);
-    });
+<script>
+const BACKEND = "https://backendnoxv2.srrimas2017.workers.dev/";
+let selectedFixture = null;
+
+async function loadCompetitions() {
+  document.getElementById("competitions").innerHTML = "⏳ Carregando...";
+  selectedFixture = null;
+
+  const apiKey = document.getElementById("apiKey").value;
+  const date = document.getElementById("date").value;
+
+  const res = await fetch(BACKEND, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ apiKey, date })
+  });
+
+  const data = await res.json();
+
+  if (!data.competitions) {
+    document.getElementById("competitions").innerHTML = "❌ Nenhuma competição encontrada";
+    return;
   }
 
-  function selectMatch(el, fixtureId) {
-    document.querySelectorAll('.match').forEach(m => m.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedFixture = fixtureId;
-    analyzeCard.style.display = 'block';
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  async function analyzeMatch() {
-    const apiKey = apiKeyEl.value;
-    const date = dateEl.value;
-
-    result.style.display = 'block';
-    output.textContent = '⏳ Analisando...';
-
-    const res = await fetch(BACKEND, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ apiKey, date, fixtureId: selectedFixture })
+  let html = "";
+  data.competitions.forEach(comp => {
+    html += `
+      <div class="competition">
+        <h3 onclick="toggleComp(this)">🏆 ${comp.league} (${comp.country})</h3>
+        <div>
+    `;
+    comp.matches.forEach(m => {
+      html += `
+        <div class="match" onclick="selectMatch(this, ${m.fixtureId})">
+          ⏰ ${m.time} - ${m.home} x ${m.away}
+        </div>
+      `;
     });
+    html += `</div></div>`;
+  });
 
-    const data = await res.json();
-    output.textContent = JSON.stringify(data, null, 2);
+  document.getElementById("competitions").innerHTML = html;
+}
+
+function toggleComp(el) {
+  const div = el.nextElementSibling;
+  div.style.display = div.style.display === "none" ? "block" : "none";
+}
+
+function selectMatch(el, fixtureId) {
+  document.querySelectorAll(".match").forEach(m => m.classList.remove("selected"));
+  el.classList.add("selected");
+  selectedFixture = fixtureId;
+
+  document.querySelectorAll(".competition div").forEach(d => d.style.display = "none");
+}
+
+async function analyzeMatch() {
+  if (!selectedFixture) {
+    alert("Selecione uma partida ⚠️");
+    return;
   }
 
-  const apiKeyEl = document.getElementById('apiKey');
-  const dateEl = document.getElementById('date');
-  const competitions = document.getElementById('competitions');
-  const analyzeCard = document.getElementById('analyzeCard');
-  const result = document.getElementById('result');
-  const output = document.getElementById('output');
-</script></body>
+  document.getElementById("result").innerHTML = "📊 Analisando...";
+
+  const apiKey = document.getElementById("apiKey").value;
+  const date = document.getElementById("date").value;
+
+  const res = await fetch(BACKEND, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ apiKey, date, fixtureId: selectedFixture })
+  });
+
+  const data = await res.json();
+
+  let html = `<h3>${data.home} x ${data.away}</h3>`;
+  html += `<p>Jogos H2H analisados: ${data.h2hGames}</p><ul>`;
+
+  for (const k in data.means) {
+    html += `<li>${k}: <strong>${data.means[k]}</strong></li>`;
+  }
+
+  html += "</ul>";
+
+  document.getElementById("result").innerHTML = html;
+}
+</script>
+
+</body>
 </html>
