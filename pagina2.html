@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UGRNOXTOKEN • Investidores</title>
+
+  <style>
+    :root {
+      --orange: #ff7a00;
+      --orange-dark: #e56700;
+      --bg: #0b0b0b;
+      --text: #ffffff;
+      --glow: 0 0 25px rgba(255,122,0,0.6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(255,122,0,0.15), transparent 60%),
+        radial-gradient(circle at bottom, rgba(255,122,0,0.1), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    main {
+      max-width: 950px;
+      padding: 50px 24px;
+      text-align: center;
+      animation: fadeUp 1.2s ease;
+    }
+
+    .logo {
+      width: 170px;
+      margin-bottom: 28px;
+      filter: drop-shadow(var(--glow));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: var(--orange);
+      margin-bottom: 14px;
+      text-shadow: 0 0 18px rgba(255,122,0,0.4);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: normal;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    p {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      margin-bottom: 36px;
+      opacity: 0.95;
+    }
+
+    .highlight {
+      color: var(--orange);
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.25s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      color: #000;
+      box-shadow: 0 8px 28px rgba(255,122,0,0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 14px 38px rgba(255,122,0,0.7);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--orange);
+      color: var(--orange);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--orange);
+      color: #000;
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .swap-links {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <!-- Logo -->
+    <img src="/images/logo.png" alt="UGRNOXTOKEN Logo" class="logo"/>
+
+    <!-- Conteúdo -->
+    <h1>UGRNOXTOKEN ⚽</h1>
+    <h2>Onde o futebol encontra o mercado cripto</h2>
+
+    <p>
+      A <span class="highlight">UGRNOXTOKEN</span> nasce para unir a paixão
+      global pelo futebol com um ecossistema cripto moderno e escalável.
+      Pensado para investidores visionários, o projeto conecta
+      <strong>análises esportivas profissionais</strong>, tecnologia e
+      potencial de crescimento real 📈.
+      <br><br>
+      Se você acredita em projetos com identidade forte, utilidade clara
+      e foco em performance, este é o seu momento de entrar em campo 🏟️.
+    </p>
+
+    <!-- Botões de navegação -->
+    <div class="buttons">
+      <a href="index.html" class="btn btn-outline">Página Inicial</a>
+      <a href="pagina3.html" class="btn btn-outline">Análises Grátis</a>
+    </div>
+
+    <!-- Links de Swap -->
+    <div class="swap-links">
+      <a
+        href="https://app.uniswap.org/#/swap?outputCurrency=0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
+        target="_blank"
+        class="btn btn-primary"
+      >
+        Comprar na Uniswap
+      </a>
+
+      <a
+        href="https://pancakeswap.finance/swap?outputCurrency=0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
+        target="_blank"
+        class="btn btn-primary"
+      >
+        Comprar na PancakeSwap
+      </a>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+      <p>Versão 0.1 • Investor Page</p>
+    </footer>
+  </main>
+</body>
+</html>
