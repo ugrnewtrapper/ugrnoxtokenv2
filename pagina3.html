@@ -13,24 +13,13 @@ body {
   color: #fff;
   text-align: center;
 }
-
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
-
-.logo {
-  max-width: 180px;
-  animation: pulse 2s infinite;
-}
-
+.container { max-width: 900px; margin: auto; padding: 20px; }
+.logo { max-width: 180px; animation: pulse 2s infinite; }
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
-
 input, button {
   padding: 12px;
   margin: 8px;
@@ -38,47 +27,24 @@ input, button {
   border: none;
   font-size: 16px;
 }
-
 input { width: 260px; }
-
 button {
   background: #00d4ff;
   color: #003;
   font-weight: bold;
   cursor: pointer;
 }
-
 .section {
   margin-top: 25px;
   background: rgba(255,255,255,0.1);
   padding: 15px;
   border-radius: 12px;
 }
-
-.competition h3 {
-  cursor: pointer;
-  color: #00ffff;
-}
-
-.match {
-  margin-left: 15px;
-  cursor: pointer;
-  padding: 6px;
-}
-
-.match:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-.selected {
-  background: rgba(0,255,255,0.3);
-}
-
-.footer {
-  margin-top: 40px;
-  font-size: 14px;
-  opacity: 0.8;
-}
+.competition h3 { cursor: pointer; color: #00ffff; }
+.match { margin-left: 15px; cursor: pointer; padding: 6px; }
+.match:hover { background: rgba(255,255,255,0.15); }
+.selected { background: rgba(0,255,255,0.3); }
+.footer { margin-top: 40px; font-size: 14px; opacity: 0.8; }
 </style>
 </head>
 
@@ -152,12 +118,16 @@ async function loadCompetitions() {
 function toggleComp(idx) {
   const el = document.getElementById(`comp-${idx}`);
 
-  // Se clicar na mesma competição aberta → FECHA
   if (openedCompetition === idx) {
     el.style.display = "none";
     openedCompetition = null;
     return;
   }
+
+  document.querySelectorAll(".matches").forEach(m=>m.style.display="none");
+  el.style.display = "block";
+  openedCompetition = idx;
+}
 
 function selectMatch(el) {
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
