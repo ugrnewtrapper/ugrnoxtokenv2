@@ -1,17 +1,17 @@
-<!DOCTYPE html>  <html lang="pt-BR">    <head>      <meta charset="UTF-8">        <title>NOX Football Analytics • v0.3</title>        
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  <style>        
-:root{        
-  --blue:#0a4cff;        
-  --blue-dark:#0836b3;        
-  --bg:#f4f7fb;        
-  --card:#ffffff;        
-  --text:#0f172a;        
-}    *{box-sizing:border-box}  body{  
-margin:0;  
-font-family:Segoe UI,Arial,sans-serif;  
-background:var(--bg);  
-color:var(--text);  
-text-align:center;  
+<!DOCTYPE html>  
+<html lang="pt-BR">    <head>      <meta charset="UTF-8">        <title>NOX Football Analytics • v0.3</title>          <meta name="viewport" content="width=device-width, initial-scale=1.0">  <style>
+:root{
+--blue:#0a4cff;
+--blue-dark:#0836b3;
+--bg:#f4f7fb;
+--card:#ffffff;
+--text:#0f172a;
+}    *{box-sizing:border-box}  body{
+margin:0;
+font-family:Segoe UI,Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+text-align:center;
 }  header{
 background:linear-gradient(135deg,var(--blue),var(--blue-dark));
 padding:22px;
@@ -116,34 +116,32 @@ to{opacity:1;transform:translateY(0)}
 </style>  </head>  <body>  <header>
 <img src="images/logo.png" alt="NOX Logo">
 
-  <h1>⚽ NOX Football Analytics</h1>        
-  <p>H2H • Médias • Estatística Avançada</p>        
-</header>  <main>    <div class="card">        
-    <h2>🔐 Configuração</h2>        
-    <input id="apiKey" placeholder="API Key API-Football">        
-    <input id="date" type="date">        
-    <br>        
-    <button onclick="loadCompetitions()">📅 Carregar Competições</button>        
-  </div>    <div class="card">        
-    <h2>🏆 Competições & Partidas</h2>        
-    <div id="competitions">Nenhuma competição carregada.</div>        
-  </div>    <div class="card">        
-    <h2>📊 Análise da Partida</h2>        
-    <button onclick="analyzeMatch()">⚡ Analisar Partida</button>        
-    <div id="analysis"></div>        
-  </div>    <nav>        
-    <a href="index.html">⬅ Index • Página Inicial</a>        
-  </nav>  </main>  <script>        
-const BACKEND_URL = "https://backendnoxv2.srrimas2017.workers.dev/";        
-let selectedFixture = null;    async function loadCompetitions(){    
-const apiKey = document.getElementById("apiKey").value;    
-const date = document.getElementById("date").value;    
-const box = document.getElementById("competitions");  if(!apiKey || !date){  
-alert("Informe API Key e Data");  
-return;  
-}  box.innerHTML = "⏳ Carregando competições...";
-
-const res = await fetch(BACKEND_URL,{
+  <h1>⚽ NOX Football Analytics</h1>          
+  <p>H2H • Médias • Estatística Avançada</p>          
+</header>  <main>    <div class="card">          
+    <h2>🔐 Configuração</h2>          
+    <input id="apiKey" placeholder="API Key API-Football">          
+    <input id="date" type="date">          
+    <br>          
+    <button onclick="loadCompetitions()">📅 Carregar Competições</button>          
+  </div>    <div class="card">          
+    <h2>🏆 Competições & Partidas</h2>          
+    <div id="competitions">Nenhuma competição carregada.</div>          
+  </div>    <div class="card">          
+    <h2>📊 Análise da Partida</h2>          
+    <button onclick="analyzeMatch()">⚡ Analisar Partida</button>          
+    <div id="analysis"></div>          
+  </div>    <nav>          
+    <a href="index.html">⬅ Index • Página Inicial</a>          
+  </nav>  </main>  <script>          
+const BACKEND_URL = "https://backendnoxv2.srrimas2017.workers.dev/";          
+let selectedFixture = null;    async function loadCompetitions(){      
+const apiKey = document.getElementById("apiKey").value;      
+const date = document.getElementById("date").value;      
+const box = document.getElementById("competitions");  if(!apiKey || !date){    
+alert("Informe API Key e Data");    
+return;    
+}  box.innerHTML = "⏳ Carregando competições...";  const res = await fetch(BACKEND_URL,{
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body:JSON.stringify({ apiKey, date })
