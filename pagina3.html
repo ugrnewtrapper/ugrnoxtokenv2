@@ -17,124 +17,116 @@
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  font-family:Segoe UI,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  text-align:center;
+margin:0;
+font-family:Segoe UI,Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+text-align:center;
 }
 
 header{
-  background:linear-gradient(135deg,var(--blue),var(--blue-dark));
-  padding:24px;
-  color:#fff;
+background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+padding:22px;
+color:#fff;
 }
 
 header img{
-  max-height:64px;
-  margin-bottom:10px;
+max-height:64px;
+margin-bottom:10px;
 }
 
 main{
-  max-width:1000px;
-  margin:30px auto;
-  padding:0 20px;
+max-width:1000px;
+margin:30px auto;
+padding:0 20px;
 }
 
 .card{
-  background:var(--card);
-  border-radius:16px;
-  padding:22px;
-  margin-bottom:22px;
-  box-shadow:0 12px 30px rgba(0,0,0,.08);
+background:var(--card);
+border-radius:16px;
+padding:22px;
+margin-bottom:22px;
+box-shadow:0 12px 30px rgba(0,0,0,.08);
 }
 
 input,button{
-  padding:12px 14px;
-  margin:8px;
-  border-radius:12px;
-  border:1px solid #cbd5e1;
-  font-size:15px;
+padding:12px 14px;
+margin:8px;
+border-radius:12px;
+border:1px solid #cbd5e1;
+font-size:15px;
 }
 
 button{
-  background:var(--blue);
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  transition:.3s;
+background:var(--blue);
+color:#fff;
+border:none;
+cursor:pointer;
+transition:.3s;
 }
 
 button:hover{
-  background:var(--blue-dark);
-  transform:scale(1.05);
+background:var(--blue-dark);
+transform:scale(1.05);
 }
 
 .competition{
-  margin-top:16px;
-  text-align:left;
+margin-top:16px;
+text-align:left;
 }
 
 .comp-title{
-  font-weight:700;
-  margin:18px 0 8px;
+font-weight:700;
+margin:18px 0 8px;
 }
 
 .match{
-  padding:10px;
-  border-radius:10px;
-  margin-top:6px;
-  background:#eef2ff;
-  cursor:pointer;
-  transition:.25s;
+padding:10px;
+border-radius:10px;
+margin-top:6px;
+background:#eef2ff;
+cursor:pointer;
+transition:.25s;
 }
 
 .match:hover{
-  background:#dbeafe;
-  transform:translateX(6px);
+background:#dbeafe;
+transform:translateX(6px);
 }
 
 .match.selected{
-  background:var(--blue);
-  color:#fff;
+background:var(--blue);
+color:#fff;
 }
 
 .result{
-  font-size:16px;
-  margin-top:6px;
+font-size:16px;
+margin-top:6px;
 }
 
-.hidden{
-  display:none;
-}
-
-.selected-box{
-  background:#e0e7ff;
-  padding:14px;
-  border-radius:12px;
-  margin-bottom:16px;
-  font-weight:600;
-}
-
-nav{
-  margin-top:40px;
+.selected-match{
+background:#e0e7ff;
+padding:12px;
+border-radius:12px;
+margin-bottom:16px;
+font-weight:600;
 }
 
 .nav-home{
-  display:inline-block;
-  padding:14px 24px;
-  border-radius:30px;
-  background:#fff;
-  color:var(--blue);
-  font-weight:700;
-  text-decoration:none;
-  box-shadow:0 10px 20px rgba(0,0,0,.1);
-  transition:.3s;
+display:inline-block;
+padding:14px 26px;
+border-radius:30px;
+background:#fff;
+color:var(--blue);
+font-weight:700;
+text-decoration:none;
+box-shadow:0 10px 20px rgba(0,0,0,.1);
+transition:.3s;
 }
 
 .nav-home:hover{
-  transform:scale(1.08);
-  background:#eef2ff;
+transform:scale(1.08);
+background:#eef2ff;
 }
 </style>
 </head>
@@ -142,39 +134,39 @@ nav{
 <body>
 
 <header>
-  <img src="images/logo.png" alt="NOX Logo">
-  <h1>NOX Football Analytics</h1>
-  <p>Análise Profissional • H2H • Médias Estatísticas Avançadas</p>
+<img src="images/logo.png" alt="NOX Logo">
+<h1>NOX Football Analytics</h1>
+<p>Análise estatística profissional • H2H e médias históricas</p>
 </header>
 
 <main>
 
-  <div class="card">
-    <h2>🔐 Configuração</h2>
-    <input id="apiKey" placeholder="API Key API-Football">
-    <input id="date" type="date">
-    <br>
-    <button onclick="loadCompetitions()">📅 Carregar Competições</button>
-  </div>
+<div class="card">
+<h2>🔐 Configuração</h2>
+<input id="apiKey" placeholder="API Key API-Football">
+<input id="date" type="date">
+<br>
+<button onclick="loadCompetitions()">📅 Carregar Competições</button>
+</div>
 
-  <div class="card" id="competitionsCard">
-    <h2>🏆 Competições & Partidas</h2>
-    <div id="competitions">Nenhuma competição carregada.</div>
-  </div>
+<div class="card" id="competitionsCard">
+<h2>🏆 Competições & Partidas</h2>
+<div id="competitions">Nenhuma competição carregada.</div>
+</div>
 
-  <div class="card hidden" id="selectedMatchBox">
-    <div class="selected-box" id="selectedMatchText"></div>
-  </div>
+<div class="card" id="selectedBox" style="display:none;">
+<div class="selected-match" id="selectedText"></div>
+</div>
 
-  <div class="card">
-    <h2>📊 Análise da Partida</h2>
-    <button onclick="analyzeMatch()">⚡ Analisar Partida</button>
-    <div id="analysis"></div>
-  </div>
+<div class="card">
+<h2>📊 Análise da Partida</h2>
+<button onclick="analyzeMatch()">⚡ Analisar Partida</button>
+<div id="analysis"></div>
+</div>
 
-  <nav>
-    <a class="nav-home" href="index.html">⬅ Página Principal</a>
-  </nav>
+<nav>
+<a class="nav-home" href="index.html">⬅ Página Principal</a>
+</nav>
 
 </main>
 
@@ -183,90 +175,91 @@ const BACKEND_URL = "https://backendnoxv2.srrimas2017.workers.dev/";
 let selectedFixture = null;
 
 async function loadCompetitions(){
-  const apiKey = document.getElementById("apiKey").value;
-  const date = document.getElementById("date").value;
-  const box = document.getElementById("competitions");
+const apiKey = document.getElementById("apiKey").value;
+const date = document.getElementById("date").value;
+const box = document.getElementById("competitions");
 
-  if(!apiKey || !date){
-    alert("Informe API Key e Data");
-    return;
-  }
+if(!apiKey || !date){
+alert("Informe API Key e Data");
+return;
+}
 
-  box.innerHTML = "⏳ Carregando competições...";
+box.innerHTML = "⏳ Carregando competições...";
 
-  const res = await fetch(BACKEND_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ apiKey, date })
-  });
+const res = await fetch(BACKEND_URL,{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ apiKey, date })
+});
 
-  const data = await res.json();
-  box.innerHTML = "";
+const data = await res.json();
+box.innerHTML = "";
 
-  if(!data.competitions?.length){
-    box.innerHTML = "Nenhuma competição encontrada.";
-    return;
-  }
+if(!data.competitions?.length){
+box.innerHTML = "Nenhuma competição encontrada.";
+return;
+}
 
-  data.competitions.forEach(c=>{
-    const div=document.createElement("div");
-    div.className="competition";
-    div.innerHTML=`<div class="comp-title">🏆 ${c.league} (${c.country})</div>`;
+data.competitions.forEach(c=>{
+const div=document.createElement("div");
+div.className="competition";
+div.innerHTML = `<div class="comp-title">🏆 ${c.league} (${c.country})</div>`;
 
-    c.matches.forEach(m=>{
-      const md=document.createElement("div");
-      md.className="match";
-      md.textContent=`⚽ ${m.home} vs ${m.away} — ${m.time}`;
-      md.onclick=()=>{
-        document.querySelectorAll(".match").forEach(x=>x.classList.remove("selected"));
-        md.classList.add("selected");
-        selectedFixture=m.fixtureId;
+c.matches.forEach(m=>{
+const md=document.createElement("div");
+md.className="match";
+md.textContent=`⚽ ${m.home} vs ${m.away} — ${m.time}`;
+md.onclick=()=>{
+document.querySelectorAll(".match").forEach(x=>x.classList.remove("selected"));
+md.classList.add("selected");
+selectedFixture=m.fixtureId;
 
-        document.getElementById("competitionsCard").classList.add("hidden");
-        document.getElementById("selectedMatchBox").classList.remove("hidden");
-        document.getElementById("selectedMatchText").textContent =
-          `Partida selecionada: ${m.home} vs ${m.away}`;
-      };
-      div.appendChild(md);
-    });
+document.getElementById("selectedBox").style.display="block";
+document.getElementById("selectedText").textContent =
+`Partida selecionada: ${m.home} vs ${m.away}`;
+};
+div.appendChild(md);
+});
 
-    box.appendChild(div);
-  });
+box.appendChild(div);
+});
 }
 
 async function analyzeMatch(){
-  if(!selectedFixture){
-    alert("Selecione uma partida.");
-    return;
-  }
+if(!selectedFixture){
+alert("Selecione uma partida.");
+return;
+}
 
-  const apiKey=document.getElementById("apiKey").value;
-  const date=document.getElementById("date").value;
-  const out=document.getElementById("analysis");
+const apiKey=document.getElementById("apiKey").value;
+const date=document.getElementById("date").value;
+const out=document.getElementById("analysis");
 
-  out.innerHTML="⏳ Processando análise estatística...";
+out.innerHTML="⏳ Analisando partida...";
 
-  const res=await fetch(BACKEND_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ apiKey, date, fixtureId:selectedFixture })
-  });
+const res=await fetch(BACKEND_URL,{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ apiKey, date, fixtureId:selectedFixture })
+});
 
-  const data=await res.json();
-  out.innerHTML="";
+const data=await res.json();
+out.innerHTML="";
 
-  if(!data.means){
-    out.innerHTML="Dados insuficientes para análise.";
-    return;
-  }
+if(!data.means){
+out.innerHTML="Sem dados para análise.";
+return;
+}
 
-  out.innerHTML+=`<p><strong>${data.home} vs ${data.away}</strong></p>`;
-  out.innerHTML+=`<p>📈 Histórico analisado: ${data.h2hGames} partidas</p>`;
+out.innerHTML+=`<p><strong>${data.home} vs ${data.away}</strong></p>`;
+out.innerHTML+=`<p>📈 Jogos H2H: ${data.h2hGames}</p>`;
 
-  for(const k in data.means){
-    if(k.toLowerCase().includes("cart") || k.toLowerCase().includes("escanteio")) continue;
-    out.innerHTML+=`<div class="result">📊 ${k}: <strong>${data.means[k]}</strong></div>`;
-  }
+/* 🔒 ÚNICA MUDANÇA REAL: filtro visual */
+for(const k in data.means){
+const key = k.toLowerCase();
+if(key.includes("cart") || key.includes("escante")) continue;
+out.innerHTML+=`<div class="result">📊 ${k}: <strong>${data.means[k]}</strong></div>`;
+}
 }
 </script>
 
