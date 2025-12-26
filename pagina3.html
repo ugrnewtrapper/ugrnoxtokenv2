@@ -152,14 +152,22 @@ async function loadCompetitions() {
 function toggleComp(idx) {
   const el = document.getElementById(`comp-${idx}`);
 
+  // Se clicar na mesma competição aberta → fecha
+  if (openedCompetition === idx) {
+    el.style.display = "none";
+    openedCompetition = null;
+    return;
+  }
+
+  // Fecha todas
   document.querySelectorAll(".matches").forEach(m => {
-  if (m !== el) m.style.display = "none";
-});
+    m.style.display = "none";
+  });
 
-  el.style.display = el.style.display==="block" ? "none" : "block";
+  // Abre apenas a selecionada
+  el.style.display = "block";
   openedCompetition = idx;
-}
-
+      }
 function selectMatch(el) {
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
   el.classList.add("selected");
