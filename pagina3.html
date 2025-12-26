@@ -152,12 +152,22 @@ async function loadCompetitions() {
 function toggleComp(idx) {
   const el = document.getElementById(`comp-${idx}`);
 
-  // Se clicar na mesma competição aberta → fecha
+  // Se clicar na mesma competição aberta → FECHA
   if (openedCompetition === idx) {
     el.style.display = "none";
     openedCompetition = null;
     return;
   }
+
+  // Fecha todas
+  document.querySelectorAll(".matches").forEach(m => {
+    m.style.display = "none";
+  });
+
+  // Abre somente a clicada
+  el.style.display = "block";
+  openedCompetition = idx;
+}
 
   // Fecha todas
   document.querySelectorAll(".matches").forEach(m => {
