@@ -154,11 +154,16 @@ const BACKEND = "https://backendnoxv2.srrimas2017.workers.dev/";
 let selectedFixture = null;
 
 async function loadCompetitions() {
-  document.getElementById("competitions").innerHTML = "⏳ Carregando...";
-  selectedFixture = null;
-
-  const apiKey = document.getElementById("apiKey").value;
+  const apiKey = document.getElementById("apiKey").value.trim();
   const date = document.getElementById("date").value;
+
+  if (!apiKey || !date) {
+    alert("⚠️ Informe API Key e data");
+    return;
+  }
+
+  const box = document.getElementById("competitions");
+  box.innerHTML = "⏳ Carregando competições...";
 
   const res = await fetch(BACKEND, {
     method: "POST",
@@ -168,21 +173,23 @@ async function loadCompetitions() {
 
   const data = await res.json();
 
-  if (!data.competitions) {
-    document.getElementById("competitions").innerHTML = "❌ Nenhuma competição encontrada";
+  if (!Array.isArray(data.competitions) || data.competitions.length === 0) {
+    box.innerHTML = "❌ Nenhuma competição encontrada";
     return;
   }
 
   let html = "";
-  data.competitions.forEach(comp => {
+  data.competitions.forEach((comp, idx) => {
     html += `
       <div class="competition">
-        <h3 onclick="toggleComp(this)">🏆 ${comp.league} (${comp.country})</h3>
-        <div>
+        <h3 onclick="toggleComp(${idx})">🏆 ${comp.league} (${comp.country})</h3>
+        <div class="matches" id="comp-${idx}">
     `;
     comp.matches.forEach(m => {
       html += `
-        <div class="match" onclick="selectMatch(this, ${m.fixtureId})">
+        <div class="match"
+             data-fixture="${m.fixtureId}"
+             onclick="selectMatch(event, this)">
           ⏰ ${m.time} - ${m.home} x ${m.away}
         </div>
       `;
@@ -190,53 +197,76 @@ async function loadCompetitions() {
     html += `</div></div>`;
   });
 
-  document.getElementById("competitions").innerHTML = html;
+  box.innerHTML = html;
 }
 
-function toggleComp(el) {
-  const div = el.nextElementSibling;
-  div.style.display = div.style.display === "none" ? "block" : "none";
+function toggleComp(idx) {
+  const el = document.getElementById(`comp-${idx}`);
+  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
-function selectMatch(el, fixtureId) {
-  document.querySelectorAll(".match").forEach(m => m.classList.remove("selected"));
+function selectMatch(event, el) {
+  event.stopPropagation();
+
+  document.querySelectorAll(".match").forEach(m =>
+    m.classList.remove("selected")
+  );
+
   el.classList.add("selected");
-  selectedFixture = fixtureId;
+  selectedFixture = el.dataset.fixture;
 
-  document.querySelectorAll(".competition div").forEach(d => d.style.display = "none");
+  // minimiza todas as competições
+  document.querySelectorAll(".matches").forEach(m =>
+    m.style.display = "none"
+  );
+
+  // mantém visível apenas a do match selecionado
+  el.closest(".matches").style.display = "block";
 }
 
 async function analyzeMatch() {
   if (!selectedFixture) {
-    alert("Selecione uma partida ⚠️");
+    alert("⚠️ Selecione uma partida");
     return;
   }
 
-  document.getElementById("result").innerHTML = "📊 Analisando...";
-
-  const apiKey = document.getElementById("apiKey").value;
+  const apiKey = document.getElementById("apiKey").value.trim();
   const date = document.getElementById("date").value;
+
+  const result = document.getElementById("result");
+  result.innerHTML = "📊 Analisando...";
 
   const res = await fetch(BACKEND, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ apiKey, date, fixtureId: selectedFixture })
+    body: JSON.stringify({
+      apiKey,
+      date,
+      fixtureId: Number(selectedFixture)
+    })
   });
 
   const data = await res.json();
 
-  let html = `<h3>${data.home} x ${data.away}</h3>`;
-  html += `<p>Jogos H2H analisados: ${data.h2hGames}</p><ul>`;
-
-  for (const k in data.means) {
-    html += `<li>${k}: <strong>${data.means[k]}</strong></li>`;
+  if (data.error) {
+    result.innerHTML = "❌ " + data.error;
+    return;
   }
+
+  let html = `
+    <h3>${data.home} x ${data.away}</h3>
+    <p>Jogos analisados (H2H): ${data.h2hGames}</p>
+    <ul>
+  `;
+
+  Object.entries(data.means).forEach(([k, v]) => {
+    html += `<li>${k}: <strong>${v}</strong></li>`;
+  });
 
   html += "</ul>";
 
-  document.getElementById("result").innerHTML = html;
+  result.innerHTML = html;
 }
 </script>
-
 </body>
 </html>
