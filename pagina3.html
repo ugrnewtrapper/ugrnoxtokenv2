@@ -31,13 +31,8 @@ body {
   100% { transform: scale(1); }
 }
 
-h1 {
-  margin-top: 10px;
-}
-
-p {
-  opacity: 0.9;
-}
+h1 { margin-top: 10px; }
+p { opacity: 0.9; }
 
 input, button {
   padding: 12px;
@@ -47,9 +42,7 @@ input, button {
   font-size: 16px;
 }
 
-input {
-  width: 260px;
-}
+input { width: 260px; }
 
 button {
   background: #00d4ff;
@@ -110,7 +103,6 @@ a {
 </head>
 
 <body>
-
 <div class="container">
 
 <img src="images/logo.png" class="logo" alt="NOX Logo">
@@ -119,7 +111,7 @@ a {
 
 <p>
 Plataforma profissional para análise de partidas de futebol.<br>
-Conectada em tempo real com a <strong>API-Football</strong> e motor estatístico avançado.
+Conectada em tempo real com a <strong>API-Football</strong>.
 </p>
 
 <div class="section">
@@ -138,19 +130,15 @@ Conectada em tempo real com a <strong>API-Football</strong> e motor estatístico
 <div id="result" class="section"></div>
 
 <div class="section">
-  <button onclick="location.href='index.html'">🏠 Página Inicial</button>
-  <br><br>
+  <button onclick="location.href='index.html'">🏠 Página Inicial</button><br><br>
   <a href="https://www.api-football.com/" target="_blank">➡️ Criar API Football</a>
 </div>
 
-<div class="footer">
-  Versão 1.0 Pro 🚀
-</div>
-
+<div class="footer">Versão 1.0 Pro 🚀</div>
 </div>
 
 <script>
-const BACKEND = "https://backendnoxv2.srrimas2017.workers.dev/";
+const BACKEND = "https://backendnoxv2.srrimas2017.workers.dev";
 let selectedFixture = null;
 
 async function loadCompetitions() {
@@ -173,7 +161,7 @@ async function loadCompetitions() {
 
   const data = await res.json();
 
-  if (!Array.isArray(data.competitions) || data.competitions.length === 0) {
+  if (!Array.isArray(data.competitions) || !data.competitions.length) {
     box.innerHTML = "❌ Nenhuma competição encontrada";
     return;
   }
@@ -182,7 +170,7 @@ async function loadCompetitions() {
   data.competitions.forEach((comp, idx) => {
     html += `
       <div class="competition">
-        <h3 onclick="toggleComp(${idx})">🏆 ${comp.league} (${comp.country})</h3>
+        <h3 onclick="toggleComp(${idx}, event)">🏆 ${comp.league} (${comp.country})</h3>
         <div class="matches" id="comp-${idx}">
     `;
     comp.matches.forEach(m => {
@@ -200,7 +188,8 @@ async function loadCompetitions() {
   box.innerHTML = html;
 }
 
-function toggleComp(idx) {
+function toggleComp(idx, event) {
+  event.stopPropagation();
   const el = document.getElementById(`comp-${idx}`);
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
@@ -215,13 +204,11 @@ function selectMatch(event, el) {
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
 
-  // minimiza todas as competições
-  document.querySelectorAll(".matches").forEach(m =>
-    m.style.display = "none"
-  );
+  document.querySelectorAll(".matches").forEach(m => {
+    m.style.display = "none";
+  });
 
-  // mantém visível apenas a do match selecionado
-  el.closest(".matches").style.display = "block";
+  el.parentElement.style.display = "block";
 }
 
 async function analyzeMatch() {
@@ -232,6 +219,11 @@ async function analyzeMatch() {
 
   const apiKey = document.getElementById("apiKey").value.trim();
   const date = document.getElementById("date").value;
+
+  if (!apiKey || !date) {
+    alert("⚠️ Informe API Key e data");
+    return;
+  }
 
   const result = document.getElementById("result");
   result.innerHTML = "📊 Analisando...";
@@ -264,7 +256,6 @@ async function analyzeMatch() {
   });
 
   html += "</ul>";
-
   result.innerHTML = html;
 }
 </script>
