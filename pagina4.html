@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Sure BET</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #5a189a, #7b2cbf);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 25px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .logo {
+      max-width: 140px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 10px 0 5px;
+      font-size: 22px;
+    }
+
+    .version {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+    }
+
+    input {
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(135deg, #9d4edd, #c77dff);
+      color: #fff;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .nav {
+      margin-top: 20px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,0.15);
+      padding: 10px 16px;
+      border-radius: 10px;
+      display: inline-block;
+      font-weight: bold;
+    }
+
+    .nav a:hover {
+      background: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- LOGO -->
+    <img src="images/logo.png" alt="Logo" class="logo">
+
+    <h1>Calculadora Sure BET</h1>
+    <div class="version">Versão 0.1</div>
+
+    <!-- QUANTIDADE DE ODDS -->
+    <select id="qtdOdds" onchange="gerarOdds()">
+      <option value="">Selecione quantidade de odds</option>
+      <option value="3">3 odds</option>
+      <option value="4">4 odds</option>
+      <option value="5">5 odds</option>
+      <option value="6">6 odds</option>
+      <option value="7">7 odds</option>
+      <option value="8">8 odds</option>
+      <option value="9">9 odds</option>
+    </select>
+
+    <!-- INPUTS DINÂMICOS -->
+    <div id="oddsContainer"></div>
+
+    <input type="number" id="banca" placeholder="Valor total investido (R$)" step="0.01">
+
+    <button onclick="calcularSureBet()">Calcular Sure Bet</button>
+
+    <div class="result" id="resultado"></div>
+
+    <!-- NAVEGAÇÃO -->
+    <div class="nav">
+      <a href="index.html">Página Inicial</a>
+    </div>
+
+  </div>
+
+  <script>
+    function gerarOdds() {
+      const qtd = document.getElementById("qtdOdds").value;
+      const container = document.getElementById("oddsContainer");
+      container.innerHTML = "";
+
+      for (let i = 1; i <= qtd; i++) {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.step = "0.01";
+        input.placeholder = `Odd ${i}`;
+        input.className = "odd";
+        container.appendChild(input);
+      }
+    }
+
+    function calcularSureBet() {
+      const oddsInputs = document.querySelectorAll(".odd");
+      const banca = parseFloat(document.getElementById("banca").value);
+      const resultado = document.getElementById("resultado");
+
+      if (!banca || oddsInputs.length < 3) {
+        resultado.innerHTML = "Preencha corretamente todos os campos.";
+        return;
+      }
+
+      let somaInversos = 0;
+      let odds = [];
+
+      oddsInputs.forEach(input => {
+        const odd = parseFloat(input.value);
+        if (!odd || odd <= 1) {
+          resultado.innerHTML = "Odds inválidas.";
+          return;
+        }
+        odds.push(odd);
+        somaInversos += 1 / odd;
+      });
+
+      const isSure = somaInversos < 1;
+
+      let html = `<strong>${isSure ? "SURE BET DETECTADA ✅" : "NÃO É SURE BET ❌"}</strong><br><br>`;
+
+      odds.forEach((odd, i) => {
+        const aposta = (banca * (1 / odd)) / somaInversos;
+        html += `Aposta ${i + 1}: R$ ${aposta.toFixed(2)}<br>`;
+      });
+
+      const retorno = (banca / somaInversos).toFixed(2);
+      const lucro = (retorno - banca).toFixed(2);
+
+      html += `<br>Retorno garantido: R$ ${retorno}`;
+      html += `<br>Lucro: R$ ${lucro}`;
+
+      resultado.innerHTML = html;
+    }
+  </script>
+
+</body>
+</html>
