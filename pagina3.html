@@ -212,6 +212,8 @@ function selectMatch(event, el) {
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
 
+  document.getElementById("result").innerHTML = `<h3>📌 Partida selecionada:</h3><p>${el.innerText}</p>`;
+
   document.querySelectorAll(".matches").forEach(m => {
     m.style.display = "none";
   });
