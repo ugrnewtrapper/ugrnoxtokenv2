@@ -1,125 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>NOX Premium Analytics 💎</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>NOX • Análises Avançadas (Web3)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- =========================
-       ESTILO BASE – VERSÃO 0.1
-       ========================= -->
+  <!-- Versão -->
+  <!-- v0.1 -->
+
   <style>
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0a0f2c, #111827);
-      color: #ffffff;
+      background: linear-gradient(135deg, #0a2cff, #7b2cbf);
+      color: #fff;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     .container {
       width: 100%;
       max-width: 420px;
-      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(0,0,0,0.35);
       border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+      text-align: center;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .home-btn {
-      text-decoration: none;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-
-    .home-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
     }
 
     .version {
       font-size: 12px;
       opacity: 0.7;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 24px;
-    }
-
-    .status-box {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .status-line {
-      margin-bottom: 8px;
-    }
-
-    .status-line span {
-      opacity: 0.7;
-    }
-
-    .wallet-address {
-      word-break: break-all;
-      font-size: 13px;
-      opacity: 0.9;
+      margin-bottom: 15px;
     }
 
     button {
       width: 100%;
       padding: 14px;
-      border-radius: 12px;
+      margin-top: 12px;
       border: none;
+      border-radius: 10px;
       font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      margin-bottom: 12px;
-      transition: opacity 0.2s;
+      transition: 0.2s;
     }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-connect {
-      background: #2563eb;
+    .btn-home {
+      background: #1e1e1e;
       color: #fff;
+    }
+
+    .btn-wallet {
+      background: #f6851b;
+      color: #000;
     }
 
     .btn-analyze {
-      background: #16a34a;
-      color: #fff;
+      background: #00ff88;
+      color: #000;
     }
 
-    .info {
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.75;
-      margin-top: 12px;
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -127,91 +92,68 @@
 <body>
 
   <div class="container">
+    <div class="card">
 
-    <!-- TOPO -->
-    <div class="top-bar">
-      <a href="index.html" class="home-btn">🏠 Página Inicial</a>
-      <div class="version">v0.1</div>
-    </div>
+      <button class="btn-home" onclick="location.href='index.html'">
+        🏠 Página Inicial
+      </button>
 
-    <h1>NOX Premium</h1>
-    <div class="subtitle">
-      Análises avançadas com acesso via token
-    </div>
+      <h1>NOX • Análises Avançadas</h1>
+      <div class="version">Versão 0.1</div>
 
-    <!-- STATUS -->
-    <div class="status-box">
-      <div class="status-line">
-        <span>Carteira:</span>
-        <div id="walletStatus">Não conectada</div>
+      <button class="btn-wallet" onclick="connectWallet()">
+        Conectar Carteira (MetaMask / Trust)
+      </button>
+
+      <button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
+        Analisar • 10 Tokens
+      </button>
+
+      <div id="status" class="status">
+        Carteira não conectada
       </div>
 
-      <div class="status-line">
-        <span>Rede:</span>
-        <div id="networkStatus">—</div>
-      </div>
-
-      <div class="status-line">
-        <span>Saldo do Token:</span>
-        <div id="tokenBalance">—</div>
-      </div>
     </div>
-
-    <!-- BOTÕES -->
-    <button class="btn-connect" id="connectBtn">
-      Conectar Carteira
-    </button>
-
-    <button class="btn-analyze" id="analyzeBtn" disabled>
-      Analisar (10 Tokens)
-    </button>
-
-    <div class="info">
-      Cada análise consome 10 tokens.<br>
-      Conecte sua carteira para continuar.
-    </div>
-
   </div>
 
-  <!-- =========================
-       SCRIPT BASE – VERSÃO 0.1
-       ========================= -->
   <script>
-    // ESTADOS GLOBAIS (FUTURAMENTE VÃO PARA /money)
-    let walletConnected = false;
+    let userWallet = null;
 
-    const connectBtn = document.getElementById("connectBtn");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const walletStatus = document.getElementById("walletStatus");
-    const networkStatus = document.getElementById("networkStatus");
-    const tokenBalance = document.getElementById("tokenBalance");
+    async function connectWallet() {
+      if (typeof window.ethereum === 'undefined') {
+        alert('Carteira não encontrada. Use MetaMask ou TrustWallet.');
+        return;
+      }
 
-    connectBtn.addEventListener("click", () => {
-      // FASE ATUAL: apenas simulação visual
-      // FUTURO: conectar MetaMask / TrustWallet aqui
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        });
 
-      walletConnected = true;
+        userWallet = accounts[0];
 
-      walletStatus.innerText = "0x0000...0000 (simulado)";
-      networkStatus.innerText = "BSC (simulada)";
-      tokenBalance.innerText = "—";
+        document.getElementById('status').innerText =
+          'Carteira conectada:\n' + userWallet;
 
-      analyzeBtn.disabled = false;
-      connectBtn.innerText = "Carteira Conectada";
-      connectBtn.disabled = true;
-    });
+        document.getElementById('analyzeBtn').classList.remove('locked');
 
-    analyzeBtn.addEventListener("click", () => {
-      // FASE ATUAL: botão bloqueado para lógica real
-      // FUTURO:
-      // - verificar saldo
-      // - approve
-      // - payForAnalysis
-      // - chamar backend premium
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao conectar carteira.');
+      }
+    }
 
-      alert("Fluxo de pagamento será implementado nas próximas fases.");
-    });
+    function analyze() {
+      alert(
+        'Fluxo futuro:\n' +
+        '- Verificar saldo\n' +
+        '- Solicitar approve\n' +
+        '- Descontar 10 tokens\n' +
+        '- Liberar 1 análise\n\n' +
+        'Back-end ainda não integrado.'
+      );
+    }
   </script>
 
 </body>
-        </html>
+</html>
