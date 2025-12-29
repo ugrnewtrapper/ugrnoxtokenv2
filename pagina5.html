@@ -2,17 +2,34 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>NOX • Análises Avançadas (Web3)</title>
+  <title>NOX Premium • Análises Avançadas Web3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Versão -->
-  <!-- v0.1 -->
+  <!-- ==================================
+       NOX PREMIUM ANALYTICS
+       Página: pagina5.html
+       Versão: 1.0 (FRONT FINAL)
+       ================================== -->
 
   <style>
+    :root {
+      --neon: #00ff9c;
+      --neon-soft: rgba(0,255,156,0.25);
+      --bg-main: #020617;
+      --bg-card: rgba(10, 15, 30, 0.78);
+      --text-soft: rgba(255,255,255,0.75);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0a2cff, #7b2cbf);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #0f3d2e, #020617 65%),
+        linear-gradient(135deg, #020617, #020617);
       color: #fff;
       min-height: 100vh;
       display: flex;
@@ -22,69 +39,124 @@
 
     .container {
       width: 100%;
-      max-width: 420px;
+      max-width: 430px;
       padding: 20px;
     }
 
     .card {
-      background: rgba(0,0,0,0.35);
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 28px 26px 30px;
       text-align: center;
+      position: relative;
+      border: 1px solid rgba(0,255,156,0.18);
+      box-shadow:
+        0 0 35px rgba(0,0,0,0.8),
+        0 0 28px var(--neon-soft);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      box-shadow: inset 0 0 30px rgba(0,255,156,0.08);
+      pointer-events: none;
+    }
+
+    .logo {
+      width: 120px;
+      margin: 6px auto 14px;
+      display: block;
+      filter: drop-shadow(0 0 12px rgba(0,255,156,0.45));
     }
 
     h1 {
-      margin-top: 0;
+      margin: 6px 0 4px;
       font-size: 22px;
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-soft);
+      margin-bottom: 14px;
     }
 
     .version {
       font-size: 12px;
-      opacity: 0.7;
-      margin-bottom: 15px;
+      color: var(--text-soft);
+      margin-bottom: 18px;
     }
 
     button {
       width: 100%;
       padding: 14px;
       margin-top: 12px;
-      border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s ease;
+      border: none;
     }
 
     .btn-home {
-      background: #1e1e1e;
+      background: transparent;
       color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .btn-home:hover {
+      background: rgba(255,255,255,0.08);
     }
 
     .btn-wallet {
-      background: #f6851b;
+      background: linear-gradient(135deg, #00ff9c, #00c777);
       color: #000;
+      box-shadow: 0 0 18px var(--neon-soft);
+    }
+
+    .btn-wallet:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 30px rgba(0,255,156,0.6);
     }
 
     .btn-analyze {
-      background: #00ff88;
-      color: #000;
+      background: transparent;
+      color: var(--neon);
+      border: 1px solid var(--neon);
+      box-shadow: 0 0 14px var(--neon-soft);
     }
 
-    button:hover {
-      opacity: 0.85;
-    }
-
-    .status {
-      margin-top: 15px;
-      font-size: 14px;
-      word-break: break-all;
+    .btn-analyze:hover {
+      background: rgba(0,255,156,0.12);
+      box-shadow: 0 0 32px rgba(0,255,156,0.6);
     }
 
     .locked {
-      opacity: 0.5;
+      opacity: 0.45;
       pointer-events: none;
+      filter: grayscale(0.6);
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.35);
+      color: var(--text-soft);
+      word-break: break-all;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status.connected {
+      border-color: var(--neon);
+      color: #fff;
+      box-shadow: 0 0 14px var(--neon-soft);
     }
   </style>
 </head>
@@ -94,21 +166,30 @@
   <div class="container">
     <div class="card">
 
+      <!-- Logo -->
+      <img src="images/logo.png" alt="NOX Logo" class="logo">
+
+      <!-- Navegação -->
       <button class="btn-home" onclick="location.href='index.html'">
         🏠 Página Inicial
       </button>
 
-      <h1>NOX • Análises Avançadas</h1>
-      <div class="version">Versão 0.1</div>
+      <!-- Título -->
+      <h1>NOX Premium Analytics</h1>
+      <div class="subtitle">Análises avançadas via Web3</div>
+      <div class="version">Versão 1.0</div>
 
+      <!-- Wallet -->
       <button class="btn-wallet" onclick="connectWallet()">
-        Conectar Carteira (MetaMask / Trust)
+        Conectar Carteira (MetaMask / TrustWallet)
       </button>
 
+      <!-- Ação -->
       <button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
         Analisar • 10 Tokens
       </button>
 
+      <!-- Status -->
       <div id="status" class="status">
         Carteira não conectada
       </div>
@@ -117,7 +198,22 @@
   </div>
 
   <script>
+    /* ===============================
+       CONFIGURAÇÃO GLOBAL (PRODUÇÃO)
+       =============================== */
+
+    const CONFIG = {
+      network: 'BSC',
+      tokenAddress: '0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8',
+      costPerAnalysis: 10,
+      maxAnalysisPerWallet: 1
+    };
+
     let userWallet = null;
+
+    /* ===============================
+       CONEXÃO DE CARTEIRA
+       =============================== */
 
     async function connectWallet() {
       if (typeof window.ethereum === 'undefined') {
@@ -132,27 +228,48 @@
 
         userWallet = accounts[0];
 
-        document.getElementById('status').innerText =
+        const status = document.getElementById('status');
+        status.classList.add('connected');
+        status.innerText =
           'Carteira conectada:\n' + userWallet;
 
-        document.getElementById('analyzeBtn').classList.remove('locked');
+        document
+          .getElementById('analyzeBtn')
+          .classList.remove('locked');
 
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
         alert('Erro ao conectar carteira.');
       }
     }
 
+    /* ===============================
+       AÇÃO PRINCIPAL (FUTURO)
+       =============================== */
+
     function analyze() {
       alert(
-        'Fluxo futuro:\n' +
-        '- Verificar saldo\n' +
-        '- Solicitar approve\n' +
-        '- Descontar 10 tokens\n' +
-        '- Liberar 1 análise\n\n' +
-        'Back-end ainda não integrado.'
+        'Fluxo de produção:\n\n' +
+        '✔ Verificar rede (BSC)\n' +
+        '✔ Verificar saldo do token\n' +
+        '✔ Solicitar approve\n' +
+        '✔ Transferir 10 tokens\n' +
+        '✔ Registrar pagamento\n' +
+        '✔ Liberar 1 análise\n\n' +
+        'Aguardando integração da pasta /money.'
       );
     }
+
+    /* ===============================
+       EXTENSÕES FUTURAS
+       ===============================
+       - Importar JS da pasta /money
+       - ABI do token
+       - Contrato de pagamento
+       - Backend premium
+       - Validação on-chain
+       - Bloqueio definitivo por carteira
+       =============================== */
   </script>
 
 </body>
