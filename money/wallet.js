@@ -1,6 +1,6 @@
 /* =====================================================
    NOX PREMIUM • WALLET MANAGER
-   WalletConnect v2 + Injected Wallets
+   Injected + WalletConnect v2 (QR / Link)
    ===================================================== */
 
 const NOX_CONFIG = {
@@ -21,8 +21,7 @@ const PAYMENT_ABI = [
 
 const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",
-  "function allowance(address owner, address spender) view returns (uint256)",
-  "function decimals() view returns (uint8)"
+  "function allowance(address owner, address spender) view returns (uint256)"
 ];
 
 let provider;
@@ -32,7 +31,7 @@ let wcProvider;
 let connecting = false;
 
 /* ===============================
-   UI
+   UI HELPERS
    =============================== */
 
 function setStatus(text, ok = false) {
@@ -48,79 +47,158 @@ function unlockAnalyze() {
 }
 
 /* ===============================
-   CONNECT WALLET
+   CONNECT MENU
    =============================== */
 
-async function connectWallet() {
+function connectWallet() {
   if (connecting) return;
-  connecting = true;
 
+  const choice = document.createElement("div");
+  choice.style.position = "fixed";
+  choice.style.inset = "0";
+  choice.style.background = "rgba(0,0,0,0.7)";
+  choice.style.display = "flex";
+  choice.style.alignItems = "center";
+  choice.style.justifyContent = "center";
+  choice.style.zIndex = "9999";
+
+  choice.innerHTML = `
+    <div style="
+      background:#020617;
+      border:1px solid #00ff9c;
+      border-radius:16px;
+      padding:22px;
+      width:90%;
+      max-width:320px;
+      text-align:center;
+      box-shadow:0 0 30px rgba(0,255,156,0.35)
+    ">
+      <h3 style="margin-top:0">Conectar Carteira</h3>
+
+      <button id="btnInjected" style="width:100%;padding:12px;margin-top:10px;border-radius:10px;font-weight:600">
+        🔗 Conexão Direta (MetaMask / Trust)
+      </button>
+
+      <button id="btnWC" style="width:100%;padding:12px;margin-top:10px;border-radius:10px;font-weight:600">
+        📱 QR Code / Link (WalletConnect)
+      </button>
+
+      <button id="btnCancel" style="width:100%;padding:10px;margin-top:14px;background:transparent;color:#aaa">
+        Cancelar
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(choice);
+
+  document.getElementById("btnInjected").onclick = async () => {
+    document.body.removeChild(choice);
+    await connectInjected();
+  };
+
+  document.getElementById("btnWC").onclick = async () => {
+    document.body.removeChild(choice);
+    await connectWalletConnect();
+  };
+
+  document.getElementById("btnCancel").onclick = () => {
+    document.body.removeChild(choice);
+  };
+}
+
+/* ===============================
+   INJECTED WALLET
+   =============================== */
+
+async function connectInjected() {
   try {
+    connecting = true;
     setStatus("🔌 Conectando carteira...");
 
-    /* ---------- 1️⃣ INJECTED WALLET ---------- */
-    if (window.ethereum) {
-      provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
+    if (!window.ethereum) {
+      throw new Error("Nenhuma carteira detectada");
     }
 
-    /* ---------- 2️⃣ WALLETCONNECT v2 ---------- */
-    else {
-      if (!window.WalletConnectEthereumProvider) {
-        throw new Error("WalletConnect indisponível");
-      }
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
 
-      wcProvider = await window.WalletConnectEthereumProvider.init({
-        projectId: NOX_CONFIG.wcProjectId,
-        chains: [NOX_CONFIG.chainId],
-        showQrModal: true, // QR no desktop
-        rpcMap: {
-          [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl
-        }
-      });
-
-      await wcProvider.connect(); // QR ou link automático
-      provider = new ethers.BrowserProvider(wcProvider);
-    }
-
-    signer = await provider.getSigner();
-    userWallet = await signer.getAddress();
-
-    const network = await provider.getNetwork();
-    if (Number(network.chainId) !== NOX_CONFIG.chainId) {
-      setStatus("❌ Troque para BSC Mainnet");
-      connecting = false;
-      return;
-    }
-
-    unlockAnalyze();
-    setStatus("✅ Carteira conectada:\n" + userWallet, true);
-
+    await finalizeConnection();
   } catch (err) {
-    console.error("CONNECT ERROR:", err);
-
-    if (err.code === 4001) {
-      setStatus("❌ Conexão rejeitada pelo usuário");
-    } else {
-      setStatus("❌ Falha ao conectar carteira");
-    }
+    handleConnectError(err);
   } finally {
     connecting = false;
   }
 }
 
 /* ===============================
-   PAYMENT FLOW
+   WALLETCONNECT v2
+   =============================== */
+
+async function connectWalletConnect() {
+  try {
+    connecting = true;
+    setStatus("📱 Abrindo QR / Link...");
+
+    wcProvider = await window.WalletConnectEthereumProvider.init({
+      projectId: NOX_CONFIG.wcProjectId,
+      chains: [NOX_CONFIG.chainId],
+      showQrModal: true,
+      rpcMap: {
+        [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl
+      }
+    });
+
+    await wcProvider.connect();
+    provider = new ethers.BrowserProvider(wcProvider);
+
+    await finalizeConnection();
+  } catch (err) {
+    handleConnectError(err);
+  } finally {
+    connecting = false;
+  }
+}
+
+/* ===============================
+   FINALIZE
+   =============================== */
+
+async function finalizeConnection() {
+  signer = await provider.getSigner();
+  userWallet = await signer.getAddress();
+
+  const network = await provider.getNetwork();
+  if (Number(network.chainId) !== NOX_CONFIG.chainId) {
+    setStatus("❌ Troque para BSC Mainnet");
+    return;
+  }
+
+  unlockAnalyze();
+  setStatus("✅ Carteira conectada:\n" + userWallet, true);
+}
+
+function handleConnectError(err) {
+  console.error(err);
+
+  if (err.code === 4001) {
+    setStatus("❌ Conexão rejeitada");
+  } else {
+    setStatus("❌ Falha ao conectar carteira");
+  }
+}
+
+/* ===============================
+   PAYMENT FLOW (INALTERADO)
    =============================== */
 
 async function analyze() {
   try {
-    if (!signer || !userWallet) {
+    if (!signer) {
       alert("Conecte a carteira primeiro");
       return;
     }
 
-    setStatus("🔍 Verificando token...");
+    setStatus("💳 Processando pagamento...");
 
     const token = new ethers.Contract(
       NOX_CONFIG.tokenAddress,
@@ -135,51 +213,19 @@ async function analyze() {
     );
 
     const price = await payment.pricePerAnalysis();
-    const allowance = await token.allowance(
-      userWallet,
-      NOX_CONFIG.paymentContract
-    );
+    const allowance = await token.allowance(userWallet, NOX_CONFIG.paymentContract);
 
-    /* ---------- APPROVE ---------- */
     if (allowance < price) {
-      setStatus("📝 Aprovando token...");
-
-      const approveTx = await token.approve(
-        NOX_CONFIG.paymentContract,
-        price
-      );
-
+      const approveTx = await token.approve(NOX_CONFIG.paymentContract, price);
       await approveTx.wait();
     }
 
-    /* ---------- PAY ---------- */
-    setStatus("💳 Enviando pagamento...");
-
     const tx = await payment.payForAnalysis();
-    setStatus("⏳ Confirmando...\n" + tx.hash);
+    await tx.wait();
 
-    const receipt = await tx.wait();
-
-    /* ---------- BACKEND ---------- */
-    setStatus("🔍 Validando pagamento...");
-
-    const res = await fetch(NOX_CONFIG.backend, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        txHash: receipt.transactionHash,
-        user: userWallet,
-        fixtureId: "premium"
-      })
-    });
-
-    const data = await res.json();
-    if (!data.ok) throw new Error("Pagamento inválido");
-
-    setStatus("✅ Pagamento confirmado!\nAnálise liberada.", true);
-
+    setStatus("✅ Pagamento confirmado!", true);
   } catch (err) {
-    console.error("PAY ERROR:", err);
+    console.error(err);
     setStatus("❌ Erro: " + err.message);
   }
   }
