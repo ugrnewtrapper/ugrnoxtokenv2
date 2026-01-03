@@ -18,57 +18,37 @@ body{
   justify-content:center;
 }
 .card{
-  max-width:420px;
-  width:100%;
-  padding:28px;
-  border-radius:20px;
+  max-width:420px;width:100%;
+  padding:28px;border-radius:20px;
   background:rgba(10,15,30,.9);
   border:1px solid rgba(0,255,156,.25);
   text-align:center;
 }
-h1{margin:10px 0 4px}
-.subtitle{font-size:14px;opacity:.8;margin-bottom:20px}
 button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border-radius:12px;
-  font-weight:600;
-  cursor:pointer;
-  border:none;
+  width:100%;padding:14px;margin-top:12px;
+  border-radius:12px;font-weight:600;cursor:pointer;border:none
 }
-.primary{
-  background:linear-gradient(135deg,#00ff9c,#00c777);
-  color:#000;
-}
-.outline{
-  background:transparent;
-  border:1px solid var(--neon);
-  color:var(--neon);
-}
+.primary{background:linear-gradient(135deg,#00ff9c,#00c777);color:#000}
+.outline{background:transparent;border:1px solid var(--neon);color:var(--neon)}
 .locked{opacity:.4;pointer-events:none}
 #status{
-  margin-top:16px;
-  font-size:13px;
-  white-space:pre-line;
+  margin-top:16px;font-size:13px;white-space:pre-line;
   background:rgba(0,0,0,.45);
-  padding:12px;
-  border-radius:10px;
+  padding:12px;border-radius:10px
+}
+#qr{
+  margin-top:16px;
 }
 </style>
 </head>
 
 <body>
 <div class="card">
-
   <img src="/images/logo.png" width="110">
+  <h2>NOX Premium</h2>
 
-  <h1>NOX Premium</h1>
-  <div class="subtitle">Análises avançadas • BNB Chain</div>
-
-  <!-- BOTÃO MANUAL -->
   <button id="connectBtn" class="primary">
-    🔌 Conectar carteira
+    🔗 Conectar carteira
   </button>
 
   <button id="analyzeBtn" class="outline locked">
@@ -79,9 +59,10 @@ button{
     ⬅ Página inicial
   </button>
 
+  <div id="qr"></div>
   <div id="status">🔒 Carteira não conectada</div>
 </div>
 
-<script type="module" src="/money/walletrv3-final.js"></script>
+<script type="module" src="/money/wallet-wcv2.js"></script>
 </body>
 </html>
