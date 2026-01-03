@@ -163,6 +163,46 @@
     .nav a:hover {
       background: rgba(255,255,255,.25);
     }
+
+    /* =============================
+       ✅ CORREÇÃO — COMPETIÇÕES
+    ============================= */
+
+    .competition {
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .competition h3 {
+      font-size: 15px;
+      cursor: pointer;
+      color: var(--neon);
+      margin: 8px 0;
+    }
+
+    .matches {
+      margin-left: 8px;
+      margin-top: 6px;
+    }
+
+    .match {
+      padding: 6px 8px;
+      margin: 4px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .match:hover {
+      background: rgba(0,255,156,.18);
+    }
+
+    .match.selected {
+      background: rgba(0,255,156,.35);
+      color: #00150c;
+      font-weight: 600;
+    }
   </style>
 </head>
 
@@ -190,13 +230,10 @@
     📅 Carregar Partidas
   </button>
 
-  <!-- container usado pelo statistics.js -->
-  <div id="competitions" class="results">
-    <strong>Competições e Partidas</strong><br><br>
-    <small>Carregue as partidas para selecionar uma.</small>
-  </div>
+  <!-- ✅ container funcional -->
+  <div id="competitions" class="results"></div>
 
-  <!-- mantidos por compatibilidade -->
+  <!-- mantidos intactos por compatibilidade -->
   <label>Competição (Liga • País)</label>
   <select id="leagueSelect">
     <option value="">Selecione a competição</option>
@@ -225,7 +262,6 @@
     Os dados aparecerão após a análise.
   </div>
 
-  <!-- ✅ BOTÃO DE NAVEGAÇÃO RESTAURADO -->
   <div class="nav">
     <a href="index.html">🏠 Página Inicial</a>
   </div>
