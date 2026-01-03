@@ -1,162 +1,91 @@
-/* =====================================================
-   NOX PREMIUM • WALLET MANAGER
-   Injected + WalletConnect v2 (QR / Link)
-   ===================================================== */
-
-const NOX_CONFIG = {
-  chainId: 56,
-  chainHex: "0x38",
-  chainName: "BSC Mainnet",
-  rpcUrl: "https://bsc-dataseed.binance.org/",
-  explorer: "https://bscscan.com",
-  paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
-  tokenAddress: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
-  wcProjectId: "82a100d35a9c24cb871b0fec9f8a9671"
+const CFG={
+chainId:56,
+chainHex:"0x38",
+rpc:"https://bsc-dataseed.binance.org/",
+payment:"0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
+token:"0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+wc:"82a100d35a9c24cb871b0fec9f8a9671"
 };
 
-const PAYMENT_ABI = [
-  "function payForAnalysis() external",
-  "function pricePerAnalysis() view returns (uint256)"
+const PAY_ABI=[
+"function payForAnalysis()",
+"function pricePerAnalysis() view returns(uint256)"
 ];
 
-const ERC20_ABI = [
-  "function approve(address spender, uint256 amount) external returns (bool)",
-  "function allowance(address owner, address spender) view returns (uint256)"
+const ERC20_ABI=[
+"function approve(address,uint256)",
+"function allowance(address,address) view returns(uint256)"
 ];
 
-let provider, signer, userWallet, wcProvider;
-let connecting = false;
+let provider,signer,user,wcProvider;
 
-/* ================= UI ================= */
+function status(t){document.getElementById("status").innerText=t}
+function unlock(){document.getElementById("analyzeBtn").classList.remove("locked")}
 
-function setStatus(text, ok = false) {
-  const el = document.getElementById("status");
-  if (!el) return;
-  el.innerText = text;
-  el.classList.toggle("connected", ok);
+async function switchBSC(p){
+try{
+await p.send("wallet_switchEthereumChain",[{"chainId":CFG.chainHex}]);
+}catch(e){
+if(e.code===4902){
+await p.send("wallet_addEthereumChain",[{
+chainId:CFG.chainHex,
+chainName:"BSC Mainnet",
+rpcUrls:[CFG.rpc],
+nativeCurrency:{name:"BNB",symbol:"BNB",decimals:18}
+}]);
+}else throw e;
+}
 }
 
-function unlockAnalyze() {
-  document.getElementById("analyzeBtn")?.classList.remove("locked");
+async function connectInjected(){
+status("Conectando...");
+provider=new ethers.BrowserProvider(window.ethereum);
+await provider.send("eth_requestAccounts",[]);
+await switchBSC(provider);
+provider=new ethers.BrowserProvider(window.ethereum);
+signer=await provider.getSigner();
+user=await signer.getAddress();
+unlock();
+status("Conectado:\n"+user);
 }
 
-/* ================= NETWORK ================= */
-
-async function ensureBSC() {
-  const net = await provider.getNetwork();
-  if (Number(net.chainId) === NOX_CONFIG.chainId) return;
-
-  try {
-    await provider.send("wallet_switchEthereumChain", [
-      { chainId: NOX_CONFIG.chainHex }
-    ]);
-  } catch (e) {
-    if (e.code === 4902) {
-      await provider.send("wallet_addEthereumChain", [{
-        chainId: NOX_CONFIG.chainHex,
-        chainName: NOX_CONFIG.chainName,
-        rpcUrls: [NOX_CONFIG.rpcUrl],
-        blockExplorerUrls: [NOX_CONFIG.explorer],
-        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 }
-      }]);
-    } else throw e;
-  }
+async function connectWalletConnect(){
+status("Abrindo QR...");
+wcProvider=await WalletConnectEthereumProvider.init({
+projectId:CFG.wc,
+chains:[56],
+showQrModal:true,
+rpcMap:{56:CFG.rpc}
+});
+await wcProvider.connect();
+provider=new ethers.BrowserProvider(wcProvider);
+signer=await provider.getSigner();
+user=await signer.getAddress();
+unlock();
+status("Conectado:\n"+user);
 }
 
-/* ================= INJECTED ================= */
+async function analyze(){
+try{
+status("Processando pagamento...");
+const token=new ethers.Contract(CFG.token,ERC20_ABI,signer);
+const pay=new ethers.Contract(CFG.payment,PAY_ABI,signer);
+const price=await pay.pricePerAnalysis();
+const allow=await token.allowance(user,CFG.payment);
 
-async function connectInjected() {
-  try {
-    connecting = true;
-    setStatus("🔌 Conectando carteira...");
-
-    if (!window.ethereum) throw new Error("Carteira não detectada");
-
-    provider = new ethers.BrowserProvider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    await ensureBSC();
-    await finalize();
-
-  } catch (e) {
-    handleError(e);
-  } finally {
-    connecting = false;
-  }
+if(allow<price){
+const tx=await token.approve(CFG.payment,price);
+await tx.wait();
 }
 
-/* ================= WALLETCONNECT ================= */
-
-async function connectWalletConnect() {
-  try {
-    connecting = true;
-    setStatus("📱 Abrindo QR / Link...");
-
-    wcProvider = await WalletConnectEthereumProvider.init({
-      projectId: NOX_CONFIG.wcProjectId,
-      chains: [NOX_CONFIG.chainId],
-      showQrModal: true,
-      rpcMap: { [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl }
-    });
-
-    await wcProvider.connect();
-    provider = new ethers.BrowserProvider(wcProvider);
-    await finalize();
-
-  } catch (e) {
-    handleError(e);
-  } finally {
-    connecting = false;
-  }
+const tx2=await pay.payForAnalysis();
+await tx2.wait();
+status("Pagamento confirmado");
+}catch(e){
+status("Erro: "+(e.reason||e.message));
+}
 }
 
-/* ================= FINALIZE ================= */
-
-async function finalize() {
-  signer = await provider.getSigner();
-  userWallet = await signer.getAddress();
-  unlockAnalyze();
-  setStatus("✅ Conectado:\n" + userWallet, true);
-}
-
-/* ================= PAYMENT ================= */
-
-async function analyze() {
-  try {
-    if (!signer) return alert("Conecte a carteira");
-
-    setStatus("💳 Processando pagamento...");
-
-    const token = new ethers.Contract(NOX_CONFIG.tokenAddress, ERC20_ABI, signer);
-    const payment = new ethers.Contract(NOX_CONFIG.paymentContract, PAYMENT_ABI, signer);
-
-    const price = await payment.pricePerAnalysis();
-    const allowance = await token.allowance(userWallet, NOX_CONFIG.paymentContract);
-
-    if (allowance < price) {
-      const tx1 = await token.approve(NOX_CONFIG.paymentContract, price);
-      await tx1.wait();
-    }
-
-    const tx2 = await payment.payForAnalysis();
-    await tx2.wait();
-
-    setStatus("✅ Pagamento confirmado!", true);
-
-  } catch (e) {
-    handleError(e);
-  }
-}
-
-/* ================= ERRORS ================= */
-
-function handleError(e) {
-  console.error(e);
-  if (e.code === 4001) setStatus("❌ Ação rejeitada");
-  else setStatus("❌ " + (e.message || "Erro"));
-}
-
-/* ================= GLOBAL ================= */
-
-window.connectInjected = connectInjected;
-window.connectWalletConnect = connectWalletConnect;
-window.analyze = analyze;
+window.connectInjected=connectInjected;
+window.connectWalletConnect=connectWalletConnect;
+window.analyze=analyze;
