@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>NOX Premium • Web3</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🔴 NECESSÁRIO PARA WEB3MODAL / REOWN -->
-<meta http-equiv="Content-Security-Policy"
-content="default-src * data: blob: 'unsafe-inline' 'unsafe-eval'">
+<!-- 🔴 OBRIGATÓRIO: CSS DO REOWN -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@web3modal/ethers@3.5.0/dist/style.css"
+/>
 
 <style>
 :root{--neon:#00ff9c}
@@ -27,40 +28,33 @@ body{
 }
 button{
  width:100%;padding:14px;margin-top:12px;
- border-radius:12px;font-weight:600;
- cursor:pointer;border:none
+ border-radius:12px;font-weight:600;cursor:pointer;border:none
 }
 .primary{background:linear-gradient(135deg,#00ff9c,#00c777);color:#000}
 .outline{background:transparent;border:1px solid var(--neon);color:var(--neon)}
 .locked{opacity:.4;pointer-events:none}
 #status{
- margin-top:16px;font-size:13px;
- white-space:pre-line;
- background:rgba(0,0,0,.45);
- padding:12px;border-radius:10px
+ margin-top:16px;font-size:13px;white-space:pre-line;
+ background:rgba(0,0,0,.45);padding:12px;border-radius:10px
 }
 </style>
 </head>
 
 <body>
 <div class="card">
-  <img src="images/logo.png" width="120" alt="NOX">
+  <img src="images/logo.png" width="120">
 
-  <button id="connectBtn" type="button" class="primary">
+  <button id="connectBtn" class="primary">
     Conectar carteira
   </button>
 
-  <button id="analyzeBtn" type="button" class="outline locked">
+  <button id="analyzeBtn" class="outline locked">
     Analisar • Premium
-  </button>
-
-  <button class="outline" onclick="location.href='/'">
-    ⬅ Página inicial
   </button>
 
   <div id="status">🔒 Carteira não conectada</div>
 </div>
 
-<script type="module" src="money/walletrv5.js"></script>
+<script type="module" src="money/walletv6.js"></script>
 </body>
 </html>
