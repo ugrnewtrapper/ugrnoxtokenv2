@@ -35,10 +35,6 @@ body{
     inset 0 0 0 1px rgba(0,255,156,.18);
 }
 
-/* =============================
-   NAVEGAÇÃO
-============================= */
-
 .nav-back{
   text-align:left;
   margin-bottom:10px;
@@ -49,10 +45,6 @@ body{
   text-decoration:none;
   font-size:13px;
 }
-
-/* =============================
-   HEADER
-============================= */
 
 .logo{
   max-width:110px;
@@ -85,10 +77,6 @@ h1{
   margin-bottom:16px;
 }
 
-/* =============================
-   FORMULÁRIO
-============================= */
-
 .form-group{
   margin-top:14px;
 }
@@ -117,10 +105,6 @@ input[type="date"]{
   -webkit-appearance:none;
 }
 
-/* =============================
-   BOTÕES
-============================= */
-
 button{
   width:100%;
   height:46px;
@@ -136,6 +120,7 @@ button.primary{
   background:linear-gradient(135deg, #00ff9c, #00c777);
   color:#00150c;
   opacity:.45;
+  cursor:not-allowed;
 }
 
 button.secondary{
@@ -144,24 +129,8 @@ button.secondary{
   color:var(--neon);
 }
 
-/* =============================
-   LISTAGEM
-============================= */
-
 .results{
   margin-top:16px;
-  text-align:left;
-}
-
-.competition{
-  margin-bottom:12px;
-}
-
-.competition h3{
-  cursor:pointer;
-  color:var(--neon);
-  margin-bottom:6px;
-  font-size:14px;
 }
 
 .match{
@@ -169,10 +138,6 @@ button.secondary{
   border-radius:9px;
   cursor:pointer;
   font-size:13.5px;
-}
-
-.match:hover{
-  background:rgba(0,255,156,.15);
 }
 
 .match.selected{
@@ -191,10 +156,6 @@ button.secondary{
   text-align:center;
 }
 
-/* =============================
-   MÉTRICAS
-============================= */
-
 .metrics{
   margin-top:20px;
   display:grid;
@@ -212,13 +173,6 @@ button.secondary{
   margin:0 0 6px;
   font-size:13.5px;
   color:var(--neon);
-}
-
-.metric-card p{
-  margin:0;
-  font-size:12.5px;
-  color:#c7fbe7;
-  line-height:1.45;
 }
 </style>
 </head>
@@ -242,7 +196,7 @@ button.secondary{
 
 <div class="form-group">
   <label>API Key • API-Football</label>
-  <input id="apikey" type="text" placeholder="Cole sua API Key">
+  <input id="apikey" type="text">
 </div>
 
 <div class="form-group">
@@ -254,36 +208,17 @@ button.secondary{
 
 <div id="competitions" class="results"></div>
 
-<!-- 🔽 ADIÇÃO NECESSÁRIA (SEM REMOVER NADA) -->
-<button id="payBtn" class="secondary">
-💳 Efetuar Pagamento Premium
-</button>
+<button id="payBtn" class="secondary">💳 Efetuar Pagamento Premium</button>
 
 <div class="status" id="paymentStatus">
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<!-- 🔽 MESMO BOTÃO, APENAS COM ID -->
-<button id="analyzeBtn" class="primary" onclick="analyzeMatch()">🔎 Analisar Partida</button>
+<button id="analyzeBtn" class="primary" onclick="analyzeMatch()" disabled>
+🔎 Analisar Partida
+</button>
 
-<div class="metrics" id="results">
-
-  <div class="metric-card">
-    <h4>👤 Jogadores</h4>
-    <p>Finalizações, cartões e participação direta.</p>
-  </div>
-
-  <div class="metric-card">
-    <h4>🟨 Cartões</h4>
-    <p>Médias por equipe, árbitro e disciplina.</p>
-  </div>
-
-  <div class="metric-card">
-    <h4>🚩 Escanteios</h4>
-    <p>Pressão ofensiva e volume de ataque.</p>
-  </div>
-
-</div>
+<div class="metrics"></div>
 
 </div>
 
@@ -296,8 +231,6 @@ async function loadCompetitions(){
   const dateVal = date.value;
   const box = competitions;
 
-  box.innerHTML = "⏳ Carregando...";
-
   const res = await fetch(BACKEND_LIST,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
@@ -307,30 +240,18 @@ async function loadCompetitions(){
   const data = await res.json();
   let html = "";
 
-  data.competitions.forEach((c,i)=>{
-    html+=`<div class="competition">
-      <h3 onclick="toggleComp(${i},event)">🏆 ${c.league}</h3>
-      <div id="c-${i}">`;
+  data.competitions.forEach(c=>{
     c.matches.forEach(m=>{
-      html+=`<div class="match" data-fixture="${m.fixtureId}"
-        onclick="selectMatch(event,this)">
+      html+=`<div class="match" onclick="selectMatch(this)" data-fixture="${m.fixtureId}">
         ${m.time} ${m.home} x ${m.away}
       </div>`;
     });
-    html+=`</div></div>`;
   });
 
   box.innerHTML = html;
 }
 
-function toggleComp(i,e){
-  e.stopPropagation();
-  const el=document.getElementById("c-"+i);
-  el.style.display = el.style.display==="none" ? "block" : "none";
-}
-
-function selectMatch(e,el){
-  e.stopPropagation();
+function selectMatch(el){
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
@@ -342,102 +263,48 @@ function selectMatch(e,el){
 
 <script>
 /* =============================
-   ATIVAÇÃO AUTOMÁTICA DO BOTÃO
-   APÓS PAGAMENTO CONFIRMADO
-   (SEM DEPENDER DO WALLET)
+   CONTROLE PREMIUM REAL
+   1 PAGAMENTO = 1 ANÁLISE
 ============================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  const statusEl = document.getElementById("paymentStatus");
-  const analyzeBtn = document.getElementById("analyzeBtn");
+(() => {
+  const btn = document.getElementById("analyzeBtn");
+  const status = document.getElementById("paymentStatus");
 
-  if (!statusEl || !analyzeBtn) return;
-
-  const unlock = () => {
-    analyzeBtn.style.opacity = "1";
-    analyzeBtn.style.cursor = "pointer";
-    analyzeBtn.disabled = false;
-  };
+  let credit = 0;
 
   const lock = () => {
-    analyzeBtn.style.opacity = ".45";
-    analyzeBtn.style.cursor = "not-allowed";
-    analyzeBtn.disabled = true;
+    btn.disabled = true;
+    btn.style.opacity = ".45";
+    btn.style.cursor = "not-allowed";
   };
 
-  // estado inicial
+  const unlock = () => {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+  };
+
   lock();
 
-  const observer = new MutationObserver(() => {
-    const text = statusEl.innerText.toLowerCase();
-    if (!text.includes("bloqueado")) {
-      unlock();
+  btn.addEventListener("click", () => {
+    if (credit <= 0) {
+      lock();
+      status.innerText = "🔒 Acesso Premium bloqueado. Efetue o pagamento.";
+      return;
     }
+    credit = 0;
+    lock();
+    status.innerText = "🔒 Análise utilizada. Efetue novo pagamento.";
   });
 
-  observer.observe(statusEl, {
-    childList: true,
-    subtree: true,
-    characterData: true
+  window.addEventListener("nox-payment-ok", () => {
+    credit = 1;
+    unlock();
+    status.innerText = "✅ Pagamento confirmado • 1 análise disponível";
   });
-});
+})();
 </script>
 
-<script>
-/* =============================
-   CONTROLE 1 PAGAMENTO = 1 ANÁLISE
-============================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-  const statusEl = document.getElementById("paymentStatus");
-  const analyzeBtn = document.getElementById("analyzeBtn");
-
-  if (!statusEl || !analyzeBtn) return;
-
-  // crédito premium por sessão
-  let premiumCredits = sessionStorage.getItem("premiumCredits");
-  premiumCredits = premiumCredits ? parseInt(premiumCredits) : 0;
-
-  const updateUI = () => {
-    if (premiumCredits > 0) {
-      analyzeBtn.style.opacity = "1";
-      analyzeBtn.disabled = false;
-      statusEl.innerHTML = `✅ Acesso Premium liberado • ${premiumCredits} análise disponível`;
-    } else {
-      analyzeBtn.style.opacity = ".45";
-      analyzeBtn.disabled = true;
-      statusEl.innerHTML = `🔒 Acesso Premium bloqueado. Efetue o pagamento.`;
-    }
-  };
-
-  updateUI();
-
-  // observa pagamento confirmado
-  const observer = new MutationObserver(() => {
-    const text = statusEl.innerText.toLowerCase();
-    if (text.includes("liberado") || text.includes("confirmado")) {
-      premiumCredits = 1;
-      sessionStorage.setItem("premiumCredits", premiumCredits);
-      updateUI();
-    }
-  });
-
-  observer.observe(statusEl, {
-    childList: true,
-    subtree: true,
-    characterData: true
-  });
-
-  // consome o crédito ao analisar
-  analyzeBtn.addEventListener("click", () => {
-    if (premiumCredits <= 0) return;
-
-    premiumCredits--;
-    sessionStorage.setItem("premiumCredits", premiumCredits);
-    updateUI();
-  });
-});
-</script>  
-  
 </body>
 </html>
