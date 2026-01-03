@@ -1,83 +1,13 @@
 /* =============================
-   BACKENDS
+   BACKEND PREMIUM
 ============================= */
-const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";      // antigo
-const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev"; // novo
+const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev";
 
 let selectedFixture = null;
 
 /* =============================
-   CARREGAR COMPETIÇÕES
-   (BACKEND ANTIGO)
-============================= */
-async function loadCompetitions() {
-  const apiKey = document.getElementById("apikey")?.value
-              || document.getElementById("apiKey")?.value;
-  const date = document.getElementById("date")?.value;
-
-  if (!apiKey || !date) {
-    alert("⚠️ Informe API Key e data");
-    return;
-  }
-
-  const box = document.getElementById("competitions");
-  if (!box) return;
-
-  box.innerHTML = "⏳ Carregando competições...";
-
-  const res = await fetch(BACKEND_LIST, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ apiKey, date })
-  });
-
-  const data = await res.json();
-
-  if (!Array.isArray(data.competitions) || !data.competitions.length) {
-    box.innerHTML = "❌ Nenhuma competição encontrada";
-    return;
-  }
-
-  let html = "";
-
-  data.competitions.forEach((comp, idx) => {
-    html += `
-      <div class="competition">
-        <h3 onclick="toggleComp(${idx}, event)">
-          🏆 ${comp.league} (${comp.country})
-        </h3>
-        <div class="matches" id="comp-${idx}">
-    `;
-
-    comp.matches.forEach(m => {
-      html += `
-        <div class="match"
-             data-fixture="${m.fixtureId}"
-             onclick="selectMatch(event, this)">
-          ⏰ ${m.time} - ${m.home} x ${m.away}
-        </div>
-      `;
-    });
-
-    html += `</div></div>`;
-  });
-
-  box.innerHTML = html;
-}
-
-/* =============================
-   TOGGLE COMPETIÇÃO
-============================= */
-function toggleComp(idx, event) {
-  event.stopPropagation();
-  const el = document.getElementById(`comp-${idx}`);
-  if (!el) return;
-
-  el.style.display = el.style.display === "none" ? "block" : "none";
-}
-
-/* =============================
    SELECIONAR PARTIDA
+   (CHAMADO PELO HTML)
 ============================= */
 function selectMatch(event, el) {
   event.stopPropagation();
@@ -98,17 +28,11 @@ function selectMatch(event, el) {
       <p>${el.innerText}</p>
     `;
   }
-
-  document.querySelectorAll(".matches").forEach(m => {
-    m.style.display = "none";
-  });
-
-  el.parentElement.style.display = "block";
 }
 
 /* =============================
    ANALISAR PARTIDA
-   (BACKEND NOVO / PREMIUM)
+   (PREMIUM)
 ============================= */
 async function analyzeMatch() {
   if (!selectedFixture) {
@@ -177,10 +101,13 @@ async function analyzeMatch() {
 }
 
 /* =============================
-   BINDS
+   BINDS PREMIUM
 ============================= */
-document.getElementById("loadMatchesBtn")
-  ?.addEventListener("click", loadCompetitions);
-
 document.getElementById("analyzeBtn")
   ?.addEventListener("click", analyzeMatch);
+
+/* =============================
+   EXPOSIÇÃO GLOBAL
+============================= */
+window.selectMatch = selectMatch;
+window.analyzeMatch = analyzeMatch;
