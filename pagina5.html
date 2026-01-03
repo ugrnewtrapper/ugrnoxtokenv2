@@ -63,15 +63,23 @@
       border: none;
     }
 
+    .btn-home {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
     .btn-wallet {
       background: linear-gradient(135deg, #00ff9c, #00c777);
       color: #000;
+      box-shadow: 0 0 18px var(--neon-soft);
     }
 
     .btn-analyze {
       background: transparent;
       color: var(--neon);
       border: 1px solid var(--neon);
+      box-shadow: 0 0 14px var(--neon-soft);
     }
 
     .locked {
@@ -85,6 +93,14 @@
       font-size: 13px;
       border-radius: 10px;
       background: rgba(0,0,0,0.35);
+      color: var(--text-soft);
+      word-break: break-all;
+    }
+
+    .status.connected {
+      border: 1px solid var(--neon);
+      color: #fff;
+      box-shadow: 0 0 14px var(--neon-soft);
     }
 
     /* MODAL */
@@ -106,6 +122,12 @@
       width: 90%;
       max-width: 320px;
       text-align: center;
+      box-shadow: 0 0 30px rgba(0,255,156,0.35);
+    }
+
+    .wallet-box button {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -115,7 +137,11 @@
 <div class="container">
   <div class="card">
 
-    <img src="images/logo.png" class="logo">
+    <img src="images/logo.png" class="logo" alt="NOX">
+
+    <button class="btn-home" onclick="location.href='index.html'">
+      🏠 Página Inicial
+    </button>
 
     <button id="openWallet" class="btn-wallet">
       Conectar Carteira
@@ -137,50 +163,37 @@
   <div class="wallet-box">
     <h3>Conectar Carteira</h3>
 
-    <button id="btnInjected">
-      🔗 Conexão Direta (MetaMask / Trust)
-    </button>
-
-    <button id="btnWC">
-      📱 QR Code / Link (WalletConnect)
-    </button>
-
-    <button id="btnCancel">
-      Cancelar
-    </button>
+    <button id="btnInjected">🔗 Conexão Direta (MetaMask / Trust)</button>
+    <button id="btnWC">📱 QR Code / Link (WalletConnect)</button>
+    <button id="btnCancel" style="background:none;color:#aaa">Cancelar</button>
   </div>
 </div>
 
-<!-- LIBS -->
+<!-- LIBS (ORDEM CORRETA) -->
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
-<script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
+<script src="https://unpkg.com/@walletconnect/ethereum-provider@2.12.2/dist/umd/index.min.js"></script>
+
+<!-- WALLET -->
 <script src="money/wallet.js"></script>
 
-<!-- 🔑 BINDING CORRETO -->
+<!-- BINDING -->
 <script>
   const modal = document.getElementById("walletModal");
 
-  document.getElementById("openWallet").onclick = () => {
-    modal.style.display = "flex";
-  };
+  openWallet.onclick = () => modal.style.display = "flex";
+  btnCancel.onclick = () => modal.style.display = "none";
 
-  document.getElementById("btnCancel").onclick = () => {
-    modal.style.display = "none";
-  };
-
-  document.getElementById("btnInjected").onclick = () => {
+  btnInjected.onclick = () => {
     modal.style.display = "none";
     window.connectInjected();
   };
 
-  document.getElementById("btnWC").onclick = () => {
+  btnWC.onclick = () => {
     modal.style.display = "none";
     window.connectWalletConnect();
   };
 
-  document.getElementById("analyzeBtn").onclick = () => {
-    window.analyze();
-  };
+  analyzeBtn.onclick = () => window.analyze();
 </script>
 
 </body>
