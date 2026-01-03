@@ -15,7 +15,7 @@ const NOX_CONFIG = {
   chainHex: "0x38",
   chainName: "BSC Mainnet",
   rpcUrl: "https://bsc-dataseed.binance.org/",
-  paymentContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+  paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
   backend: "https://backendnoxv22.srrimas2017.workers.dev/",
   wcProjectId: "82a100d35a9c24cb871b0fec9f8a9671"
 };
