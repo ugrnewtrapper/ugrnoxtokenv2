@@ -86,7 +86,7 @@ h1{
 }
 
 /* =============================
-   FORMULÁRIO (CORRIGIDO)
+   FORMULÁRIO
 ============================= */
 
 .form-group{
@@ -102,7 +102,7 @@ label{
 
 input{
   width:100%;
-  height:44px;              /* 🔥 NORMALIZA ALTURA */
+  height:44px;
   padding:0 12px;
   border-radius:12px;
   border:1px solid rgba(255,255,255,.08);
@@ -112,7 +112,6 @@ input{
   box-sizing:border-box;
 }
 
-/* corrige o input date no mobile */
 input[type="date"]{
   appearance:none;
   -webkit-appearance:none;
@@ -227,7 +226,6 @@ button.secondary{
 <body>
 <div class="container">
 
-<!-- NAVEGAÇÃO -->
 <div class="nav-back">
   <a href="index.html">← Voltar para início</a>
 </div>
@@ -256,11 +254,17 @@ button.secondary{
 
 <div id="competitions" class="results"></div>
 
+<!-- 🔽 ADIÇÃO NECESSÁRIA (SEM REMOVER NADA) -->
+<button id="payBtn" class="secondary">
+💳 Efetuar Pagamento Premium
+</button>
+
 <div class="status" id="paymentStatus">
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<button class="primary" onclick="analyzeMatch()">🔎 Analisar Partida</button>
+<!-- 🔽 MESMO BOTÃO, APENAS COM ID -->
+<button id="analyzeBtn" class="primary" onclick="analyzeMatch()">🔎 Analisar Partida</button>
 
 <div class="metrics" id="results">
 
