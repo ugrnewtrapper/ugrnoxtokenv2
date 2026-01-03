@@ -98,15 +98,7 @@
       box-sizing: border-box;
     }
 
-    select {
-      cursor: pointer;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--neon);
-      box-shadow: 0 0 0 2px rgba(0,255,156,.15);
-    }
+    select { cursor: pointer; }
 
     button {
       width: 100%;
@@ -122,14 +114,6 @@
     button.primary {
       background: linear-gradient(135deg, #00ff9c, #00c777);
       color: #00150c;
-      box-shadow: 0 12px 28px rgba(0,255,156,.35);
-    }
-
-    button.primary:disabled {
-      background: linear-gradient(135deg, #1f2937, #020617);
-      color: #64748b;
-      cursor: not-allowed;
-      box-shadow: none;
     }
 
     button.secondary {
@@ -140,7 +124,7 @@
 
     .status {
       font-size: 14px;
-      background: rgba(255, 165, 0, .12);
+      background: rgba(255,165,0,.12);
       padding: 16px;
       border-radius: 16px;
       color: #ffd8a8;
@@ -155,24 +139,6 @@
       color: #e2e8f0;
       border: 1px solid rgba(255,255,255,.08);
     }
-
-    .nav {
-      margin-top: 26px;
-    }
-
-    .nav a {
-      display: inline-block;
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,.12);
-      padding: 12px 24px;
-      border-radius: 18px;
-      font-weight: 600;
-    }
-
-    .nav a:hover {
-      background: rgba(255,255,255,.25);
-    }
   </style>
 </head>
 
@@ -180,7 +146,7 @@
 
 <div class="container">
 
-  <img src="images/logo.png" alt="NOX Logo" class="logo">
+  <img src="images/logo.png" class="logo" alt="NOX Logo">
 
   <h1>NOX Premium</h1>
   <div class="version">Página 5 • v1.3</div>
@@ -196,11 +162,17 @@
   <label>Data da análise</label>
   <input id="date" type="date">
 
-  <!-- ✅ BOTÃO ADICIONADO -->
   <button class="secondary" id="loadMatchesBtn">
     📅 Carregar Partidas
   </button>
 
+  <!-- ✅ CORREÇÃO: CONTAINER NECESSÁRIO -->
+  <div id="competitions" class="results">
+    <strong>Competições e Partidas</strong><br><br>
+    <small>Carregue as partidas para selecionar uma.</small>
+  </div>
+
+  <!-- MANTIDOS INTACTOS -->
   <label>Competição (Liga • País)</label>
   <select id="leagueSelect">
     <option value="">Selecione a competição</option>
@@ -226,12 +198,7 @@
 
   <div class="results" id="results">
     <strong>Resultados Premium</strong><br><br>
-    Os dados aparecerão após a análise.<br>
-    <small>(1 pagamento = 1 análise)</small>
-  </div>
-
-  <div class="nav">
-    <a href="index.html">🏠 Página Inicial</a>
+    Os dados aparecerão após a análise.
   </div>
 
 </div>
@@ -240,4 +207,4 @@
 <script type="module" src="statistics/statistics.js"></script>
 
 </body>
-    </html>
+</html>
