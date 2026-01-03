@@ -5,7 +5,7 @@
 <title>NOX Premium • Web3</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- REOWN V3 CSS -->
+<!-- CSS do Reown -->
 <link
   rel="stylesheet"
   href="https://unpkg.com/@web3modal/ethers@3.5.0/dist/style.css"
@@ -62,11 +62,9 @@ button{
   padding:12px;
   border-radius:10px
 }
-
-/* garante visual do botão do Reown */
 w3m-button{
-  margin-top:12px;
   display:block;
+  margin-top:12px;
 }
 </style>
 </head>
@@ -76,7 +74,7 @@ w3m-button{
 
   <img src="images/logo.png" width="120" alt="NOX">
 
-  <!-- BOTÃO OFICIAL DO REOWN -->
+  <!-- BOTÃO REOWN (AGORA APARECE) -->
   <w3m-button></w3m-button>
 
   <button id="analyzeBtn" class="outline locked">
@@ -90,6 +88,13 @@ w3m-button{
   <div id="status">🔒 Carteira não conectada</div>
 </div>
 
+<!-- ⚠️ REGISTRA O WEB COMPONENT -->
+<script
+  type="module"
+  src="https://unpkg.com/@web3modal/ethers@3.5.0/dist/index.js">
+</script>
+
+<!-- SEU SCRIPT -->
 <script type="module" src="money/walletrv3-final.js"></script>
 </body>
 </html>
