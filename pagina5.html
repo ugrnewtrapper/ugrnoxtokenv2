@@ -5,7 +5,7 @@
 <title>NOX Premium • Web3</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🔴 OBRIGATÓRIO: CSS DO REOWN -->
+<!-- REOWN V3 CSS -->
 <link
   rel="stylesheet"
   href="https://unpkg.com/@web3modal/ethers@3.5.0/dist/style.css"
@@ -14,47 +14,82 @@
 <style>
 :root{--neon:#00ff9c}
 body{
- margin:0;font-family:Segoe UI,Arial;
- background:radial-gradient(circle at top,#0f3d2e,#020617 70%);
- color:#fff;min-height:100vh;
- display:flex;align-items:center;justify-content:center;
+  margin:0;
+  font-family:Segoe UI,Arial;
+  background:radial-gradient(circle at top,#0f3d2e,#020617 70%);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .card{
- max-width:420px;width:100%;
- padding:28px;border-radius:20px;
- background:rgba(10,15,30,.85);
- border:1px solid rgba(0,255,156,.25);
- text-align:center;
+  max-width:420px;
+  width:100%;
+  padding:28px;
+  border-radius:20px;
+  background:rgba(10,15,30,.85);
+  border:1px solid rgba(0,255,156,.25);
+  text-align:center;
 }
 button{
- width:100%;padding:14px;margin-top:12px;
- border-radius:12px;font-weight:600;cursor:pointer;border:none
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
 }
-.primary{background:linear-gradient(135deg,#00ff9c,#00c777);color:#000}
-.outline{background:transparent;border:1px solid var(--neon);color:var(--neon)}
-.locked{opacity:.4;pointer-events:none}
+.primary{
+  background:linear-gradient(135deg,#00ff9c,#00c777);
+  color:#000
+}
+.outline{
+  background:transparent;
+  border:1px solid var(--neon);
+  color:var(--neon)
+}
+.locked{
+  opacity:.4;
+  pointer-events:none
+}
 #status{
- margin-top:16px;font-size:13px;white-space:pre-line;
- background:rgba(0,0,0,.45);padding:12px;border-radius:10px
+  margin-top:16px;
+  font-size:13px;
+  white-space:pre-line;
+  background:rgba(0,0,0,.45);
+  padding:12px;
+  border-radius:10px
+}
+
+/* garante visual do botão do Reown */
+w3m-button{
+  margin-top:12px;
+  display:block;
 }
 </style>
 </head>
 
 <body>
 <div class="card">
-  <img src="images/logo.png" width="120">
 
-  <button id="connectBtn" class="primary">
-    Conectar carteira
-  </button>
+  <img src="images/logo.png" width="120" alt="NOX">
+
+  <!-- BOTÃO OFICIAL DO REOWN -->
+  <w3m-button></w3m-button>
 
   <button id="analyzeBtn" class="outline locked">
     Analisar • Premium
   </button>
 
+  <button class="outline" onclick="location.href='/'">
+    ⬅ Página inicial
+  </button>
+
   <div id="status">🔒 Carteira não conectada</div>
 </div>
 
-<script type="module" src="money/walletv6.js"></script>
+<script type="module" src="money/walletrv3-final.js"></script>
 </body>
 </html>
