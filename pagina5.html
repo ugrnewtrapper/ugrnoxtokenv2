@@ -5,12 +5,6 @@
   <title>NOX Premium • Análises Avançadas Web3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ==================================
-       NOX PREMIUM ANALYTICS
-       Página: pagina5.html
-       Versão: 1.0 (FRONT FINAL)
-       ================================== -->
-
   <style>
     :root {
       --neon: #00ff9c;
@@ -47,20 +41,8 @@
       border-radius: 20px;
       padding: 28px 26px 30px;
       text-align: center;
-      position: relative;
       border: 1px solid rgba(0,255,156,0.18);
-      box-shadow:
-        0 0 35px rgba(0,0,0,0.8),
-        0 0 28px var(--neon-soft);
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      box-shadow: inset 0 0 30px rgba(0,255,156,0.08);
-      pointer-events: none;
+      box-shadow: 0 0 35px rgba(0,0,0,0.8), 0 0 28px var(--neon-soft);
     }
 
     .logo {
@@ -68,23 +50,6 @@
       margin: 6px auto 14px;
       display: block;
       filter: drop-shadow(0 0 12px rgba(0,255,156,0.45));
-    }
-
-    h1 {
-      margin: 6px 0 4px;
-      font-size: 22px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-soft);
-      margin-bottom: 14px;
-    }
-
-    .version {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 18px;
     }
 
     button {
@@ -95,72 +60,38 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: 0.25s ease;
       border: none;
-    }
-
-    .btn-home {
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.25);
-    }
-
-    .btn-home:hover {
-      background: rgba(255,255,255,0.08);
     }
 
     .btn-wallet {
       background: linear-gradient(135deg, #00ff9c, #00c777);
       color: #000;
-      box-shadow: 0 0 18px var(--neon-soft);
-    }
-
-    .btn-wallet:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 30px rgba(0,255,156,0.6);
     }
 
     .btn-analyze {
       background: transparent;
       color: var(--neon);
       border: 1px solid var(--neon);
-      box-shadow: 0 0 14px var(--neon-soft);
-    }
-
-    .btn-analyze:hover {
-      background: rgba(0,255,156,0.12);
-      box-shadow: 0 0 32px rgba(0,255,156,0.6);
     }
 
     .locked {
       opacity: 0.45;
       pointer-events: none;
-      filter: grayscale(0.6);
     }
 
     .status {
       margin-top: 18px;
       padding: 12px;
       font-size: 13px;
-      line-height: 1.45;
       border-radius: 10px;
       background: rgba(0,0,0,0.35);
-      color: var(--text-soft);
-      word-break: break-all;
-      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .status.connected {
-      border-color: var(--neon);
-      color: #fff;
-      box-shadow: 0 0 14px var(--neon-soft);
-    }
-
-    /* ===== MODAL ===== */
+    /* MODAL */
     .wallet-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
       display: none;
       align-items: center;
       justify-content: center;
@@ -175,7 +106,6 @@
       width: 90%;
       max-width: 320px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(0,255,156,0.35);
     }
   </style>
 </head>
@@ -185,21 +115,13 @@
 <div class="container">
   <div class="card">
 
-    <img src="images/logo.png" alt="NOX Logo" class="logo">
+    <img src="images/logo.png" class="logo">
 
-    <button class="btn-home" onclick="location.href='index.html'">
-      🏠 Página Inicial
-    </button>
-
-    <h1>NOX Premium Analytics</h1>
-    <div class="subtitle">Análises avançadas via Web3</div>
-    <div class="version">Versão 1.0</div>
-
-    <button class="btn-wallet" onclick="openWalletModal()">
+    <button id="openWallet" class="btn-wallet">
       Conectar Carteira
     </button>
 
-    <button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
+    <button id="analyzeBtn" class="btn-analyze locked">
       Analisar • Premium
     </button>
 
@@ -215,15 +137,15 @@
   <div class="wallet-box">
     <h3>Conectar Carteira</h3>
 
-    <button onclick="connectInjected(); closeWalletModal();">
+    <button id="btnInjected">
       🔗 Conexão Direta (MetaMask / Trust)
     </button>
 
-    <button onclick="connectWalletConnect(); closeWalletModal();">
+    <button id="btnWC">
       📱 QR Code / Link (WalletConnect)
     </button>
 
-    <button class="btn-home" onclick="closeWalletModal()">
+    <button id="btnCancel">
       Cancelar
     </button>
   </div>
@@ -234,15 +156,32 @@
 <script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
 <script src="money/wallet.js"></script>
 
+<!-- 🔑 BINDING CORRETO -->
 <script>
-  function openWalletModal() {
-    document.getElementById("walletModal").style.display = "flex";
-  }
+  const modal = document.getElementById("walletModal");
 
-  function closeWalletModal() {
-    document.getElementById("walletModal").style.display = "none";
-  }
+  document.getElementById("openWallet").onclick = () => {
+    modal.style.display = "flex";
+  };
+
+  document.getElementById("btnCancel").onclick = () => {
+    modal.style.display = "none";
+  };
+
+  document.getElementById("btnInjected").onclick = () => {
+    modal.style.display = "none";
+    window.connectInjected();
+  };
+
+  document.getElementById("btnWC").onclick = () => {
+    modal.style.display = "none";
+    window.connectWalletConnect();
+  };
+
+  document.getElementById("analyzeBtn").onclick = () => {
+    window.analyze();
+  };
 </script>
 
 </body>
-  </html>
+</html>
