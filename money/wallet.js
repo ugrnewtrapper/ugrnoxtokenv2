@@ -17,7 +17,7 @@ const NOX_CONFIG = {
   rpcUrl: "https://bsc-dataseed.binance.org/",
   paymentContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
   backend: "https://backendnoxv22.srrimas2017.workers.dev/",
-  wcProjectId: "SEU_PROJECT_ID_AQUI"
+  wcProjectId: "82a100d35a9c24cb871b0fec9f8a9671"
 };
 
 const NOX_ABI = [
