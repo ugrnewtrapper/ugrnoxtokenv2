@@ -32,7 +32,7 @@
       background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(2,6,23,.95));
       border-radius: 22px;
       padding: 30px;
-      text-align: center; /* CENTRALIZA TUDO */
+      text-align: center;
       box-shadow:
         0 20px 60px rgba(0,0,0,.65),
         inset 0 0 0 1px rgba(0,255,156,.18);
@@ -72,7 +72,6 @@
       margin-top: 16px;
       font-size: 13px;
       color: var(--soft);
-      text-align: center;
     }
 
     input {
@@ -88,11 +87,6 @@
       text-align: center;
     }
 
-    input:focus {
-      border-color: var(--neon);
-      box-shadow: 0 0 0 2px rgba(0,255,156,.15);
-    }
-
     button {
       width: 100%;
       margin-top: 20px;
@@ -102,31 +96,23 @@
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: .25s ease;
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, #00ff9c, #00c777);
-      color: #00150c;
-      box-shadow: 0 10px 25px rgba(0,255,156,.35);
     }
 
     button.primary:disabled {
       background: linear-gradient(135deg, #1f2937, #020617);
       color: #64748b;
       cursor: not-allowed;
-      box-shadow: none;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #00ff9c, #00c777);
+      color: #00150c;
     }
 
     button.secondary {
       background: transparent;
       border: 1px solid rgba(0,255,156,.45);
       color: var(--neon);
-      margin-top: 12px;
-    }
-
-    button.secondary:hover {
-      background: rgba(0,255,156,.08);
     }
 
     .status {
@@ -137,7 +123,6 @@
       border-radius: 14px;
       color: #ffd8a8;
       border: 1px solid rgba(255,165,0,.25);
-      text-align: center;
     }
 
     .results {
@@ -146,84 +131,56 @@
       padding: 18px;
       border-radius: 18px;
       font-size: 14px;
-      line-height: 1.6;
       color: #e2e8f0;
       border: 1px solid rgba(255,255,255,.08);
-      text-align: center;
-    }
-
-    .nav {
-      margin-top: 26px;
-      text-align: center;
-    }
-
-    .nav a {
-      color: #fff;
-      text-decoration: none;
-      background: rgba(255,255,255,.12);
-      padding: 12px 22px;
-      border-radius: 18px;
-      display: inline-block;
-      font-weight: 600;
-    }
-
-    .nav a:hover {
-      background: rgba(255,255,255,.25);
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <img src="images/logo.png" alt="NOX Logo" class="logo">
+  <img src="images/logo.png" alt="NOX Logo" class="logo">
 
-    <h1>NOX Premium</h1>
-    <div class="version">Página 5 • Análises Avançadas</div>
+  <h1>NOX Premium</h1>
+  <div class="version">Página 5 • Análises Avançadas</div>
 
-    <div class="info">
-      🔐 Para maior segurança, utilize esta página diretamente
-      no <strong>navegador da sua carteira</strong>
-      (MetaMask, Trust Wallet, OKX ou Binance).
-    </div>
-
-    <label for="apikey">API Key • API-Football</label>
-    <input id="apikey" type="text" placeholder="Cole sua API Key aqui">
-
-    <label for="date">Data da análise</label>
-    <input id="date" type="date">
-
-    <div class="status" id="paymentStatus">
-      🔒 Acesso Premium bloqueado.  
-      Efetue o pagamento para liberar as análises.
-    </div>
-
-    <button class="primary" id="analyzeBtn" disabled>
-      🔎 Analisar partidas
-    </button>
-
-    <button class="secondary" id="payBtn">
-      💳 Desbloquear acesso Premium
-    </button>
-
-    <div class="results" id="results">
-      <strong>Resultados Premium</strong><br><br>
-      • Moda de cartões<br>
-      • Moda de escanteios<br>
-      • Jogador com mais gols<br>
-      • Jogador com mais assistências<br>
-      • Jogador com mais chutes
-    </div>
-
-    <div class="nav">
-      <a href="index.html">🏠 Página Inicial</a>
-    </div>
-
+  <div class="info">
+    🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.
+    <br><br>
+    💡 <strong>Importante:</strong> cada pagamento libera <u>1 análise</u>.
   </div>
 
-  <script type="module" src="money/walletv12.js"></script>
-  <script type="module" src="statistics/statistics.js"></script>
+  <label>API Key • API-Football</label>
+  <input id="apikey" type="text" placeholder="Cole sua API Key">
+
+  <label>Data da análise</label>
+  <input id="date" type="date">
+
+  <div class="status" id="paymentStatus">
+    🔒 Acesso bloqueado.<br>
+    Cada pagamento libera <strong>1 análise Premium</strong>.
+  </div>
+
+  <button class="primary" id="analyzeBtn" disabled>
+    🔎 Analisar partidas
+  </button>
+
+  <button class="secondary" id="payBtn">
+    💳 Desbloquear 1 análise Premium
+  </button>
+
+  <div class="results" id="results">
+    <strong>Resultados Premium</strong><br><br>
+    Os dados serão exibidos após a análise.<br>
+    <small>(1 pagamento = 1 análise)</small>
+  </div>
+
+</div>
+
+<script type="module" src="money/walletv12.js"></script>
+<script type="module" src="statistics/statistics.js"></script>
 
 </body>
 </html>
