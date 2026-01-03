@@ -21,6 +21,8 @@ async function loadCompetitions() {
   }
 
   const box = document.getElementById("competitions");
+  if (!box) return;
+
   box.innerHTML = "⏳ Carregando competições...";
 
   const res = await fetch(BACKEND_LIST, {
@@ -69,6 +71,8 @@ async function loadCompetitions() {
 function toggleComp(idx, event) {
   event.stopPropagation();
   const el = document.getElementById(`comp-${idx}`);
+  if (!el) return;
+
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
@@ -123,6 +127,8 @@ async function analyzeMatch() {
   const result = document.getElementById("results")
               || document.getElementById("result");
 
+  if (!result) return;
+
   result.innerHTML = "📊 Analisando dados Premium...";
 
   const res = await fetch(BACKEND_ANALYZE, {
@@ -148,17 +154,21 @@ async function analyzeMatch() {
         <strong>${data.players?.topGoals?.player || "—"}
         (${data.players?.topGoals?.value || "—"})</strong>
       </li>
+
       <li>🎯 Assistências:
         <strong>${data.players?.topAssists?.player || "—"}
         (${data.players?.topAssists?.value || "—"})</strong>
       </li>
+
       <li>🥅 Chutes:
         <strong>${data.players?.topShots?.player || "—"}
         (${data.players?.topShots?.value || "—"})</strong>
       </li>
+
       <li>🟨 Moda de cartões:
         <strong>${data.discipline?.cardsMode || "—"}</strong>
       </li>
+
       <li>🚩 Moda de escanteios:
         <strong>${data.discipline?.cornersMode || "—"}</strong>
       </li>
