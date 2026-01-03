@@ -1,3 +1,4 @@
+<script>
 /* =====================================================
    NOX PREMIUM • WALLET MANAGER
    Injected + WalletConnect v2 (QR / Link)
@@ -8,9 +9,9 @@ const NOX_CONFIG = {
   chainHex: "0x38",
   chainName: "BSC Mainnet",
   rpcUrl: "https://bsc-dataseed.binance.org/",
+  explorer: "https://bscscan.com",
   paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
   tokenAddress: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
-  backend: "https://backendnoxv22.srrimas2017.workers.dev/",
   wcProjectId: "82a100d35a9c24cb871b0fec9f8a9671"
 };
 
@@ -31,7 +32,7 @@ let wcProvider;
 let connecting = false;
 
 /* ===============================
-   UI HELPERS
+   UI
    =============================== */
 
 function setStatus(text, ok = false) {
@@ -47,84 +48,89 @@ function unlockAnalyze() {
 }
 
 /* ===============================
-   CONNECT MENU
+   CONNECT MODAL
    =============================== */
 
 function connectWallet() {
   if (connecting) return;
 
-  const choice = document.createElement("div");
-  choice.style.position = "fixed";
-  choice.style.inset = "0";
-  choice.style.background = "rgba(0,0,0,0.7)";
-  choice.style.display = "flex";
-  choice.style.alignItems = "center";
-  choice.style.justifyContent = "center";
-  choice.style.zIndex = "9999";
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.7);
+    display:flex;align-items:center;justify-content:center
+  `;
 
-  choice.innerHTML = `
-    <div style="
-      background:#020617;
-      border:1px solid #00ff9c;
-      border-radius:16px;
-      padding:22px;
-      width:90%;
-      max-width:320px;
-      text-align:center;
-      box-shadow:0 0 30px rgba(0,255,156,0.35)
-    ">
-      <h3 style="margin-top:0">Conectar Carteira</h3>
-
-      <button id="btnInjected" style="width:100%;padding:12px;margin-top:10px;border-radius:10px;font-weight:600">
-        🔗 Conexão Direta (MetaMask / Trust)
-      </button>
-
-      <button id="btnWC" style="width:100%;padding:12px;margin-top:10px;border-radius:10px;font-weight:600">
-        📱 QR Code / Link (WalletConnect)
-      </button>
-
-      <button id="btnCancel" style="width:100%;padding:10px;margin-top:14px;background:transparent;color:#aaa">
-        Cancelar
-      </button>
+  modal.innerHTML = `
+    <div style="background:#020617;border:1px solid #00ff9c;
+      border-radius:16px;padding:22px;width:90%;max-width:320px;text-align:center">
+      <h3>Conectar Carteira</h3>
+      <button id="inj" style="width:100%;padding:12px;margin-top:10px">🔗 MetaMask / Trust</button>
+      <button id="wc" style="width:100%;padding:12px;margin-top:10px">📱 QR / Link</button>
+      <button id="cancel" style="width:100%;margin-top:12px;background:none;color:#aaa">Cancelar</button>
     </div>
   `;
 
-  document.body.appendChild(choice);
+  document.body.appendChild(modal);
 
-  document.getElementById("btnInjected").onclick = async () => {
-    document.body.removeChild(choice);
+  inj.onclick = async () => {
+    modal.remove();
     await connectInjected();
   };
 
-  document.getElementById("btnWC").onclick = async () => {
-    document.body.removeChild(choice);
+  wc.onclick = async () => {
+    modal.remove();
     await connectWalletConnect();
   };
 
-  document.getElementById("btnCancel").onclick = () => {
-    document.body.removeChild(choice);
-  };
+  cancel.onclick = () => modal.remove();
 }
 
 /* ===============================
-   INJECTED WALLET
+   NETWORK
+   =============================== */
+
+async function ensureBSC() {
+  const net = await provider.getNetwork();
+  if (Number(net.chainId) === NOX_CONFIG.chainId) return;
+
+  try {
+    await provider.send("wallet_switchEthereumChain", [
+      { chainId: NOX_CONFIG.chainHex }
+    ]);
+  } catch (err) {
+    if (err.code === 4902) {
+      await provider.send("wallet_addEthereumChain", [{
+        chainId: NOX_CONFIG.chainHex,
+        chainName: NOX_CONFIG.chainName,
+        rpcUrls: [NOX_CONFIG.rpcUrl],
+        blockExplorerUrls: [NOX_CONFIG.explorer],
+        nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 }
+      }]);
+    } else {
+      throw err;
+    }
+  }
+}
+
+/* ===============================
+   INJECTED
    =============================== */
 
 async function connectInjected() {
   try {
     connecting = true;
-    setStatus("🔌 Conectando carteira...");
+    setStatus("🔌 Conectando...");
 
-    if (!window.ethereum) {
-      throw new Error("Nenhuma carteira detectada");
-    }
+    if (!window.ethereum) throw new Error("Carteira não detectada");
 
     provider = new ethers.BrowserProvider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
-
+    await ensureBSC();
     await finalizeConnection();
+
   } catch (err) {
-    handleConnectError(err);
+    handleError(err);
   } finally {
     connecting = false;
   }
@@ -137,23 +143,21 @@ async function connectInjected() {
 async function connectWalletConnect() {
   try {
     connecting = true;
-    setStatus("📱 Abrindo QR / Link...");
+    setStatus("📱 Abrindo WalletConnect...");
 
-    wcProvider = await window.WalletConnectEthereumProvider.init({
+    wcProvider = await WalletConnectEthereumProvider.init({
       projectId: NOX_CONFIG.wcProjectId,
       chains: [NOX_CONFIG.chainId],
       showQrModal: true,
-      rpcMap: {
-        [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl
-      }
+      rpcMap: { [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl }
     });
 
     await wcProvider.connect();
     provider = new ethers.BrowserProvider(wcProvider);
-
     await finalizeConnection();
+
   } catch (err) {
-    handleConnectError(err);
+    handleError(err);
   } finally {
     connecting = false;
   }
@@ -166,37 +170,17 @@ async function connectWalletConnect() {
 async function finalizeConnection() {
   signer = await provider.getSigner();
   userWallet = await signer.getAddress();
-
-  const network = await provider.getNetwork();
-  if (Number(network.chainId) !== NOX_CONFIG.chainId) {
-    setStatus("❌ Troque para BSC Mainnet");
-    return;
-  }
-
   unlockAnalyze();
-  setStatus("✅ Carteira conectada:\n" + userWallet, true);
-}
-
-function handleConnectError(err) {
-  console.error(err);
-
-  if (err.code === 4001) {
-    setStatus("❌ Conexão rejeitada");
-  } else {
-    setStatus("❌ Falha ao conectar carteira");
-  }
+  setStatus("✅ Conectado:\n" + userWallet, true);
 }
 
 /* ===============================
-   PAYMENT FLOW (INALTERADO)
+   PAYMENT
    =============================== */
 
 async function analyze() {
   try {
-    if (!signer) {
-      alert("Conecte a carteira primeiro");
-      return;
-    }
+    if (!signer) return alert("Conecte a carteira");
 
     setStatus("💳 Processando pagamento...");
 
@@ -216,16 +200,40 @@ async function analyze() {
     const allowance = await token.allowance(userWallet, NOX_CONFIG.paymentContract);
 
     if (allowance < price) {
-      const approveTx = await token.approve(NOX_CONFIG.paymentContract, price);
-      await approveTx.wait();
+      const tx1 = await token.approve(NOX_CONFIG.paymentContract, price);
+      await tx1.wait();
     }
 
-    const tx = await payment.payForAnalysis();
-    await tx.wait();
+    const tx2 = await payment.payForAnalysis();
+    await tx2.wait();
 
-    setStatus("✅ Pagamento confirmado!", true);
+    setStatus("✅ Pagamento confirmado", true);
+
   } catch (err) {
-    console.error(err);
-    setStatus("❌ Erro: " + err.message);
+    handleError(err);
   }
+}
+
+/* ===============================
+   ERRORS
+   =============================== */
+
+function handleError(err) {
+  console.error(err);
+  if (err.code === 4001) {
+    setStatus("❌ Ação rejeitada");
+  } else {
+    setStatus("❌ " + (err.message || "Erro desconhecido"));
   }
+}
+
+/* ===============================
+   🔓 EXPOSIÇÃO GLOBAL (CRÍTICO)
+   =============================== */
+
+window.connectWallet = connectWallet;
+window.connectInjected = connectInjected;
+window.connectWalletConnect = connectWalletConnect;
+window.analyze = analyze;
+
+</script>
