@@ -20,9 +20,7 @@
       --text-soft: rgba(255,255,255,0.75);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -37,11 +35,7 @@
       justify-content: center;
     }
 
-    .container {
-      width: 100%;
-      max-width: 430px;
-      padding: 20px;
-    }
+    .container { width: 100%; max-width: 430px; padding: 20px; }
 
     .card {
       background: var(--bg-card);
@@ -51,9 +45,7 @@
       text-align: center;
       position: relative;
       border: 1px solid rgba(0,255,156,0.18);
-      box-shadow:
-        0 0 35px rgba(0,0,0,0.8),
-        0 0 28px var(--neon-soft);
+      box-shadow: 0 0 35px rgba(0,0,0,0.8), 0 0 28px var(--neon-soft);
     }
 
     .card::after {
@@ -72,23 +64,9 @@
       filter: drop-shadow(0 0 12px rgba(0,255,156,0.45));
     }
 
-    h1 {
-      margin: 6px 0 4px;
-      font-size: 22px;
-      letter-spacing: 0.4px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-soft);
-      margin-bottom: 14px;
-    }
-
-    .version {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 18px;
-    }
+    h1 { margin: 6px 0 4px; font-size: 22px; }
+    .subtitle { font-size: 14px; color: var(--text-soft); margin-bottom: 14px; }
+    .version { font-size: 12px; color: var(--text-soft); margin-bottom: 18px; }
 
     button {
       width: 100%;
@@ -108,19 +86,10 @@
       border: 1px solid rgba(255,255,255,0.25);
     }
 
-    .btn-home:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
     .btn-wallet {
       background: linear-gradient(135deg, #00ff9c, #00c777);
       color: #000;
       box-shadow: 0 0 18px var(--neon-soft);
-    }
-
-    .btn-wallet:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 30px rgba(0,255,156,0.6);
     }
 
     .btn-analyze {
@@ -128,11 +97,6 @@
       color: var(--neon);
       border: 1px solid var(--neon);
       box-shadow: 0 0 14px var(--neon-soft);
-    }
-
-    .btn-analyze:hover {
-      background: rgba(0,255,156,0.12);
-      box-shadow: 0 0 32px rgba(0,255,156,0.6);
     }
 
     .locked {
@@ -145,12 +109,11 @@
       margin-top: 18px;
       padding: 12px;
       font-size: 13px;
-      line-height: 1.45;
       border-radius: 10px;
       background: rgba(0,0,0,0.35);
       color: var(--text-soft);
-      word-break: break-all;
       border: 1px solid rgba(255,255,255,0.08);
+      word-break: break-all;
     }
 
     .status.connected {
@@ -162,115 +125,132 @@
 </head>
 
 <body>
+<div class="container">
+<div class="card">
 
-  <div class="container">
-    <div class="card">
+<img src="images/logo.png" alt="NOX Logo" class="logo">
 
-      <!-- Logo -->
-      <img src="images/logo.png" alt="NOX Logo" class="logo">
+<button class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
 
-      <!-- Navegação -->
-      <button class="btn-home" onclick="location.href='index.html'">
-        🏠 Página Inicial
-      </button>
+<h1>NOX Premium Analytics</h1>
+<div class="subtitle">Análises avançadas via Web3</div>
+<div class="version">Versão 1.0</div>
 
-      <!-- Título -->
-      <h1>NOX Premium Analytics</h1>
-      <div class="subtitle">Análises avançadas via Web3</div>
-      <div class="version">Versão 1.0</div>
+<button class="btn-wallet" onclick="connectWallet()">
+  Conectar Carteira (MetaMask / TrustWallet)
+</button>
 
-      <!-- Wallet -->
-      <button class="btn-wallet" onclick="connectWallet()">
-        Conectar Carteira (MetaMask / TrustWallet)
-      </button>
+<button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
+  Analisar • Premium
+</button>
 
-      <!-- Ação -->
-      <button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
-        Analisar • 10 Tokens
-      </button>
+<div id="status" class="status">
+  Carteira não conectada
+</div>
 
-      <!-- Status -->
-      <div id="status" class="status">
-        Carteira não conectada
-      </div>
+</div>
+</div>
 
-    </div>
-  </div>
+<!-- ETHERS -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
 
-  <script>
-    /* ===============================
-       CONFIGURAÇÃO GLOBAL (PRODUÇÃO)
-       =============================== */
+<script>
+/* ===============================
+   CONFIGURAÇÃO REAL
+   =============================== */
 
-    const CONFIG = {
-      network: 'BSC',
-      tokenAddress: '0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8',
-      costPerAnalysis: 10,
-      maxAnalysisPerWallet: 1
-    };
+const CONFIG = {
+  chainId: 56,
+  paymentContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+  backend: "https://backendnoxv22.srrimas2017.workers.dev/"
+};
 
-    let userWallet = null;
+const ABI = [
+  "function payForAnalysis() external",
+  "event AnalysisPaid(address indexed user, uint256 amount)"
+];
 
-    /* ===============================
-       CONEXÃO DE CARTEIRA
-       =============================== */
+let provider, signer, userWallet;
 
-    async function connectWallet() {
-      if (typeof window.ethereum === 'undefined') {
-        alert('Carteira não encontrada. Use MetaMask ou TrustWallet.');
-        return;
-      }
+/* ===============================
+   WALLET
+   =============================== */
 
-      try {
-        const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts'
-        });
+async function connectWallet() {
+  if (!window.ethereum) {
+    alert("Instale MetaMask ou TrustWallet");
+    return;
+  }
 
-        userWallet = accounts[0];
+  provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  signer = await provider.getSigner();
+  userWallet = await signer.getAddress();
 
-        const status = document.getElementById('status');
-        status.classList.add('connected');
-        status.innerText =
-          'Carteira conectada:\n' + userWallet;
+  const network = await provider.getNetwork();
+  if (Number(network.chainId) !== CONFIG.chainId) {
+    alert("Conecte-se à BSC Mainnet");
+    return;
+  }
 
-        document
-          .getElementById('analyzeBtn')
-          .classList.remove('locked');
+  document.getElementById("analyzeBtn").classList.remove("locked");
+  setStatus("Carteira conectada:\n" + userWallet, true);
+}
 
-      } catch (error) {
-        console.error(error);
-        alert('Erro ao conectar carteira.');
-      }
-    }
+/* ===============================
+   STATUS
+   =============================== */
 
-    /* ===============================
-       AÇÃO PRINCIPAL (FUTURO)
-       =============================== */
+function setStatus(text, ok = false) {
+  const el = document.getElementById("status");
+  el.innerText = text;
+  el.classList.toggle("connected", ok);
+}
 
-    function analyze() {
-      alert(
-        'Fluxo de produção:\n\n' +
-        '✔ Verificar rede (BSC)\n' +
-        '✔ Verificar saldo do token\n' +
-        '✔ Solicitar approve\n' +
-        '✔ Transferir 10 tokens\n' +
-        '✔ Registrar pagamento\n' +
-        '✔ Liberar 1 análise\n\n' +
-        'Aguardando integração da pasta /money.'
-      );
-    }
+/* ===============================
+   PAGAMENTO + BACKEND
+   =============================== */
 
-    /* ===============================
-       EXTENSÕES FUTURAS
-       ===============================
-       - Importar JS da pasta /money
-       - ABI do token
-       - Contrato de pagamento
-       - Backend premium
-       - Validação on-chain
-       - Bloqueio definitivo por carteira
-       =============================== */
-  </script>
+async function analyze() {
+  try {
+    setStatus("🟡 Enviando transação...");
+
+    const contract = new ethers.Contract(
+      CONFIG.paymentContract,
+      ABI,
+      signer
+    );
+
+    const tx = await contract.payForAnalysis();
+    setStatus("⏳ Aguardando confirmação...\n" + tx.hash);
+
+    const receipt = await tx.wait();
+
+    setStatus("🔍 Validando pagamento...");
+
+    const res = await fetch(CONFIG.backend, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        txHash: receipt.transactionHash,
+        user: userWallet,
+        fixtureId: "premium"
+      })
+    });
+
+    const data = await res.json();
+    if (!data.ok) throw new Error("Pagamento não validado");
+
+    setStatus("✅ Pagamento confirmado!\nAnálise liberada.", true);
+
+    // 👉 AQUI entra sua análise premium real
+
+  } catch (err) {
+    console.error(err);
+    setStatus("❌ Erro: " + err.message);
+  }
+}
+</script>
 
 </body>
 </html>
