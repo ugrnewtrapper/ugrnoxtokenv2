@@ -31,12 +31,6 @@ button{
  margin-top:16px;font-size:13px;white-space:pre-line;
  background:rgba(0,0,0,.45);padding:12px;border-radius:10px
 }
-
-/* ajusta o botão do reown ao seu layout */
-w3m-button{
- display:block;
- margin-top:14px;
-}
 </style>
 </head>
 
@@ -45,8 +39,10 @@ w3m-button{
 
   <img src="images/logo.png" width="120">
 
-  <!-- 🔑 BOTÃO REAL DE CONEXÃO -->
-  <w3m-button></w3m-button>
+  <!-- BOTÃO REAL -->
+  <button id="connectBtn" class="primary">
+    Conectar carteira
+  </button>
 
   <button id="analyzeBtn" class="outline locked">
     Analisar • Premium
@@ -60,6 +56,6 @@ w3m-button{
 
 </div>
 
-<script type="module" src="/money/walletrv3-final.js"></script>
+<script type="module" src="/money/walletrv4-final.js"></script>
 </body>
 </html>
