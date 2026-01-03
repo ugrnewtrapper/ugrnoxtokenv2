@@ -116,6 +116,12 @@
       color: #00150c;
     }
 
+    button.primary:disabled {
+      background: linear-gradient(135deg, #1f2937, #020617);
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
     button.secondary {
       background: transparent;
       border: 1px solid rgba(0,255,156,.5);
@@ -166,13 +172,13 @@
     📅 Carregar Partidas
   </button>
 
-  <!-- ✅ CORREÇÃO: CONTAINER NECESSÁRIO -->
+  <!-- ✅ CORREÇÃO CRÍTICA: container usado pelo statistics.js -->
   <div id="competitions" class="results">
     <strong>Competições e Partidas</strong><br><br>
     <small>Carregue as partidas para selecionar uma.</small>
   </div>
 
-  <!-- MANTIDOS INTACTOS -->
+  <!-- 🔒 Mantidos para compatibilidade (não quebram nada) -->
   <label>Competição (Liga • País)</label>
   <select id="leagueSelect">
     <option value="">Selecione a competição</option>
@@ -188,6 +194,7 @@
     Efetue o pagamento para liberar <strong>1 análise</strong>.
   </div>
 
+  <!-- 🔐 COMEÇA BLOQUEADO (liberação só via JS) -->
   <button class="primary" id="analyzeBtn" disabled>
     🔎 Analisar partidas
   </button>
