@@ -35,16 +35,8 @@ body{
     inset 0 0 0 1px rgba(0,255,156,.18);
 }
 
-.nav-back{
-  text-align:left;
-  margin-bottom:10px;
-}
-
-.nav-back a{
-  color:var(--neon);
-  text-decoration:none;
-  font-size:13px;
-}
+.nav-back{margin-bottom:10px}
+.nav-back a{color:var(--neon);font-size:13px;text-decoration:none}
 
 .logo{
   max-width:110px;
@@ -53,56 +45,29 @@ body{
   filter:drop-shadow(0 0 10px rgba(0,255,156,.35));
 }
 
-h1{
-  margin:4px 0 2px;
-  font-size:22px;
-  text-align:center;
-}
-
-.version{
-  font-size:12px;
-  color:var(--soft);
-  text-align:center;
-  margin-bottom:16px;
-}
+h1{text-align:center;font-size:22px;margin:4px 0}
+.version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:16px}
 
 .info{
   font-size:13.5px;
   background:rgba(0,255,156,.08);
   padding:14px;
   border-radius:14px;
-  line-height:1.55;
   border:1px solid rgba(0,255,156,.25);
-  color:#c7fbe7;
   margin-bottom:16px;
 }
 
-.form-group{
-  margin-top:14px;
-}
-
-label{
-  display:block;
-  font-size:13px;
-  color:var(--soft);
-  margin-bottom:6px;
-}
+.form-group{margin-top:14px}
+label{font-size:13px;color:var(--soft);display:block;margin-bottom:6px}
 
 input{
   width:100%;
   height:44px;
   padding:0 12px;
   border-radius:12px;
-  border:1px solid rgba(255,255,255,.08);
   background:rgba(2,6,23,.9);
   color:#fff;
-  font-size:14px;
-  box-sizing:border-box;
-}
-
-input[type="date"]{
-  appearance:none;
-  -webkit-appearance:none;
+  border:1px solid rgba(255,255,255,.08);
 }
 
 button{
@@ -110,15 +75,12 @@ button{
   height:46px;
   border-radius:16px;
   border:none;
-  font-size:15px;
   font-weight:700;
-  cursor:pointer;
   margin-top:12px;
 }
 
 button.primary{
-  background:linear-gradient(135deg, #00ff9c, #00c777);
-  color:#00150c;
+  background:linear-gradient(135deg,#00ff9c,#00c777);
   opacity:.45;
   cursor:not-allowed;
 }
@@ -129,8 +91,16 @@ button.secondary{
   color:var(--neon);
 }
 
-.results{
-  margin-top:16px;
+.results{margin-top:16px}
+
+.competition{
+  margin-bottom:12px;
+}
+
+.competition h3{
+  color:var(--neon);
+  font-size:14px;
+  margin-bottom:6px;
 }
 
 .match{
@@ -149,30 +119,10 @@ button.secondary{
   margin-top:16px;
   background:rgba(255,0,0,.08);
   border:1px solid rgba(255,0,0,.35);
-  color:#ffb4b4;
   padding:12px;
   border-radius:12px;
   font-size:13px;
   text-align:center;
-}
-
-.metrics{
-  margin-top:20px;
-  display:grid;
-  gap:10px;
-}
-
-.metric-card{
-  background:rgba(0,255,156,.06);
-  border:1px solid rgba(0,255,156,.25);
-  border-radius:14px;
-  padding:12px;
-}
-
-.metric-card h4{
-  margin:0 0 6px;
-  font-size:13.5px;
-  color:var(--neon);
 }
 </style>
 </head>
@@ -190,17 +140,17 @@ button.secondary{
 <div class="version">Página 5 • v1.3</div>
 
 <div class="info">
-🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br>
+🔐 Use no navegador da sua carteira.<br>
 💡 Cada pagamento libera <strong>1 análise Premium</strong>.
 </div>
 
 <div class="form-group">
-  <label>API Key • API-Football</label>
-  <input id="apikey" type="text">
+  <label>API Key</label>
+  <input id="apikey">
 </div>
 
 <div class="form-group">
-  <label>Data da análise</label>
+  <label>Data</label>
   <input id="date" type="date">
 </div>
 
@@ -218,43 +168,39 @@ button.secondary{
 🔎 Analisar Partida
 </button>
 
-<div class="metrics"></div>
-
 </div>
 
 <script>
-const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
-let selectedFixture = null;
+const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
+let selectedFixture=null;
 
 async function loadCompetitions(){
-  const apiKey = apikey.value;
-  const dateVal = date.value;
-  const box = competitions;
-
-  const res = await fetch(BACKEND_LIST,{
+  const res=await fetch(BACKEND_LIST,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ apiKey, date:dateVal })
+    body:JSON.stringify({ apiKey:apikey.value, date:date.value })
   });
 
-  const data = await res.json();
-  let html = "";
+  const data=await res.json();
+  let html="";
 
   data.competitions.forEach(c=>{
+    html+=`<div class="competition"><h3>🏆 ${c.league}</h3>`;
     c.matches.forEach(m=>{
       html+=`<div class="match" onclick="selectMatch(this)" data-fixture="${m.fixtureId}">
         ${m.time} ${m.home} x ${m.away}
       </div>`;
     });
+    html+="</div>";
   });
 
-  box.innerHTML = html;
+  competitions.innerHTML=html;
 }
 
 function selectMatch(el){
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
   el.classList.add("selected");
-  selectedFixture = el.dataset.fixture;
+  selectedFixture=el.dataset.fixture;
 }
 </script>
 
@@ -262,46 +208,33 @@ function selectMatch(el){
 <script src="statistics/statistics.js"></script>
 
 <script>
-/* =============================
-   CONTROLE PREMIUM REAL
-   1 PAGAMENTO = 1 ANÁLISE
-============================= */
-
 (() => {
-  const btn = document.getElementById("analyzeBtn");
-  const status = document.getElementById("paymentStatus");
+  const btn=document.getElementById("analyzeBtn");
+  const status=document.getElementById("paymentStatus");
+  let credit=0;
 
-  let credit = 0;
-
-  const lock = () => {
-    btn.disabled = true;
-    btn.style.opacity = ".45";
-    btn.style.cursor = "not-allowed";
-  };
-
-  const unlock = () => {
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.cursor = "pointer";
-  };
+  const lock=()=>{btn.disabled=true;btn.style.opacity=".45"};
+  const unlock=()=>{btn.disabled=false;btn.style.opacity="1"};
 
   lock();
 
-  btn.addEventListener("click", () => {
-    if (credit <= 0) {
-      lock();
-      status.innerText = "🔒 Acesso Premium bloqueado. Efetue o pagamento.";
-      return;
-    }
-    credit = 0;
-    lock();
-    status.innerText = "🔒 Análise utilizada. Efetue novo pagamento.";
+  // 🔑 caso pagamento já tenha ocorrido
+  if(status.innerText.toLowerCase().includes("confirmado")){
+    credit=1;
+    unlock();
+  }
+
+  window.addEventListener("nox-payment-ok",()=>{
+    credit=1;
+    unlock();
+    status.innerText="✅ Pagamento confirmado • 1 análise disponível";
   });
 
-  window.addEventListener("nox-payment-ok", () => {
-    credit = 1;
-    unlock();
-    status.innerText = "✅ Pagamento confirmado • 1 análise disponível";
+  btn.addEventListener("click",()=>{
+    if(credit<=0) return;
+    credit=0;
+    lock();
+    status.innerText="🔒 Análise utilizada. Efetue novo pagamento.";
   });
 })();
 </script>
