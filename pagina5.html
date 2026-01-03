@@ -1,117 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>NOX Premium • Web3</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>NOX Premium • Web3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Web3Modal / Reown V3 (OBRIGATÓRIO PARA w3m-button) -->
-  <script type="module">
-    import "https://unpkg.com/@web3modal/ethers@3.5.0/dist/index.js";
-  </script>
-
-  <style>
-    :root {
-      --neon: #00ff9c;
-      --bg: #020617;
-      --card: rgba(10,15,30,.9);
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #0f3d2e, var(--bg) 70%);
-      font-family: Segoe UI, Arial, sans-serif;
-      color: #fff;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 420px;
-      padding: 28px;
-      border-radius: 20px;
-      background: var(--card);
-      border: 1px solid rgba(0,255,156,.25);
-      text-align: center;
-    }
-
-    h1 {
-      margin: 10px 0 4px;
-      font-size: 22px;
-    }
-
-    p.subtitle {
-      font-size: 14px;
-      opacity: .85;
-      margin-bottom: 20px;
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-    }
-
-    .outline {
-      background: transparent;
-      border: 1px solid var(--neon);
-      color: var(--neon);
-    }
-
-    .locked {
-      opacity: .4;
-      pointer-events: none;
-    }
-
-    #status {
-      margin-top: 16px;
-      font-size: 13px;
-      white-space: pre-line;
-      background: rgba(0,0,0,.45);
-      padding: 12px;
-      border-radius: 10px;
-    }
-  </style>
+<style>
+:root{--neon:#00ff9c}
+body{
+  margin:0;
+  font-family:Segoe UI,Arial;
+  background:radial-gradient(circle at top,#0f3d2e,#020617 70%);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card{
+  max-width:420px;
+  width:100%;
+  padding:28px;
+  border-radius:20px;
+  background:rgba(10,15,30,.9);
+  border:1px solid rgba(0,255,156,.25);
+  text-align:center;
+}
+h1{margin:10px 0 4px}
+.subtitle{font-size:14px;opacity:.8;margin-bottom:20px}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+}
+.primary{
+  background:linear-gradient(135deg,#00ff9c,#00c777);
+  color:#000;
+}
+.outline{
+  background:transparent;
+  border:1px solid var(--neon);
+  color:var(--neon);
+}
+.locked{opacity:.4;pointer-events:none}
+#status{
+  margin-top:16px;
+  font-size:13px;
+  white-space:pre-line;
+  background:rgba(0,0,0,.45);
+  padding:12px;
+  border-radius:10px;
+}
+</style>
 </head>
 
 <body>
+<div class="card">
 
-  <div class="card">
-    <img src="/images/logo.png" width="110" alt="NOX Logo" />
+  <img src="/images/logo.png" width="110">
 
-    <h1>NOX Premium</h1>
-    <p class="subtitle">Análises avançadas • Web3 • BNB Chain</p>
+  <h1>NOX Premium</h1>
+  <div class="subtitle">Análises avançadas • BNB Chain</div>
 
-    <!-- BOTÃO OFICIAL REOWN -->
-    <div class="actions">
-      <w3m-button></w3m-button>
+  <!-- BOTÃO MANUAL -->
+  <button id="connectBtn" class="primary">
+    🔌 Conectar carteira
+  </button>
 
-      <button id="analyzeBtn" class="outline locked">
-        🔓 Analisar • Premium
-      </button>
+  <button id="analyzeBtn" class="outline locked">
+    🔓 Analisar • Premium
+  </button>
 
-      <button class="outline" onclick="location.href='/'">
-        ⬅ Página inicial
-      </button>
-    </div>
+  <button class="outline" onclick="location.href='/'">
+    ⬅ Página inicial
+  </button>
 
-    <div id="status">🔒 Carteira não conectada</div>
-  </div>
+  <div id="status">🔒 Carteira não conectada</div>
+</div>
 
-  <!-- SCRIPT FINAL -->
-  <script type="module" src="/money/walletrv3-final.js"></script>
-
+<script type="module" src="/money/walletrv3-final.js"></script>
 </body>
 </html>
