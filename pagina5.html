@@ -74,7 +74,6 @@
       color: #c7fbe7;
     }
 
-    /* 🔧 CORREÇÃO AQUI */
     label {
       display: block;
       margin-top: 18px;
@@ -83,11 +82,11 @@
       text-align: center;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
-      max-width: 100%;
       padding: 14px;
-      margin: 6px auto 0; /* CENTRALIZA */
+      margin: 6px auto 0;
       display: block;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.08);
@@ -99,7 +98,12 @@
       box-sizing: border-box;
     }
 
-    input:focus {
+    select {
+      cursor: pointer;
+    }
+
+    input:focus,
+    select:focus {
       border-color: var(--neon);
       box-shadow: 0 0 0 2px rgba(0,255,156,.15);
     }
@@ -179,7 +183,7 @@
   <img src="images/logo.png" alt="NOX Logo" class="logo">
 
   <h1>NOX Premium</h1>
-  <div class="version">Página 5 • v1.2</div>
+  <div class="version">Página 5 • v1.3</div>
 
   <div class="info">
     🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br><br>
@@ -191,6 +195,18 @@
 
   <label>Data da análise</label>
   <input id="date" type="date">
+
+  <!-- ✅ NOVO: SELEÇÃO DE COMPETIÇÃO -->
+  <label>Competição (Liga • País)</label>
+  <select id="leagueSelect">
+    <option value="">Selecione a competição</option>
+  </select>
+
+  <!-- ✅ NOVO: SELEÇÃO DE PARTIDA -->
+  <label>Partida (Horário • Confronto)</label>
+  <select id="fixtureSelect">
+    <option value="">Selecione a partida</option>
+  </select>
 
   <div class="status" id="paymentStatus">
     🔒 Acesso bloqueado.<br>
@@ -221,4 +237,4 @@
 <script type="module" src="statistics/statistics.js"></script>
 
 </body>
-</html>
+      </html>
