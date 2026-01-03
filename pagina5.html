@@ -8,7 +8,6 @@
   <style>
     :root{
       --neon:#00ff9c;
-      --dark:#020617;
       --soft:#94a3b8;
     }
 
@@ -41,37 +40,21 @@
       max-width: 120px;
       margin: 0 auto 16px;
       display: block;
-      filter: drop-shadow(0 0 12px rgba(0,255,156,.35));
     }
 
-    h1 {
-      margin: 6px 0 4px;
-      font-size: 24px;
-      letter-spacing: .5px;
-    }
+    h1 { margin: 6px 0 4px; font-size: 24px; }
+    .version { font-size: 12px; color: var(--soft); margin-bottom: 24px; }
 
-    .version {
-      font-size: 12px;
-      color: var(--soft);
-      margin-bottom: 24px;
-    }
-
-    .info,
-    .status,
-    .results {
-      width: 100%;
-      box-sizing: border-box;
+    .info, .status, .results {
       margin-bottom: 22px;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 14px;
     }
 
     .info {
-      font-size: 14px;
       background: rgba(0,255,156,.08);
-      padding: 16px;
-      border-radius: 16px;
-      line-height: 1.6;
       border: 1px solid rgba(0,255,156,.25);
-      color: #c7fbe7;
     }
 
     label {
@@ -79,13 +62,12 @@
       margin-top: 18px;
       font-size: 13px;
       color: var(--soft);
-      text-align: center;
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 14px;
-      margin: 6px auto 0;
+      margin-top: 6px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.08);
       background: rgba(2,6,23,.9);
@@ -116,19 +98,42 @@
       color: var(--neon);
     }
 
-    .competition { text-align: left; margin-bottom: 12px; }
-    .competition h3 { cursor: pointer; color: var(--neon); }
+    .results {
+      background: rgba(2,6,23,.85);
+      border: 1px solid rgba(255,255,255,.08);
+      text-align: left;
+    }
+
+    .competition { margin-bottom: 12px; }
+    .competition h3 {
+      cursor: pointer;
+      color: var(--neon);
+      font-size: 15px;
+      margin: 8px 0;
+    }
+
     .matches { margin-left: 8px; }
-    .match { padding: 6px; cursor: pointer; }
+    .match {
+      padding: 6px 8px;
+      margin: 4px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255,255,255,.06);
+    }
+
     .match:hover { background: rgba(0,255,156,.18); }
-    .match.selected { background: rgba(0,255,156,.35); color: #00150c; }
+    .match.selected {
+      background: rgba(0,255,156,.35);
+      color: #00150c;
+      font-weight: 600;
+    }
   </style>
 </head>
 
 <body>
 <div class="container">
 
-  <img src="images/logo.png" class="logo">
+  <img src="images/logo.png" class="logo" alt="NOX Logo">
 
   <h1>NOX Premium</h1>
   <div class="version">Página 5 • v1.3</div>
@@ -139,56 +144,75 @@
   </div>
 
   <label>API Key • API-Football</label>
-  <input id="apikey" type="text">
+  <input id="apikey" type="text" placeholder="Cole sua API Key">
 
   <label>Data da análise</label>
   <input id="date" type="date">
 
-  <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
+  <button class="secondary" onclick="loadCompetitions()">
+    📅 Carregar Partidas
+  </button>
 
   <div id="competitions" class="results"></div>
 
   <div class="status" id="paymentStatus">
-    🔒 Acesso bloqueado.
+    🔒 Acesso bloqueado. Efetue o pagamento.
   </div>
 
-  <button class="primary" onclick="analyzeMatch()">🔎 Analisar partidas</button>
+  <button class="primary" id="analyzeBtn" disabled>
+    🔎 Analisar partida
+  </button>
 
-  <div class="results" id="results"></div>
+  <div class="results" id="results">
+    <strong>Resultados Premium</strong><br><br>
+    Os dados aparecerão após a análise.
+  </div>
 
 </div>
 
+<!-- =============================
+     JS INLINE — LISTAGEM (ANTIGO)
+============================= -->
 <script>
 const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
 let selectedFixture = null;
 
 async function loadCompetitions() {
-  const apiKey = apikey.value;
-  const date = date.value;
-  const box = competitions;
+  const apiKey = document.getElementById("apikey").value.trim();
+  const date = document.getElementById("date").value;
+  const box = document.getElementById("competitions");
 
-  box.innerHTML = "⏳ Carregando...";
+  if (!apiKey || !date) {
+    alert("Informe API Key e data");
+    return;
+  }
+
+  box.innerHTML = "⏳ Carregando competições...";
 
   const res = await fetch(BACKEND_LIST, {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ apiKey, date })
   });
 
   const data = await res.json();
-  let html = "";
 
+  let html = "";
   data.competitions.forEach((c,i)=>{
-    html+=`<div class="competition">
-      <h3 onclick="toggleComp(${i},event)">🏆 ${c.league}</h3>
-      <div id="c-${i}">`;
+    html += `
+      <div class="competition">
+        <h3 onclick="toggleComp(${i},event)">🏆 ${c.league} (${c.country})</h3>
+        <div class="matches" id="comp-${i}">
+    `;
     c.matches.forEach(m=>{
-      html+=`<div class="match" data-fixture="${m.fixtureId}"
-        onclick="selectMatch(event,this)">
-        ${m.time} ${m.home} x ${m.away}
-      </div>`;
+      html += `
+        <div class="match" data-fixture="${m.fixtureId}"
+          onclick="selectMatch(event,this)">
+          ⏰ ${m.time} - ${m.home} x ${m.away}
+        </div>
+      `;
     });
-    html+=`</div></div>`;
+    html += `</div></div>`;
   });
 
   box.innerHTML = html;
@@ -196,18 +220,19 @@ async function loadCompetitions() {
 
 function toggleComp(i,e){
   e.stopPropagation();
-  const el=document.getElementById("c-"+i);
-  el.style.display=el.style.display==="none"?"block":"none";
+  const el = document.getElementById("comp-"+i);
+  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
 function selectMatch(e,el){
   e.stopPropagation();
   document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
   el.classList.add("selected");
-  selectedFixture=el.dataset.fixture;
+  selectedFixture = el.dataset.fixture;
 }
 </script>
 
+<!-- Premium / pagamento -->
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
 
