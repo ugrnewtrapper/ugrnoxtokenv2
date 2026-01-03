@@ -163,30 +163,24 @@
 <div class="container">
   <div class="card">
 
-    <!-- Logo -->
     <img src="images/logo.png" alt="NOX Logo" class="logo">
 
-    <!-- Navegação -->
     <button class="btn-home" onclick="location.href='index.html'">
       🏠 Página Inicial
     </button>
 
-    <!-- Título -->
     <h1>NOX Premium Analytics</h1>
     <div class="subtitle">Análises avançadas via Web3</div>
     <div class="version">Versão 1.0</div>
 
-    <!-- Wallet -->
     <button class="btn-wallet" onclick="connectWallet()">
       Conectar Carteira (MetaMask / TrustWallet)
     </button>
 
-    <!-- Ação -->
     <button id="analyzeBtn" class="btn-analyze locked" onclick="analyze()">
       Analisar • Premium
     </button>
 
-    <!-- Status -->
     <div id="status" class="status">
       Carteira não conectada
     </div>
@@ -194,12 +188,11 @@
   </div>
 </div>
 
-<!-- ==================================
-     LIBS (SEM LÓGICA AQUI)
-     ================================== -->
-
+<!-- LIBS -->
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.min.js"></script>
+
+<!-- 🔥 WalletConnect CDN CORRETO (ÚNICA CORREÇÃO) -->
+<script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
 
 <!-- SCRIPT SEPARADO -->
 <script src="money/wallet.js"></script>
