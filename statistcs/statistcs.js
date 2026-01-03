@@ -87,7 +87,7 @@ function selectMatch(event, el) {
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
 
-  const result = document.getElementById("result");
+  const result = document.getElementById("results") || document.getElementById("result");
   if (result) {
     result.innerHTML = `
       <h3>📌 Partida selecionada</h3>
@@ -119,7 +119,7 @@ async function analyzeMatch() {
     return;
   }
 
-  const result = document.getElementById("result");
+  const result = document.getElementById("results") || document.getElementById("result");
   if (result) result.innerHTML = "📊 Analisando dados Premium...";
 
   const res = await fetch(BACKEND, {
@@ -138,32 +138,29 @@ async function analyzeMatch() {
     return;
   }
 
-  /* =============================
-     RENDER FINAL (PREMIUM)
-  ============================= */
   let html = `
     <h3>${data.teams.home} x ${data.teams.away}</h3>
     <ul>
-      <li>⚽ Artilheiro: 
-        <strong>${safe(data.players.topGoals?.player)} 
+      <li>⚽ Artilheiro:
+        <strong>${safe(data.players.topGoals?.player)}
         (${safe(data.players.topGoals?.value)})</strong>
       </li>
 
-      <li>🎯 Assistências: 
-        <strong>${safe(data.players.topAssists?.player)} 
+      <li>🎯 Assistências:
+        <strong>${safe(data.players.topAssists?.player)}
         (${safe(data.players.topAssists?.value)})</strong>
       </li>
 
-      <li>🥅 Chutes: 
-        <strong>${safe(data.players.topShots?.player)} 
+      <li>🥅 Chutes:
+        <strong>${safe(data.players.topShots?.player)}
         (${safe(data.players.topShots?.value)})</strong>
       </li>
 
-      <li>🟨 Moda de cartões: 
+      <li>🟨 Moda de cartões:
         <strong>${safe(data.discipline.cardsMode)}</strong>
       </li>
 
-      <li>🚩 Moda de escanteios: 
+      <li>🚩 Moda de escanteios:
         <strong>${safe(data.discipline.cornersMode)}</strong>
       </li>
     </ul>
@@ -174,4 +171,14 @@ async function analyzeMatch() {
   `;
 
   if (result) result.innerHTML = html;
-       }
+}
+
+/* =============================
+   ✅ CORREÇÃO APLICADA
+   BIND DOS BOTÕES
+============================= */
+document.getElementById("loadMatchesBtn")
+  ?.addEventListener("click", loadCompetitions);
+
+document.getElementById("analyzeBtn")
+  ?.addEventListener("click", analyzeMatch);
