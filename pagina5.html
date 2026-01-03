@@ -29,15 +29,34 @@ body{
   margin:0 auto;
   background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
   border-radius:22px;
-  padding:26px 22px;
+  padding:24px 22px;
   box-shadow:
     0 24px 70px rgba(0,0,0,.7),
     inset 0 0 0 1px rgba(0,255,156,.18);
 }
 
+/* =============================
+   NAVEGAÇÃO
+============================= */
+
+.nav-back{
+  text-align:left;
+  margin-bottom:10px;
+}
+
+.nav-back a{
+  color:var(--neon);
+  text-decoration:none;
+  font-size:13px;
+}
+
+/* =============================
+   HEADER
+============================= */
+
 .logo{
   max-width:110px;
-  margin:0 auto 14px;
+  margin:6px auto 12px;
   display:block;
   filter:drop-shadow(0 0 10px rgba(0,255,156,.35));
 }
@@ -52,7 +71,7 @@ h1{
   font-size:12px;
   color:var(--soft);
   text-align:center;
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
 .info{
@@ -63,32 +82,49 @@ h1{
   line-height:1.55;
   border:1px solid rgba(0,255,156,.25);
   color:#c7fbe7;
-  margin-bottom:18px;
+  margin-bottom:16px;
+}
+
+/* =============================
+   FORMULÁRIO (CORRIGIDO)
+============================= */
+
+.form-group{
+  margin-top:14px;
 }
 
 label{
   display:block;
-  margin-top:16px;
   font-size:13px;
   color:var(--soft);
-  text-align:left;
+  margin-bottom:6px;
 }
 
 input{
   width:100%;
-  padding:12px;
-  margin-top:6px;
+  height:44px;              /* 🔥 NORMALIZA ALTURA */
+  padding:0 12px;
   border-radius:12px;
   border:1px solid rgba(255,255,255,.08);
   background:rgba(2,6,23,.9);
   color:#fff;
   font-size:14px;
-  text-align:left;
+  box-sizing:border-box;
 }
+
+/* corrige o input date no mobile */
+input[type="date"]{
+  appearance:none;
+  -webkit-appearance:none;
+}
+
+/* =============================
+   BOTÕES
+============================= */
 
 button{
   width:100%;
-  padding:14px;
+  height:46px;
   border-radius:16px;
   border:none;
   font-size:15px;
@@ -108,6 +144,10 @@ button.secondary{
   border:1px solid rgba(0,255,156,.5);
   color:var(--neon);
 }
+
+/* =============================
+   LISTAGEM
+============================= */
 
 .results{
   margin-top:16px;
@@ -142,7 +182,7 @@ button.secondary{
 }
 
 .status{
-  margin-top:18px;
+  margin-top:16px;
   background:rgba(255,0,0,.08);
   border:1px solid rgba(255,0,0,.35);
   color:#ffb4b4;
@@ -153,13 +193,12 @@ button.secondary{
 }
 
 /* =============================
-   MÉTRICAS PREMIUM (CORRETAS)
+   MÉTRICAS
 ============================= */
 
 .metrics{
-  margin-top:22px;
+  margin-top:20px;
   display:grid;
-  grid-template-columns:1fr;
   gap:10px;
 }
 
@@ -188,6 +227,11 @@ button.secondary{
 <body>
 <div class="container">
 
+<!-- NAVEGAÇÃO -->
+<div class="nav-back">
+  <a href="index.html">← Voltar para início</a>
+</div>
+
 <img src="images/logo.png" class="logo">
 
 <h1>NOX Premium</h1>
@@ -198,11 +242,15 @@ button.secondary{
 💡 Cada pagamento libera <strong>1 análise Premium</strong>.
 </div>
 
-<label>API Key • API-Football</label>
-<input id="apikey" type="text" placeholder="Cole sua API Key">
+<div class="form-group">
+  <label>API Key • API-Football</label>
+  <input id="apikey" type="text" placeholder="Cole sua API Key">
+</div>
 
-<label>Data da análise</label>
-<input id="date" type="date">
+<div class="form-group">
+  <label>Data da análise</label>
+  <input id="date" type="date">
+</div>
 
 <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
 
@@ -214,25 +262,21 @@ button.secondary{
 
 <button class="primary" onclick="analyzeMatch()">🔎 Analisar Partida</button>
 
-<!-- =============================
-     MÉTRICAS PREMIUM
-============================= -->
-
 <div class="metrics" id="results">
 
   <div class="metric-card">
     <h4>👤 Jogadores</h4>
-    <p>Finalizações, cartões, participação direta no jogo.</p>
+    <p>Finalizações, cartões e participação direta.</p>
   </div>
 
   <div class="metric-card">
     <h4>🟨 Cartões</h4>
-    <p>Médias por equipe, árbitro e perfil disciplinar.</p>
+    <p>Médias por equipe, árbitro e disciplina.</p>
   </div>
 
   <div class="metric-card">
     <h4>🚩 Escanteios</h4>
-    <p>Pressão ofensiva, ritmo de jogo e volume de ataque.</p>
+    <p>Pressão ofensiva e volume de ataque.</p>
   </div>
 
 </div>
