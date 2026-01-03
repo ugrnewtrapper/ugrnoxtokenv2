@@ -3,6 +3,10 @@
    Arquivo: money/wallet.js
    ===================================================== */
 
+/* ===============================
+   CONFIGURAÇÃO GLOBAL
+   =============================== */
+
 const NOX_CONFIG = {
   chainId: 56,
   chainHex: "0x38",
@@ -17,6 +21,10 @@ const NOX_ABI = [
   "function payForAnalysis() external",
   "event AnalysisPaid(address indexed user, uint256 amount)"
 ];
+
+/* ===============================
+   ESTADO GLOBAL
+   =============================== */
 
 let provider = null;
 let signer = null;
@@ -40,7 +48,7 @@ function unlockAnalyze() {
 }
 
 /* ===============================
-   CONNECT WALLET
+   CONECTAR WALLET
    =============================== */
 
 async function connectWallet() {
@@ -50,13 +58,12 @@ async function connectWallet() {
   try {
     setStatus("🔌 Conectando carteira...");
 
-    // PRIORIDADE ABSOLUTA → window.ethereum
+    /* -------- PROVIDER -------- */
+
     if (window.ethereum) {
       provider = new ethers.BrowserProvider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
-    } 
-    // Fallback REAL → WalletConnect v2
-    else {
+    } else {
       if (!window.WalletConnectEthereumProvider) {
         throw new Error("WalletConnect não carregado");
       }
@@ -78,11 +85,40 @@ async function connectWallet() {
     signer = await provider.getSigner();
     userWallet = await signer.getAddress();
 
+    /* -------- REDE (AUTO SWITCH) -------- */
+
     const network = await provider.getNetwork();
 
     if (Number(network.chainId) !== NOX_CONFIG.chainId) {
-      setStatus("❌ Troque para BSC Mainnet");
-      return;
+      if (!window.ethereum) {
+        throw new Error("Troque para BSC Mainnet na wallet");
+      }
+
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: NOX_CONFIG.chainHex }]
+        });
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: NOX_CONFIG.chainHex,
+              chainName: NOX_CONFIG.chainName,
+              rpcUrls: [NOX_CONFIG.rpcUrl],
+              nativeCurrency: {
+                name: "BNB",
+                symbol: "BNB",
+                decimals: 18
+              },
+              blockExplorerUrls: ["https://bscscan.com"]
+            }]
+          });
+        } else {
+          throw switchError;
+        }
+      }
     }
 
     unlockAnalyze();
@@ -92,7 +128,7 @@ async function connectWallet() {
     console.error("Wallet error:", err);
 
     if (err.code === 4001) {
-      setStatus("❌ Conexão rejeitada");
+      setStatus("❌ Conexão rejeitada pelo usuário");
     } else {
       setStatus("❌ Falha ao conectar carteira");
     }
@@ -102,7 +138,7 @@ async function connectWallet() {
 }
 
 /* ===============================
-   PAYMENT + BACKEND
+   PAGAMENTO + BACKEND
    =============================== */
 
 async function analyze() {
@@ -121,7 +157,7 @@ async function analyze() {
     );
 
     const tx = await contract.payForAnalysis();
-    setStatus("⏳ Confirmando...\n" + tx.hash);
+    setStatus("⏳ Aguardando confirmação...\n" + tx.hash);
 
     const receipt = await tx.wait();
 
