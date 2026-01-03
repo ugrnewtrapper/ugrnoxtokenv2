@@ -1,116 +1,177 @@
-/* ===============================
-   NOX Premium • Statistics v1.0
-   Consome: backendnoxv22
-   =============================== */
+const BACKEND = "https://backendnoxv22.srrimas2017.workers.dev";
 
-const API_URL = "https://backendnoxv22.srrimas2017.workers.dev/";
+let selectedFixture = null;
 
-const apiKeyInput = document.getElementById("apikey");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const resultsBox = document.getElementById("results");
-const paymentStatus = document.getElementById("paymentStatus");
+/* =============================
+   HELPERS
+============================= */
+const safe = (v, msg = "❌ Não disponível neste plano") =>
+  v === null || v === undefined ? msg : v;
 
-/* ==================================================
-   UTIL
-   ================================================== */
-const showStatus = msg => {
-  paymentStatus.innerHTML = msg;
-};
+/* =============================
+   1) CARREGAR COMPETIÇÕES
+============================= */
+async function loadCompetitions() {
+  const apiKey = document.getElementById("apikey")?.value
+              || document.getElementById("apiKey")?.value;
+  const date = document.getElementById("date")?.value;
 
-const showResults = html => {
-  resultsBox.innerHTML = html;
-};
-
-/* ==================================================
-   CHAMADA PRINCIPAL (1 análise = tudo)
-   ================================================== */
-async function runPremiumAnalysis(fixtureId) {
-  const apiKey = apiKeyInput.value.trim();
-
-  if (!apiKey) {
-    showResults("⚠️ Informe sua API Key da API-Football.");
+  if (!apiKey || !date) {
+    alert("⚠️ Informe sua API Key e a data");
     return;
   }
 
-  showResults("⏳ Gerando análise Premium...");
+  const box = document.getElementById("competitions");
+  if (box) box.innerHTML = "⏳ Carregando competições...";
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey,
-        fixtureId
-      })
+  const res = await fetch(BACKEND, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ apiKey, date })
+  });
+
+  const data = await res.json();
+
+  if (!Array.isArray(data.competitions) || !data.competitions.length) {
+    if (box) box.innerHTML = "❌ Nenhuma competição encontrada";
+    return;
+  }
+
+  let html = "";
+
+  data.competitions.forEach((comp, idx) => {
+    html += `
+      <div class="competition">
+        <h3 onclick="toggleComp(${idx}, event)">
+          🏆 ${comp.league} (${comp.country})
+        </h3>
+        <div class="matches" id="comp-${idx}">
+    `;
+
+    comp.matches.forEach(m => {
+      html += `
+        <div class="match"
+             data-fixture="${m.fixtureId}"
+             onclick="selectMatch(event, this)">
+          ⏰ ${m.time} - ${m.home} x ${m.away}
+        </div>
+      `;
     });
 
-    const data = await res.json();
+    html += `</div></div>`;
+  });
 
-    /* ===== PLANO / DADOS INDISPONÍVEIS ===== */
-    if (data.error) {
-      showResults(`
-        ❌ <strong>Análise indisponível</strong><br><br>
-        ${data.error}<br><br>
-        <small>
-          Este dado pode não estar disponível para o plano atual
-          ou para esta partida específica.
-        </small>
-      `);
-      return;
-    }
+  if (box) box.innerHTML = html;
+}
 
-    renderPremiumData(data);
+/* =============================
+   2) TOGGLE COMPETIÇÃO
+============================= */
+function toggleComp(idx, event) {
+  event.stopPropagation();
+  const el = document.getElementById(`comp-${idx}`);
+  if (!el) return;
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
 
-  } catch (e) {
-    showResults("❌ Erro ao conectar com o servidor Premium.");
+/* =============================
+   3) SELECIONAR PARTIDA
+============================= */
+function selectMatch(event, el) {
+  event.stopPropagation();
+
+  document.querySelectorAll(".match").forEach(m =>
+    m.classList.remove("selected")
+  );
+
+  el.classList.add("selected");
+  selectedFixture = el.dataset.fixture;
+
+  const result = document.getElementById("result");
+  if (result) {
+    result.innerHTML = `
+      <h3>📌 Partida selecionada</h3>
+      <p>${el.innerText}</p>
+    `;
   }
+
+  document.querySelectorAll(".matches").forEach(m => {
+    m.style.display = "none";
+  });
+
+  el.parentElement.style.display = "block";
 }
 
-/* ==================================================
-   RENDER
-   ================================================== */
-function renderPremiumData(data) {
-  const { teams, players, discipline } = data;
-
-  const line = v =>
-    v && v.player
-      ? `<strong>${v.player}</strong> (${v.value})`
-      : `<em>Não disponível para este plano</em>`;
-
-  showResults(`
-    <strong>📊 Análise Premium Completa</strong><br><br>
-
-    <strong>⚔️ Partida</strong><br>
-    ${teams.home} x ${teams.away}<br><br>
-
-    <strong>👤 Jogadores (Destaques)</strong><br>
-    ⚽ Mais gols: ${line(players.topGoals)}<br>
-    🎯 Mais assistências: ${line(players.topAssists)}<br>
-    🥅 Mais chutes: ${line(players.topShots)}<br><br>
-
-    <strong>🟨 Disciplina & Jogo</strong><br>
-    🟨 Moda de cartões: 
-      ${discipline.cardsMode ?? "<em>Não disponível</em>"}<br>
-    🚩 Moda de escanteios: 
-      ${discipline.cornersMode ?? "<em>Não disponível</em>"}<br><br>
-
-    <small>
-      ✔️ Esta análise consumiu <strong>1 crédito Premium</strong>.
-    </small>
-  `);
-}
-
-/* ==================================================
-   INTEGRAÇÃO COM O FLOW PREMIUM
-   (wallet libera o botão analisar)
-   ================================================== */
-analyzeBtn.addEventListener("click", () => {
-  const fixtureId = window.selectedFixtureId;
-
-  if (!fixtureId) {
-    showResults("⚠️ Selecione uma partida para analisar.");
+/* =============================
+   4) ANALISAR PARTIDA
+============================= */
+async function analyzeMatch() {
+  if (!selectedFixture) {
+    alert("⚠️ Selecione uma partida");
     return;
   }
 
-  runPremiumAnalysis(fixtureId);
-});
+  const apiKey = document.getElementById("apikey")?.value
+              || document.getElementById("apiKey")?.value;
+
+  if (!apiKey) {
+    alert("⚠️ Informe sua API Key");
+    return;
+  }
+
+  const result = document.getElementById("result");
+  if (result) result.innerHTML = "📊 Analisando dados Premium...";
+
+  const res = await fetch(BACKEND, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apiKey,
+      fixtureId: Number(selectedFixture)
+    })
+  });
+
+  const data = await res.json();
+
+  if (data.error) {
+    if (result) result.innerHTML = "❌ " + data.error;
+    return;
+  }
+
+  /* =============================
+     RENDER FINAL (PREMIUM)
+  ============================= */
+  let html = `
+    <h3>${data.teams.home} x ${data.teams.away}</h3>
+    <ul>
+      <li>⚽ Artilheiro: 
+        <strong>${safe(data.players.topGoals?.player)} 
+        (${safe(data.players.topGoals?.value)})</strong>
+      </li>
+
+      <li>🎯 Assistências: 
+        <strong>${safe(data.players.topAssists?.player)} 
+        (${safe(data.players.topAssists?.value)})</strong>
+      </li>
+
+      <li>🥅 Chutes: 
+        <strong>${safe(data.players.topShots?.player)} 
+        (${safe(data.players.topShots?.value)})</strong>
+      </li>
+
+      <li>🟨 Moda de cartões: 
+        <strong>${safe(data.discipline.cardsMode)}</strong>
+      </li>
+
+      <li>🚩 Moda de escanteios: 
+        <strong>${safe(data.discipline.cornersMode)}</strong>
+      </li>
+    </ul>
+
+    <p style="opacity:.8; font-size:14px;">
+      ℹ️ Alguns dados podem não estar disponíveis conforme o plano ou estatísticas da partida.
+    </p>
+  `;
+
+  if (result) result.innerHTML = html;
+       }
