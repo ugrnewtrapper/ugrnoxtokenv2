@@ -1,4 +1,8 @@
-const BACKEND = "https://backendnoxv22.srrimas2017.workers.dev";
+/* =============================
+   BACKENDS (CORREÇÃO APLICADA)
+============================= */
+const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";     // backend antigo
+const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev"; // backend novo (worker2)
 
 let selectedFixture = null;
 
@@ -10,10 +14,13 @@ const safe = (v, msg = "❌ Não disponível neste plano") =>
 
 /* =============================
    1) CARREGAR COMPETIÇÕES
+   (BACKEND ANTIGO)
 ============================= */
 async function loadCompetitions() {
-  const apiKey = document.getElementById("apikey")?.value
-              || document.getElementById("apiKey")?.value;
+  const apiKey =
+    document.getElementById("apikey")?.value ||
+    document.getElementById("apiKey")?.value;
+
   const date = document.getElementById("date")?.value;
 
   if (!apiKey || !date) {
@@ -24,7 +31,7 @@ async function loadCompetitions() {
   const box = document.getElementById("competitions");
   if (box) box.innerHTML = "⏳ Carregando competições...";
 
-  const res = await fetch(BACKEND, {
+  const res = await fetch(BACKEND_LIST, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ apiKey, date })
@@ -87,7 +94,10 @@ function selectMatch(event, el) {
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
 
-  const result = document.getElementById("results") || document.getElementById("result");
+  const result =
+    document.getElementById("results") ||
+    document.getElementById("result");
+
   if (result) {
     result.innerHTML = `
       <h3>📌 Partida selecionada</h3>
@@ -104,6 +114,7 @@ function selectMatch(event, el) {
 
 /* =============================
    4) ANALISAR PARTIDA
+   (BACKEND NOVO / PREMIUM)
 ============================= */
 async function analyzeMatch() {
   if (!selectedFixture) {
@@ -111,18 +122,22 @@ async function analyzeMatch() {
     return;
   }
 
-  const apiKey = document.getElementById("apikey")?.value
-              || document.getElementById("apiKey")?.value;
+  const apiKey =
+    document.getElementById("apikey")?.value ||
+    document.getElementById("apiKey")?.value;
 
   if (!apiKey) {
     alert("⚠️ Informe sua API Key");
     return;
   }
 
-  const result = document.getElementById("results") || document.getElementById("result");
+  const result =
+    document.getElementById("results") ||
+    document.getElementById("result");
+
   if (result) result.innerHTML = "📊 Analisando dados Premium...";
 
-  const res = await fetch(BACKEND, {
+  const res = await fetch(BACKEND_ANALYZE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -174,7 +189,6 @@ async function analyzeMatch() {
 }
 
 /* =============================
-   ✅ CORREÇÃO APLICADA
    BIND DOS BOTÕES
 ============================= */
 document.getElementById("loadMatchesBtn")
