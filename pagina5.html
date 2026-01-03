@@ -382,6 +382,62 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
+<script>
+/* =============================
+   CONTROLE 1 PAGAMENTO = 1 ANÁLISE
+============================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const statusEl = document.getElementById("paymentStatus");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+
+  if (!statusEl || !analyzeBtn) return;
+
+  // crédito premium por sessão
+  let premiumCredits = sessionStorage.getItem("premiumCredits");
+  premiumCredits = premiumCredits ? parseInt(premiumCredits) : 0;
+
+  const updateUI = () => {
+    if (premiumCredits > 0) {
+      analyzeBtn.style.opacity = "1";
+      analyzeBtn.disabled = false;
+      statusEl.innerHTML = `✅ Acesso Premium liberado • ${premiumCredits} análise disponível`;
+    } else {
+      analyzeBtn.style.opacity = ".45";
+      analyzeBtn.disabled = true;
+      statusEl.innerHTML = `🔒 Acesso Premium bloqueado. Efetue o pagamento.`;
+    }
+  };
+
+  updateUI();
+
+  // observa pagamento confirmado
+  const observer = new MutationObserver(() => {
+    const text = statusEl.innerText.toLowerCase();
+    if (text.includes("liberado") || text.includes("confirmado")) {
+      premiumCredits = 1;
+      sessionStorage.setItem("premiumCredits", premiumCredits);
+      updateUI();
+    }
+  });
+
+  observer.observe(statusEl, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+
+  // consome o crédito ao analisar
+  analyzeBtn.addEventListener("click", () => {
+    if (premiumCredits <= 0) return;
+
+    premiumCredits--;
+    sessionStorage.setItem("premiumCredits", premiumCredits);
+    updateUI();
+  });
+});
+</script>  
   
 </body>
 </html>
