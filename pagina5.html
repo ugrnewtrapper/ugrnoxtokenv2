@@ -340,5 +340,48 @@ function selectMatch(e,el){
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
 
+<script>
+/* =============================
+   ATIVAÇÃO AUTOMÁTICA DO BOTÃO
+   APÓS PAGAMENTO CONFIRMADO
+   (SEM DEPENDER DO WALLET)
+============================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const statusEl = document.getElementById("paymentStatus");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+
+  if (!statusEl || !analyzeBtn) return;
+
+  const unlock = () => {
+    analyzeBtn.style.opacity = "1";
+    analyzeBtn.style.cursor = "pointer";
+    analyzeBtn.disabled = false;
+  };
+
+  const lock = () => {
+    analyzeBtn.style.opacity = ".45";
+    analyzeBtn.style.cursor = "not-allowed";
+    analyzeBtn.disabled = true;
+  };
+
+  // estado inicial
+  lock();
+
+  const observer = new MutationObserver(() => {
+    const text = statusEl.innerText.toLowerCase();
+    if (!text.includes("bloqueado")) {
+      unlock();
+    }
+  });
+
+  observer.observe(statusEl, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+});
+</script>
+  
 </body>
 </html>
