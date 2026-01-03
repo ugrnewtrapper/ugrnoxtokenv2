@@ -1,14 +1,7 @@
 /* =====================================================
    NOX PREMIUM • WALLET MANAGER
    Arquivo: money/wallet.js
-   Suporte:
-   - MetaMask / TrustWallet (Desktop + Mobile)
-   - WalletConnect v2 (Fallback)
    ===================================================== */
-
-/* ===============================
-   CONFIGURAÇÃO GLOBAL
-   =============================== */
 
 const NOX_CONFIG = {
   chainId: 56,
@@ -25,23 +18,18 @@ const NOX_ABI = [
   "event AnalysisPaid(address indexed user, uint256 amount)"
 ];
 
-/* ===============================
-   ESTADO GLOBAL
-   =============================== */
-
 let provider = null;
 let signer = null;
 let userWallet = null;
 let connecting = false;
 
 /* ===============================
-   HELPERS UI
+   UI HELPERS
    =============================== */
 
 function setStatus(text, ok = false) {
   const el = document.getElementById("status");
   if (!el) return;
-
   el.innerText = text;
   el.classList.toggle("connected", ok);
 }
@@ -52,7 +40,7 @@ function unlockAnalyze() {
 }
 
 /* ===============================
-   CONEXÃO WALLET (ROBUSTA)
+   CONNECT WALLET
    =============================== */
 
 async function connectWallet() {
@@ -62,22 +50,49 @@ async function connectWallet() {
   try {
     setStatus("🔌 Conectando carteira...");
 
-    // 🔥 REGRA DE OURO:
-    // SE existir window.ethereum → SEMPRE usar
+    // PRIORIDADE TOTAL: window.ethereum
     if (window.ethereum) {
       provider = new ethers.BrowserProvider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
-    } 
-    // Fallback real → WalletConnect
-    else {
-      const wcProvider = await EthereumProvider.init({
-        projectId: NOX_CONFIG.wcProjectId,
-        chains: [NOX_CONFIG.chainId],
-        showQrModal: true,
-        rpcMap: {
-          [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl
+
+      // 🔁 TENTAR TROCAR / ADICIONAR BSC
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: NOX_CONFIG.chainHex }]
+        });
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: NOX_CONFIG.chainHex,
+              chainName: NOX_CONFIG.chainName,
+              rpcUrls: [NOX_CONFIG.rpcUrl],
+              nativeCurrency: {
+                name: "BNB",
+                symbol: "BNB",
+                decimals: 18
+              },
+              blockExplorerUrls: ["https://bscscan.com"]
+            }]
+          });
+        } else {
+          throw err;
         }
-      });
+      }
+
+    } else {
+      // WALLETCONNECT CORRETO (UMD)
+      const wcProvider =
+        await window.WalletConnectEthereumProvider.init({
+          projectId: NOX_CONFIG.wcProjectId,
+          chains: [NOX_CONFIG.chainId],
+          showQrModal: true,
+          rpcMap: {
+            [NOX_CONFIG.chainId]: NOX_CONFIG.rpcUrl
+          }
+        });
 
       await wcProvider.connect();
       provider = new ethers.BrowserProvider(wcProvider);
@@ -86,33 +101,24 @@ async function connectWallet() {
     signer = await provider.getSigner();
     userWallet = await signer.getAddress();
 
-    // 🔍 Verificar rede
-    const network = await provider.getNetwork();
-    if (Number(network.chainId) !== NOX_CONFIG.chainId) {
-      setStatus("❌ Conecte-se à BSC Mainnet");
-      return;
-    }
-
     unlockAnalyze();
     setStatus("✅ Carteira conectada:\n" + userWallet, true);
 
   } catch (err) {
     console.error("Wallet error:", err);
 
-    // Usuário cancelou
     if (err.code === 4001) {
       setStatus("❌ Conexão rejeitada pelo usuário");
-      return;
+    } else {
+      setStatus("❌ Falha ao conectar carteira");
     }
-
-    setStatus("❌ Falha ao conectar carteira");
   } finally {
     connecting = false;
   }
 }
 
 /* ===============================
-   PAGAMENTO + BACKEND
+   PAY + BACKEND
    =============================== */
 
 async function analyze() {
@@ -154,10 +160,8 @@ async function analyze() {
 
     setStatus("✅ Pagamento confirmado!\nAnálise liberada.", true);
 
-    // 👉 Aqui você chama a análise premium real
-
   } catch (err) {
     console.error(err);
     setStatus("❌ Erro: " + err.message);
   }
-}
+                            }
