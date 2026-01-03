@@ -1,68 +1,208 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>NOX Premium • Web3</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>NOX Premium • Análises Avançadas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root{--neon:#00ff9c}
-body{
-  margin:0;
-  font-family:Segoe UI,Arial;
-  background:radial-gradient(circle at top,#0f3d2e,#020617 70%);
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.card{
-  max-width:420px;width:100%;
-  padding:28px;border-radius:20px;
-  background:rgba(10,15,30,.9);
-  border:1px solid rgba(0,255,156,.25);
-  text-align:center;
-}
-button{
-  width:100%;padding:14px;margin-top:12px;
-  border-radius:12px;font-weight:600;cursor:pointer;border:none
-}
-.primary{background:linear-gradient(135deg,#00ff9c,#00c777);color:#000}
-.outline{background:transparent;border:1px solid var(--neon);color:var(--neon)}
-.locked{opacity:.4;pointer-events:none}
-#status{
-  margin-top:16px;font-size:13px;white-space:pre-line;
-  background:rgba(0,0,0,.45);
-  padding:12px;border-radius:10px
-}
-#qr{
-  margin-top:16px;
-}
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #0f3d2e, #020617 75%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 470px;
+      background: rgba(10, 15, 30, 0.88);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+      border: 1px solid rgba(0,255,156,.25);
+    }
+
+    .logo {
+      max-width: 135px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 6px 0 4px;
+      font-size: 22px;
+    }
+
+    .version {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 18px;
+    }
+
+    .info {
+      font-size: 14px;
+      background: rgba(0,0,0,.4);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      line-height: 1.55;
+      border-left: 3px solid #00ff9c;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 9px;
+      border: none;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #00ff9c, #00c777);
+      color: #000;
+    }
+
+    button.primary:disabled {
+      background: linear-gradient(135deg, #3a3a3a, #1f1f1f);
+      color: #9a9a9a;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    button.secondary {
+      background: transparent;
+      border: 1px solid #00ff9c;
+      color: #00ff9c;
+      margin-top: 12px;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      background: rgba(255, 165, 0, 0.12);
+      padding: 12px;
+      border-radius: 10px;
+      color: #ffcc80;
+    }
+
+    .results {
+      margin-top: 22px;
+      background: rgba(0,0,0,.45);
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      min-height: 90px;
+      line-height: 1.55;
+    }
+
+    .nav {
+      margin-top: 22px;
+      text-align: center;
+    }
+
+    .nav a {
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,.14);
+      padding: 11px 20px;
+      border-radius: 14px;
+      display: inline-block;
+      font-weight: bold;
+    }
+
+    .nav a:hover {
+      background: rgba(255,255,255,.28);
+    }
+  </style>
 </head>
 
 <body>
-<div class="card">
-  <img src="/images/logo.png" width="110">
-  <h2>NOX Premium</h2>
 
-  <button id="connectBtn" class="primary">
-    🔗 Conectar carteira
-  </button>
+  <div class="container">
 
-  <button id="analyzeBtn" class="outline locked">
-    🔓 Analisar • Premium
-  </button>
+    <img src="images/logo.png" alt="NOX Logo" class="logo">
 
-  <button class="outline" onclick="location.href='/'">
-    ⬅ Página inicial
-  </button>
+    <h1>NOX Premium</h1>
+    <div class="version">Página 5 • Versão Premium</div>
 
-  <div id="qr"></div>
-  <div id="status">🔒 Carteira não conectada</div>
-</div>
+    <div class="info">
+      🔐 Para maior segurança e funcionamento correto,  
+      acesse esta página **pelo navegador da sua carteira**  
+      (MetaMask, Trust Wallet, OKX, Binance Wallet).
+    </div>
 
-<script type="module" src="/money/wallet-wcv2.js"></script>
+    <!-- API KEY -->
+    <label for="apikey">API Key (API-Football)</label>
+    <input id="apikey" type="text" placeholder="Cole sua API Key aqui">
+
+    <!-- DATA -->
+    <label for="date">Selecione a data</label>
+    <input id="date" type="date">
+
+    <!-- STATUS DE PAGAMENTO -->
+    <div class="status" id="paymentStatus">
+      🔒 Acesso bloqueado.  
+      Realize o pagamento para liberar as análises premium.
+    </div>
+
+    <!-- BOTÃO ANALISAR (BLOQUEADO) -->
+    <button class="primary" id="analyzeBtn" disabled>
+      🔎 Analisar partidas
+    </button>
+
+    <!-- BOTÃO PAGAMENTO -->
+    <button class="secondary" id="payBtn">
+      💳 Desbloquear acesso Premium
+    </button>
+
+    <!-- RESULTADOS -->
+    <div class="results" id="results">
+      Após o pagamento, aqui serão exibidos:<br><br>
+      • Moda de cartões<br>
+      • Moda de escanteios<br>
+      • Jogador com mais gols<br>
+      • Jogador com mais assistências<br>
+      • Jogador com mais chutes
+    </div>
+
+    <!-- NAVEGAÇÃO -->
+    <div class="nav">
+      <a href="index.html">🏠 Página Inicial</a>
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS (implementados depois) -->
+  <!--
+  <script src="money/walletv12.js"></script>
+  <script src="statistics/statistics.js"></script>
+  -->
+
 </body>
 </html>
