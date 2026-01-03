@@ -9,7 +9,6 @@
     :root{
       --neon:#00ff9c;
       --dark:#020617;
-      --card:#0b1224;
       --soft:#94a3b8;
     }
 
@@ -29,39 +28,47 @@
     .container {
       width: 100%;
       max-width: 480px;
-      background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(2,6,23,.95));
-      border-radius: 22px;
-      padding: 30px;
+      background: linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
+      border-radius: 24px;
+      padding: 32px 30px;
       text-align: center;
       box-shadow:
-        0 20px 60px rgba(0,0,0,.65),
+        0 24px 70px rgba(0,0,0,.7),
         inset 0 0 0 1px rgba(0,255,156,.18);
     }
 
     .logo {
       max-width: 120px;
-      margin-bottom: 14px;
-      filter: drop-shadow(0 0 10px rgba(0,255,156,.35));
+      margin: 0 auto 16px;
+      display: block;
+      filter: drop-shadow(0 0 12px rgba(0,255,156,.35));
     }
 
     h1 {
-      margin: 4px 0;
-      font-size: 23px;
-      letter-spacing: .4px;
+      margin: 6px 0 4px;
+      font-size: 24px;
+      letter-spacing: .5px;
     }
 
     .version {
       font-size: 12px;
       color: var(--soft);
+      margin-bottom: 24px;
+    }
+
+    .info,
+    .status,
+    .results {
+      width: 100%;
+      box-sizing: border-box;
       margin-bottom: 22px;
     }
 
     .info {
       font-size: 14px;
       background: rgba(0,255,156,.08);
-      padding: 14px 16px;
-      border-radius: 14px;
-      margin-bottom: 22px;
+      padding: 16px;
+      border-radius: 16px;
       line-height: 1.6;
       border: 1px solid rgba(0,255,156,.25);
       color: #c7fbe7;
@@ -69,16 +76,16 @@
 
     label {
       display: block;
-      margin-top: 16px;
+      margin-top: 18px;
       font-size: 13px;
       color: var(--soft);
     }
 
     input {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       margin-top: 6px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid rgba(255,255,255,.08);
       background: rgba(2,6,23,.9);
       color: #fff;
@@ -87,52 +94,75 @@
       text-align: center;
     }
 
+    input:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 2px rgba(0,255,156,.15);
+    }
+
     button {
       width: 100%;
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 16px;
+      padding: 16px;
+      border-radius: 18px;
       border: none;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
+      margin-top: 14px;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #00ff9c, #00c777);
+      color: #00150c;
+      box-shadow: 0 12px 28px rgba(0,255,156,.35);
     }
 
     button.primary:disabled {
       background: linear-gradient(135deg, #1f2937, #020617);
       color: #64748b;
       cursor: not-allowed;
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, #00ff9c, #00c777);
-      color: #00150c;
+      box-shadow: none;
     }
 
     button.secondary {
       background: transparent;
-      border: 1px solid rgba(0,255,156,.45);
+      border: 1px solid rgba(0,255,156,.5);
       color: var(--neon);
     }
 
     .status {
-      margin-top: 18px;
       font-size: 14px;
       background: rgba(255, 165, 0, .12);
-      padding: 14px;
-      border-radius: 14px;
+      padding: 16px;
+      border-radius: 16px;
       color: #ffd8a8;
       border: 1px solid rgba(255,165,0,.25);
     }
 
     .results {
-      margin-top: 24px;
       background: linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.6));
       padding: 18px;
       border-radius: 18px;
       font-size: 14px;
       color: #e2e8f0;
       border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .nav {
+      margin-top: 26px;
+    }
+
+    .nav a {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255,255,255,.12);
+      padding: 12px 24px;
+      border-radius: 18px;
+      font-weight: 600;
+    }
+
+    .nav a:hover {
+      background: rgba(255,255,255,.25);
     }
   </style>
 </head>
@@ -144,12 +174,11 @@
   <img src="images/logo.png" alt="NOX Logo" class="logo">
 
   <h1>NOX Premium</h1>
-  <div class="version">Página 5 • Análises Avançadas</div>
+  <div class="version">Página 5 • v1.2</div>
 
   <div class="info">
-    🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.
-    <br><br>
-    💡 <strong>Importante:</strong> cada pagamento libera <u>1 análise</u>.
+    🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br><br>
+    💡 Cada pagamento libera <strong>1 análise Premium</strong>.
   </div>
 
   <label>API Key • API-Football</label>
@@ -160,7 +189,7 @@
 
   <div class="status" id="paymentStatus">
     🔒 Acesso bloqueado.<br>
-    Cada pagamento libera <strong>1 análise Premium</strong>.
+    Efetue o pagamento para liberar <strong>1 análise</strong>.
   </div>
 
   <button class="primary" id="analyzeBtn" disabled>
@@ -173,8 +202,12 @@
 
   <div class="results" id="results">
     <strong>Resultados Premium</strong><br><br>
-    Os dados serão exibidos após a análise.<br>
+    Os dados aparecerão após a análise.<br>
     <small>(1 pagamento = 1 análise)</small>
+  </div>
+
+  <div class="nav">
+    <a href="index.html">🏠 Página Inicial</a>
   </div>
 
 </div>
