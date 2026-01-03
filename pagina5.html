@@ -1,218 +1,282 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>NOX Premium • Análises Avançadas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>NOX Premium • Análises Avançadas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root{
-      --neon:#00ff9c;
-      --soft:#94a3b8;
-    }
+<style>
+:root{
+  --neon:#00ff9c;
+  --dark:#020617;
+  --soft:#94a3b8;
+}
 
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(600px at top, rgba(0,255,156,.15), transparent 60%),
-        linear-gradient(180deg, #020617, #01030f);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+body{
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(600px at top, rgba(0,255,156,.15), transparent 60%),
+    linear-gradient(180deg, #020617, #01030f);
+  color:#fff;
+  min-height:100vh;
+  display:block;
+  padding:24px 12px 60px;
+}
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-      background: linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
-      border-radius: 24px;
-      padding: 32px 30px;
-      text-align: center;
-      box-shadow:
-        0 24px 70px rgba(0,0,0,.7),
-        inset 0 0 0 1px rgba(0,255,156,.18);
-    }
+.container{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
+  border-radius:24px;
+  padding:32px 26px;
+  text-align:center;
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.7),
+    inset 0 0 0 1px rgba(0,255,156,.18);
+}
 
-    .logo {
-      max-width: 120px;
-      margin: 0 auto 16px;
-      display: block;
-    }
+.logo{
+  max-width:120px;
+  margin:0 auto 16px;
+  display:block;
+  filter:drop-shadow(0 0 12px rgba(0,255,156,.35));
+}
 
-    h1 { margin: 6px 0 4px; font-size: 24px; }
-    .version { font-size: 12px; color: var(--soft); margin-bottom: 24px; }
+h1{
+  margin:6px 0 4px;
+  font-size:24px;
+  letter-spacing:.5px;
+}
 
-    .info, .status, .results {
-      margin-bottom: 22px;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 14px;
-    }
+.version{
+  font-size:12px;
+  color:var(--soft);
+  margin-bottom:22px;
+}
 
-    .info {
-      background: rgba(0,255,156,.08);
-      border: 1px solid rgba(0,255,156,.25);
-    }
+.info{
+  font-size:14px;
+  background:rgba(0,255,156,.08);
+  padding:16px;
+  border-radius:16px;
+  line-height:1.6;
+  border:1px solid rgba(0,255,156,.25);
+  color:#c7fbe7;
+  margin-bottom:22px;
+}
 
-    label {
-      display: block;
-      margin-top: 18px;
-      font-size: 13px;
-      color: var(--soft);
-    }
+label{
+  display:block;
+  margin-top:18px;
+  font-size:13px;
+  color:var(--soft);
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-top: 6px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(2,6,23,.9);
-      color: #fff;
-      font-size: 15px;
-      text-align: center;
-    }
+input,select{
+  width:100%;
+  padding:14px;
+  margin-top:6px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(2,6,23,.9);
+  color:#fff;
+  font-size:15px;
+  text-align:center;
+}
 
-    button {
-      width: 100%;
-      padding: 16px;
-      border-radius: 18px;
-      border: none;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 14px;
-    }
+button{
+  width:100%;
+  padding:16px;
+  border-radius:18px;
+  border:none;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:14px;
+}
 
-    button.primary {
-      background: linear-gradient(135deg, #00ff9c, #00c777);
-      color: #00150c;
-    }
+button.primary{
+  background:linear-gradient(135deg, #00ff9c, #00c777);
+  color:#00150c;
+  opacity:.45;
+}
 
-    button.secondary {
-      background: transparent;
-      border: 1px solid rgba(0,255,156,.5);
-      color: var(--neon);
-    }
+button.secondary{
+  background:transparent;
+  border:1px solid rgba(0,255,156,.5);
+  color:var(--neon);
+}
 
-    .results {
-      background: rgba(2,6,23,.85);
-      border: 1px solid rgba(255,255,255,.08);
-      text-align: left;
-    }
+.results{
+  margin-top:18px;
+  text-align:left;
+}
 
-    .competition { margin-bottom: 12px; }
-    .competition h3 {
-      cursor: pointer;
-      color: var(--neon);
-      font-size: 15px;
-      margin: 8px 0;
-    }
+.competition{
+  margin-bottom:14px;
+}
 
-    .matches { margin-left: 8px; }
-    .match {
-      padding: 6px 8px;
-      margin: 4px 0;
-      border-radius: 10px;
-      cursor: pointer;
-      background: rgba(255,255,255,.06);
-    }
+.competition h3{
+  cursor:pointer;
+  color:var(--neon);
+  margin-bottom:6px;
+}
 
-    .match:hover { background: rgba(0,255,156,.18); }
-    .match.selected {
-      background: rgba(0,255,156,.35);
-      color: #00150c;
-      font-weight: 600;
-    }
-  </style>
+.match{
+  padding:8px 10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.match:hover{
+  background:rgba(0,255,156,.15);
+}
+
+.match.selected{
+  background:rgba(0,255,156,.35);
+  color:#00150c;
+}
+
+.status{
+  margin-top:22px;
+  background:rgba(255,0,0,.08);
+  border:1px solid rgba(255,0,0,.35);
+  color:#ffb4b4;
+  padding:14px;
+  border-radius:14px;
+  font-size:14px;
+}
+
+/* =============================
+   MÉTRICAS PREMIUM
+============================= */
+
+.metrics{
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+.metric-card{
+  background:rgba(0,255,156,.06);
+  border:1px solid rgba(0,255,156,.25);
+  border-radius:16px;
+  padding:14px;
+}
+
+.metric-card h4{
+  margin:0 0 8px;
+  font-size:14px;
+  color:var(--neon);
+}
+
+.metric-card p{
+  margin:0;
+  font-size:13px;
+  color:#c7fbe7;
+  line-height:1.5;
+}
+</style>
 </head>
 
 <body>
 <div class="container">
 
-  <img src="images/logo.png" class="logo" alt="NOX Logo">
+<img src="images/logo.png" class="logo">
 
-  <h1>NOX Premium</h1>
-  <div class="version">Página 5 • v1.3</div>
+<h1>NOX Premium</h1>
+<div class="version">Página 5 • v1.3</div>
 
-  <div class="info">
-    🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br><br>
-    💡 Cada pagamento libera <strong>1 análise Premium</strong>.
-  </div>
+<div class="info">
+🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br><br>
+💡 Cada pagamento libera <strong>1 análise Premium</strong>.
+</div>
 
-  <label>API Key • API-Football</label>
-  <input id="apikey" type="text" placeholder="Cole sua API Key">
+<label>API Key • API-Football</label>
+<input id="apikey" type="text" placeholder="Cole sua API Key">
 
-  <label>Data da análise</label>
-  <input id="date" type="date">
+<label>Data da análise</label>
+<input id="date" type="date">
 
-  <button class="secondary" onclick="loadCompetitions()">
-    📅 Carregar Partidas
-  </button>
+<button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
 
-  <div id="competitions" class="results"></div>
+<div id="competitions" class="results"></div>
 
-  <div class="status" id="paymentStatus">
-    🔒 Acesso bloqueado. Efetue o pagamento.
-  </div>
+<div class="status" id="paymentStatus">
+🔒 Acesso Premium bloqueado. Efetue o pagamento.
+</div>
 
-  <button class="primary" id="analyzeBtn" disabled>
-    🔎 Analisar partida
-  </button>
+<button class="primary" onclick="analyzeMatch()">🔎 Analisar Partida</button>
 
-  <div class="results" id="results">
-    <strong>Resultados Premium</strong><br><br>
-    Os dados aparecerão após a análise.
-  </div>
+<!-- =============================
+     MÉTRICAS PREMIUM
+============================= -->
+
+<div class="metrics" id="results">
+
+<div class="metric-card">
+<h4>📊 Head-to-Head</h4>
+<p>Histórico de confrontos, médias de gols e domínio.</p>
+</div>
+
+<div class="metric-card">
+<h4>⚽ Gols & Over/Under</h4>
+<p>Médias FT/HT, BTTS, tendências ofensivas.</p>
+</div>
+
+<div class="metric-card">
+<h4>🟨 Cartões</h4>
+<p>Médias por equipe, árbitro e agressividade.</p>
+</div>
+
+<div class="metric-card">
+<h4>🚩 Escanteios</h4>
+<p>Médias ofensivas, pressão e ritmo de jogo.</p>
+</div>
+
+<div class="metric-card">
+<h4>👤 Jogadores</h4>
+<p>Finalizações, cartões, participação direta.</p>
+</div>
 
 </div>
 
-<!-- =============================
-     JS INLINE — LISTAGEM (ANTIGO)
-============================= -->
+</div>
+
 <script>
 const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
 let selectedFixture = null;
 
-async function loadCompetitions() {
-  const apiKey = document.getElementById("apikey").value.trim();
-  const date = document.getElementById("date").value;
-  const box = document.getElementById("competitions");
+async function loadCompetitions(){
+  const apiKey = apikey.value;
+  const dateVal = date.value;
+  const box = competitions;
 
-  if (!apiKey || !date) {
-    alert("Informe API Key e data");
-    return;
-  }
+  box.innerHTML = "⏳ Carregando...";
 
-  box.innerHTML = "⏳ Carregando competições...";
-
-  const res = await fetch(BACKEND_LIST, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ apiKey, date })
+  const res = await fetch(BACKEND_LIST,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ apiKey, date:dateVal })
   });
 
   const data = await res.json();
-
   let html = "";
+
   data.competitions.forEach((c,i)=>{
-    html += `
-      <div class="competition">
-        <h3 onclick="toggleComp(${i},event)">🏆 ${c.league} (${c.country})</h3>
-        <div class="matches" id="comp-${i}">
-    `;
+    html+=`<div class="competition">
+      <h3 onclick="toggleComp(${i},event)">🏆 ${c.league}</h3>
+      <div id="c-${i}">`;
     c.matches.forEach(m=>{
-      html += `
-        <div class="match" data-fixture="${m.fixtureId}"
-          onclick="selectMatch(event,this)">
-          ⏰ ${m.time} - ${m.home} x ${m.away}
-        </div>
-      `;
+      html+=`<div class="match" data-fixture="${m.fixtureId}"
+        onclick="selectMatch(event,this)">
+        ${m.time} ${m.home} x ${m.away}
+      </div>`;
     });
-    html += `</div></div>`;
+    html+=`</div></div>`;
   });
 
   box.innerHTML = html;
@@ -220,8 +284,8 @@ async function loadCompetitions() {
 
 function toggleComp(i,e){
   e.stopPropagation();
-  const el = document.getElementById("comp-"+i);
-  el.style.display = el.style.display === "none" ? "block" : "none";
+  const el=document.getElementById("c-"+i);
+  el.style.display = el.style.display==="none" ? "block" : "none";
 }
 
 function selectMatch(e,el){
@@ -232,7 +296,6 @@ function selectMatch(e,el){
 }
 </script>
 
-<!-- Premium / pagamento -->
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
 
