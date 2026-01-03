@@ -6,10 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
+    :root{
+      --neon:#00ff9c;
+      --dark:#020617;
+      --card:#0b1224;
+      --soft:#94a3b8;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at top, #0f3d2e, #020617 75%);
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(600px at top, rgba(0,255,156,.15), transparent 60%),
+        linear-gradient(180deg, #020617, #01030f);
       color: #fff;
       min-height: 100vh;
       display: flex;
@@ -19,125 +28,142 @@
 
     .container {
       width: 100%;
-      max-width: 470px;
-      background: rgba(10, 15, 30, 0.88);
-      backdrop-filter: blur(14px);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
-      border: 1px solid rgba(0,255,156,.25);
+      max-width: 480px;
+      background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(2,6,23,.95));
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.65),
+        inset 0 0 0 1px rgba(0,255,156,.18);
     }
 
     .logo {
-      max-width: 135px;
-      margin-bottom: 12px;
+      max-width: 120px;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 0 10px rgba(0,255,156,.35));
     }
 
     h1 {
-      margin: 6px 0 4px;
-      font-size: 22px;
+      margin: 4px 0;
+      font-size: 23px;
+      letter-spacing: .4px;
     }
 
     .version {
       font-size: 12px;
-      opacity: 0.75;
-      margin-bottom: 18px;
+      color: var(--soft);
+      margin-bottom: 22px;
     }
 
     .info {
       font-size: 14px;
-      background: rgba(0,0,0,.4);
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      line-height: 1.55;
-      border-left: 3px solid #00ff9c;
+      background: rgba(0,255,156,.08);
+      padding: 14px 16px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+      line-height: 1.6;
+      border: 1px solid rgba(0,255,156,.25);
+      color: #c7fbe7;
     }
 
     label {
       display: block;
-      margin-top: 14px;
+      margin-top: 16px;
       font-size: 13px;
-      opacity: 0.9;
+      color: var(--soft);
     }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       margin-top: 6px;
-      border-radius: 9px;
-      border: none;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,6,23,.9);
+      color: #fff;
       font-size: 15px;
-      box-sizing: border-box;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 2px rgba(0,255,156,.15);
     }
 
     button {
       width: 100%;
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 14px;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 16px;
       border: none;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
-      transition: 0.25s;
+      transition: .25s ease;
     }
 
     button.primary {
       background: linear-gradient(135deg, #00ff9c, #00c777);
-      color: #000;
+      color: #00150c;
+      box-shadow: 0 10px 25px rgba(0,255,156,.35);
     }
 
     button.primary:disabled {
-      background: linear-gradient(135deg, #3a3a3a, #1f1f1f);
-      color: #9a9a9a;
+      background: linear-gradient(135deg, #1f2937, #020617);
+      color: #64748b;
       cursor: not-allowed;
       box-shadow: none;
     }
 
     button.secondary {
       background: transparent;
-      border: 1px solid #00ff9c;
-      color: #00ff9c;
+      border: 1px solid rgba(0,255,156,.45);
+      color: var(--neon);
       margin-top: 12px;
     }
 
+    button.secondary:hover {
+      background: rgba(0,255,156,.08);
+    }
+
     .status {
-      margin-top: 14px;
+      margin-top: 18px;
       font-size: 14px;
-      background: rgba(255, 165, 0, 0.12);
-      padding: 12px;
-      border-radius: 10px;
-      color: #ffcc80;
+      background: rgba(255, 165, 0, .12);
+      padding: 14px;
+      border-radius: 14px;
+      color: #ffd8a8;
+      border: 1px solid rgba(255,165,0,.25);
     }
 
     .results {
-      margin-top: 22px;
-      background: rgba(0,0,0,.45);
-      padding: 16px;
-      border-radius: 14px;
+      margin-top: 24px;
+      background: linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.6));
+      padding: 18px;
+      border-radius: 18px;
       font-size: 14px;
-      min-height: 90px;
-      line-height: 1.55;
+      line-height: 1.6;
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,.08);
     }
 
     .nav {
-      margin-top: 22px;
+      margin-top: 26px;
       text-align: center;
     }
 
     .nav a {
       color: #fff;
       text-decoration: none;
-      background: rgba(255,255,255,.14);
-      padding: 11px 20px;
-      border-radius: 14px;
+      background: rgba(255,255,255,.12);
+      padding: 12px 22px;
+      border-radius: 18px;
       display: inline-block;
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .nav a:hover {
-      background: rgba(255,255,255,.28);
+      background: rgba(255,255,255,.25);
     }
   </style>
 </head>
@@ -149,41 +175,35 @@
     <img src="images/logo.png" alt="NOX Logo" class="logo">
 
     <h1>NOX Premium</h1>
-    <div class="version">Página 5 • Versão Premium</div>
+    <div class="version">Página 5 • Análises Avançadas</div>
 
     <div class="info">
-      🔐 Para maior segurança e funcionamento correto,  
-      acesse esta página **pelo navegador da sua carteira**  
-      (MetaMask, Trust Wallet, OKX, Binance Wallet).
+      🔐 Para maior segurança, utilize esta página diretamente
+      no <strong>navegador da sua carteira</strong>
+      (MetaMask, Trust Wallet, OKX ou Binance).
     </div>
 
-    <!-- API KEY -->
-    <label for="apikey">API Key (API-Football)</label>
+    <label for="apikey">API Key • API-Football</label>
     <input id="apikey" type="text" placeholder="Cole sua API Key aqui">
 
-    <!-- DATA -->
-    <label for="date">Selecione a data</label>
+    <label for="date">Data da análise</label>
     <input id="date" type="date">
 
-    <!-- STATUS DE PAGAMENTO -->
     <div class="status" id="paymentStatus">
-      🔒 Acesso bloqueado.  
-      Realize o pagamento para liberar as análises premium.
+      🔒 Acesso Premium bloqueado.  
+      Efetue o pagamento para liberar as análises.
     </div>
 
-    <!-- BOTÃO ANALISAR (BLOQUEADO) -->
     <button class="primary" id="analyzeBtn" disabled>
       🔎 Analisar partidas
     </button>
 
-    <!-- BOTÃO PAGAMENTO -->
     <button class="secondary" id="payBtn">
       💳 Desbloquear acesso Premium
     </button>
 
-    <!-- RESULTADOS -->
     <div class="results" id="results">
-      Após o pagamento, aqui serão exibidos:<br><br>
+      <strong>Resultados Premium</strong><br><br>
       • Moda de cartões<br>
       • Moda de escanteios<br>
       • Jogador com mais gols<br>
@@ -191,18 +211,11 @@
       • Jogador com mais chutes
     </div>
 
-    <!-- NAVEGAÇÃO -->
     <div class="nav">
       <a href="index.html">🏠 Página Inicial</a>
     </div>
 
   </div>
-
-  <!-- SCRIPTS (implementados depois) -->
-  <!--
-  <script src="money/walletv12.js"></script>
-  <script src="statistics/statistics.js"></script>
-  -->
 
 </body>
 </html>
