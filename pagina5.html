@@ -82,23 +82,17 @@
       text-align: center;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 14px;
       margin: 6px auto 0;
-      display: block;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.08);
       background: rgba(2,6,23,.9);
       color: #fff;
       font-size: 15px;
-      outline: none;
       text-align: center;
-      box-sizing: border-box;
     }
-
-    select { cursor: pointer; }
 
     button {
       width: 100%;
@@ -116,97 +110,25 @@
       color: #00150c;
     }
 
-    button.primary:disabled {
-      background: linear-gradient(135deg, #1f2937, #020617);
-      color: #64748b;
-      cursor: not-allowed;
-    }
-
     button.secondary {
       background: transparent;
       border: 1px solid rgba(0,255,156,.5);
       color: var(--neon);
     }
 
-    .status {
-      font-size: 14px;
-      background: rgba(255,165,0,.12);
-      padding: 16px;
-      border-radius: 16px;
-      color: #ffd8a8;
-      border: 1px solid rgba(255,165,0,.25);
-    }
-
-    .results {
-      background: linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.6));
-      padding: 18px;
-      border-radius: 18px;
-      font-size: 14px;
-      color: #e2e8f0;
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .nav {
-      margin-top: 26px;
-    }
-
-    .nav a {
-      display: inline-block;
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,.12);
-      padding: 12px 24px;
-      border-radius: 18px;
-      font-weight: 600;
-    }
-
-    .nav a:hover {
-      background: rgba(255,255,255,.25);
-    }
-
-    .competition {
-      text-align: left;
-      margin-bottom: 12px;
-    }
-
-    .competition h3 {
-      font-size: 15px;
-      cursor: pointer;
-      color: var(--neon);
-      margin: 8px 0;
-    }
-
-    .matches {
-      margin-left: 8px;
-      margin-top: 6px;
-    }
-
-    .match {
-      padding: 6px 8px;
-      margin: 4px 0;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      background: rgba(255,255,255,.06);
-    }
-
-    .match:hover {
-      background: rgba(0,255,156,.18);
-    }
-
-    .match.selected {
-      background: rgba(0,255,156,.35);
-      color: #00150c;
-      font-weight: 600;
-    }
+    .competition { text-align: left; margin-bottom: 12px; }
+    .competition h3 { cursor: pointer; color: var(--neon); }
+    .matches { margin-left: 8px; }
+    .match { padding: 6px; cursor: pointer; }
+    .match:hover { background: rgba(0,255,156,.18); }
+    .match.selected { background: rgba(0,255,156,.35); color: #00150c; }
   </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <img src="images/logo.png" class="logo" alt="NOX Logo">
+  <img src="images/logo.png" class="logo">
 
   <h1>NOX Premium</h1>
   <div class="version">Página 5 • v1.3</div>
@@ -217,50 +139,74 @@
   </div>
 
   <label>API Key • API-Football</label>
-  <input id="apikey" type="text" placeholder="Cole sua API Key">
+  <input id="apikey" type="text">
 
   <label>Data da análise</label>
   <input id="date" type="date">
 
-  <button class="secondary" id="loadMatchesBtn">
-    📅 Carregar Partidas
-  </button>
+  <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
 
   <div id="competitions" class="results"></div>
 
-  <label>Competição (Liga • País)</label>
-  <select id="leagueSelect">
-    <option value="">Selecione a competição</option>
-  </select>
-
-  <label>Partida (Horário • Confronto)</label>
-  <select id="fixtureSelect">
-    <option value="">Selecione a partida</option>
-  </select>
-
   <div class="status" id="paymentStatus">
-    🔒 Acesso bloqueado.<br>
-    Efetue o pagamento para liberar <strong>1 análise</strong>.
+    🔒 Acesso bloqueado.
   </div>
 
-  <button class="primary" id="analyzeBtn" disabled>
-    🔎 Analisar partidas
-  </button>
+  <button class="primary" onclick="analyzeMatch()">🔎 Analisar partidas</button>
 
-  <button class="secondary" id="payBtn">
-    💳 LIBERAR ANÁLISE PREMIUM
-  </button>
-
-  <div class="results" id="results">
-    <strong>Resultados Premium</strong><br><br>
-    Os dados aparecerão após a análise.
-  </div>
-
-  <div class="nav">
-    <a href="index.html">🏠 Página Inicial</a>
-  </div>
+  <div class="results" id="results"></div>
 
 </div>
+
+<script>
+const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
+let selectedFixture = null;
+
+async function loadCompetitions() {
+  const apiKey = apikey.value;
+  const date = date.value;
+  const box = competitions;
+
+  box.innerHTML = "⏳ Carregando...";
+
+  const res = await fetch(BACKEND_LIST, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ apiKey, date })
+  });
+
+  const data = await res.json();
+  let html = "";
+
+  data.competitions.forEach((c,i)=>{
+    html+=`<div class="competition">
+      <h3 onclick="toggleComp(${i},event)">🏆 ${c.league}</h3>
+      <div id="c-${i}">`;
+    c.matches.forEach(m=>{
+      html+=`<div class="match" data-fixture="${m.fixtureId}"
+        onclick="selectMatch(event,this)">
+        ${m.time} ${m.home} x ${m.away}
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+
+  box.innerHTML = html;
+}
+
+function toggleComp(i,e){
+  e.stopPropagation();
+  const el=document.getElementById("c-"+i);
+  el.style.display=el.style.display==="none"?"block":"none";
+}
+
+function selectMatch(e,el){
+  e.stopPropagation();
+  document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
+  el.classList.add("selected");
+  selectedFixture=el.dataset.fixture;
+}
+</script>
 
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
