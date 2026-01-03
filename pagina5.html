@@ -28,17 +28,9 @@ border-radius:12px;border:none;font-weight:600;cursor:pointer
 }
 .btn-wallet{background:linear-gradient(135deg,#00ff9c,#00c777)}
 .btn-analyze{background:none;color:var(--neon);border:1px solid var(--neon)}
+.btn-home{background:none;color:#aaa;border:1px solid #333}
 .locked{opacity:.4;pointer-events:none}
 .status{margin-top:16px;padding:12px;border-radius:10px;background:#0005;font-size:13px}
-
-.wallet-modal{
-position:fixed;inset:0;background:#000c;
-display:none;align-items:center;justify-content:center;z-index:9999
-}
-.wallet-box{
-background:#020617;border:1px solid var(--neon);
-border-radius:16px;padding:22px;width:90%;max-width:320px;text-align:center
-}
 </style>
 </head>
 
@@ -48,36 +40,41 @@ border-radius:16px;padding:22px;width:90%;max-width:320px;text-align:center
 
 <img src="images/logo.png" class="logo">
 
-<button id="openWallet" class="btn-wallet">Conectar Carteira</button>
+<button class="btn-home" onclick="location.href='/'">
+← Página inicial
+</button>
 
-<button id="analyzeBtn" class="btn-analyze locked">Analisar • Premium</button>
+<button id="openWallet" class="btn-wallet">
+Conectar Carteira
+</button>
 
-<div id="status" class="status">Carteira não conectada</div>
+<button id="analyzeBtn" class="btn-analyze locked">
+Analisar • Premium
+</button>
+
+<div id="status" class="status">
+Carteira não conectada
+</div>
 
 </div>
 </div>
 
-<!-- MODAL -->
-<div id="walletModal" class="wallet-modal">
-<div class="wallet-box">
-<h3>Conectar Carteira</h3>
-<button id="btnInjected">🔗 MetaMask / Trust</button>
-<button id="btnWC">📱 QR Code / Link</button>
-<button id="btnCancel">Cancelar</button>
-</div>
-</div>
-
+<!-- LIBS -->
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
+
+<!-- WALLETCONNECT CORRETO -->
+<script src="https://unpkg.com/@walletconnect/modal@2.6.2/dist/index.umd.js"></script>
 <script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
+
 <script src="money/wallet.js"></script>
 
 <script>
-const modal=document.getElementById("walletModal");
-openWallet.onclick=()=>modal.style.display="flex";
-btnCancel.onclick=()=>modal.style.display="none";
-btnInjected.onclick=()=>window.connectInjected();
-btnWC.onclick=()=>window.connectWalletConnect();
-analyzeBtn.onclick=()=>window.analyze();
+document.getElementById("openWallet").onclick = () => {
+  window.openWalletModal();
+};
+document.getElementById("analyzeBtn").onclick = () => {
+  window.analyze();
+};
 </script>
 </body>
 </html>
