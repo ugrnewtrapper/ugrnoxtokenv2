@@ -1,80 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>NOX Premium • Análises Avançadas Web3</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>NOX Premium • Análises Avançadas Web3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root{
---neon:#00ff9c;--bg:#020617;--card:rgba(10,15,30,.78)
-}
-*{box-sizing:border-box}
-body{
-margin:0;font-family:Segoe UI,Arial;
-background:radial-gradient(circle at top,#0f3d2e,#020617 65%);
-color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center
-}
-.container{max-width:430px;width:100%;padding:20px}
-.card{
-background:var(--card);border-radius:20px;padding:28px;
-border:1px solid rgba(0,255,156,.18);
-box-shadow:0 0 30px rgba(0,0,0,.8)
-}
-.logo{width:120px;margin:auto;display:block}
-button{
-width:100%;padding:14px;margin-top:12px;
-border-radius:12px;border:none;font-weight:600;cursor:pointer
-}
-.btn-wallet{background:linear-gradient(135deg,#00ff9c,#00c777)}
-.btn-analyze{background:none;color:var(--neon);border:1px solid var(--neon)}
-.btn-home{background:none;color:#aaa;border:1px solid #333}
-.locked{opacity:.4;pointer-events:none}
-.status{margin-top:16px;padding:12px;border-radius:10px;background:#0005;font-size:13px}
-</style>
+  <style>
+    :root {
+      --neon: #00ff9c;
+      --neon-soft: rgba(0,255,156,0.25);
+      --bg-main: #020617;
+      --bg-card: rgba(10, 15, 30, 0.78);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #0f3d2e, #020617 65%),
+        linear-gradient(135deg, #020617, #020617);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      border: 1px solid rgba(0,255,156,0.18);
+      box-shadow: 0 0 35px rgba(0,0,0,0.8), 0 0 28px var(--neon-soft);
+    }
+
+    .logo {
+      width: 120px;
+      margin: 0 auto 14px;
+      display: block;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-wallet {
+      background: linear-gradient(135deg, #00ff9c, #00c777);
+      color: #000;
+    }
+
+    .btn-analyze {
+      background: transparent;
+      color: var(--neon);
+      border: 1px solid var(--neon);
+    }
+
+    .btn-home {
+      background: transparent;
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    .locked {
+      opacity: .45;
+      pointer-events: none;
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px;
+      font-size: 13px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.35);
+      white-space: pre-line;
+    }
+  </style>
 </head>
 
 <body>
+
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<img src="images/logo.png" class="logo">
+    <img src="images/logo.png" class="logo">
 
-<button class="btn-home" onclick="location.href='/'">
-← Página inicial
-</button>
+    <button id="connectBtn" class="btn-wallet">
+      Conectar Carteira
+    </button>
 
-<button id="openWallet" class="btn-wallet">
-Conectar Carteira
-</button>
+    <button id="analyzeBtn" class="btn-analyze locked">
+      Analisar • Premium
+    </button>
 
-<button id="analyzeBtn" class="btn-analyze locked">
-Analisar • Premium
-</button>
+    <button class="btn-home" onclick="location.href='/'">
+      ⬅ Página inicial
+    </button>
 
-<div id="status" class="status">
-Carteira não conectada
+    <div id="status" class="status">
+      Carteira não conectada
+    </div>
+
+  </div>
 </div>
 
-</div>
-</div>
-
-<!-- LIBS -->
+<!-- LIBS OFICIAIS -->
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
 
-<!-- WALLETCONNECT CORRETO -->
-<script src="https://unpkg.com/@walletconnect/modal@2.6.2/dist/index.umd.js"></script>
-<script src="https://unpkg.com/@walletconnect/ethereum-provider@2.11.1/dist/index.umd.js"></script>
+<script type="module" src="https://unpkg.com/@web3modal/ethers@3.5.0/dist/index.js"></script>
 
 <script src="money/wallet.js"></script>
 
-<script>
-document.getElementById("openWallet").onclick = () => {
-  window.openWalletModal();
-};
-document.getElementById("analyzeBtn").onclick = () => {
-  window.analyze();
-};
-</script>
 </body>
 </html>
