@@ -1,10 +1,11 @@
 /* =============================
-   BACKENDS (CORREÇÃO APLICADA)
+   BACKENDS (OK)
 ============================= */
-const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";     // backend antigo
-const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev"; // backend novo (worker2)
+const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
+const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev";
 
 let selectedFixture = null;
+let competitionsCache = [];
 
 /* =============================
    HELPERS
@@ -17,10 +18,7 @@ const safe = (v, msg = "❌ Não disponível neste plano") =>
    (BACKEND ANTIGO)
 ============================= */
 async function loadCompetitions() {
-  const apiKey =
-    document.getElementById("apikey")?.value ||
-    document.getElementById("apiKey")?.value;
-
+  const apiKey = document.getElementById("apikey")?.value;
   const date = document.getElementById("date")?.value;
 
   if (!apiKey || !date) {
@@ -28,8 +26,11 @@ async function loadCompetitions() {
     return;
   }
 
-  const box = document.getElementById("competitions");
-  if (box) box.innerHTML = "⏳ Carregando competições...";
+  const leagueSelect = document.getElementById("leagueSelect");
+  const fixtureSelect = document.getElementById("fixtureSelect");
+
+  leagueSelect.innerHTML = `<option value="">⏳ Carregando competições...</option>`;
+  fixtureSelect.innerHTML = `<option value="">Selecione a partida</option>`;
 
   const res = await fetch(BACKEND_LIST, {
     method: "POST",
@@ -40,77 +41,56 @@ async function loadCompetitions() {
   const data = await res.json();
 
   if (!Array.isArray(data.competitions) || !data.competitions.length) {
-    if (box) box.innerHTML = "❌ Nenhuma competição encontrada";
+    leagueSelect.innerHTML = `<option value="">❌ Nenhuma competição encontrada</option>`;
     return;
   }
 
-  let html = "";
+  competitionsCache = data.competitions;
+
+  let html = `<option value="">Selecione a competição</option>`;
 
   data.competitions.forEach((comp, idx) => {
-    html += `
-      <div class="competition">
-        <h3 onclick="toggleComp(${idx}, event)">
-          🏆 ${comp.league} (${comp.country})
-        </h3>
-        <div class="matches" id="comp-${idx}">
-    `;
-
-    comp.matches.forEach(m => {
-      html += `
-        <div class="match"
-             data-fixture="${m.fixtureId}"
-             onclick="selectMatch(event, this)">
-          ⏰ ${m.time} - ${m.home} x ${m.away}
-        </div>
-      `;
-    });
-
-    html += `</div></div>`;
+    html += `<option value="${idx}">🏆 ${comp.league} • ${comp.country}</option>`;
   });
 
-  if (box) box.innerHTML = html;
+  leagueSelect.innerHTML = html;
 }
 
 /* =============================
-   2) TOGGLE COMPETIÇÃO
+   2) AO SELECIONAR COMPETIÇÃO
 ============================= */
-function toggleComp(idx, event) {
-  event.stopPropagation();
-  const el = document.getElementById(`comp-${idx}`);
-  if (!el) return;
-  el.style.display = el.style.display === "none" ? "block" : "none";
-}
+document.getElementById("leagueSelect")?.addEventListener("change", e => {
+  const idx = e.target.value;
+  const fixtureSelect = document.getElementById("fixtureSelect");
+
+  fixtureSelect.innerHTML = `<option value="">Selecione a partida</option>`;
+  selectedFixture = null;
+
+  if (!idx || !competitionsCache[idx]) return;
+
+  competitionsCache[idx].matches.forEach(m => {
+    fixtureSelect.innerHTML += `
+      <option value="${m.fixtureId}">
+        ⏰ ${m.time} • ${m.home} x ${m.away}
+      </option>
+    `;
+  });
+});
 
 /* =============================
-   3) SELECIONAR PARTIDA
+   3) AO SELECIONAR PARTIDA
 ============================= */
-function selectMatch(event, el) {
-  event.stopPropagation();
+document.getElementById("fixtureSelect")?.addEventListener("change", e => {
+  selectedFixture = e.target.value || null;
 
-  document.querySelectorAll(".match").forEach(m =>
-    m.classList.remove("selected")
-  );
-
-  el.classList.add("selected");
-  selectedFixture = el.dataset.fixture;
-
-  const result =
-    document.getElementById("results") ||
-    document.getElementById("result");
-
-  if (result) {
+  const result = document.getElementById("results");
+  if (selectedFixture && result) {
     result.innerHTML = `
       <h3>📌 Partida selecionada</h3>
-      <p>${el.innerText}</p>
+      <p>${e.target.options[e.target.selectedIndex].text}</p>
     `;
   }
-
-  document.querySelectorAll(".matches").forEach(m => {
-    m.style.display = "none";
-  });
-
-  el.parentElement.style.display = "block";
-}
+});
 
 /* =============================
    4) ANALISAR PARTIDA
@@ -122,19 +102,13 @@ async function analyzeMatch() {
     return;
   }
 
-  const apiKey =
-    document.getElementById("apikey")?.value ||
-    document.getElementById("apiKey")?.value;
-
+  const apiKey = document.getElementById("apikey")?.value;
   if (!apiKey) {
     alert("⚠️ Informe sua API Key");
     return;
   }
 
-  const result =
-    document.getElementById("results") ||
-    document.getElementById("result");
-
+  const result = document.getElementById("results");
   if (result) result.innerHTML = "📊 Analisando dados Premium...";
 
   const res = await fetch(BACKEND_ANALYZE, {
@@ -149,43 +123,36 @@ async function analyzeMatch() {
   const data = await res.json();
 
   if (data.error) {
-    if (result) result.innerHTML = "❌ " + data.error;
+    result.innerHTML = "❌ " + data.error;
     return;
   }
 
-  let html = `
+  result.innerHTML = `
     <h3>${data.teams.home} x ${data.teams.away}</h3>
     <ul>
       <li>⚽ Artilheiro:
         <strong>${safe(data.players.topGoals?.player)}
         (${safe(data.players.topGoals?.value)})</strong>
       </li>
-
       <li>🎯 Assistências:
         <strong>${safe(data.players.topAssists?.player)}
         (${safe(data.players.topAssists?.value)})</strong>
       </li>
-
       <li>🥅 Chutes:
         <strong>${safe(data.players.topShots?.player)}
         (${safe(data.players.topShots?.value)})</strong>
       </li>
-
       <li>🟨 Moda de cartões:
         <strong>${safe(data.discipline.cardsMode)}</strong>
       </li>
-
       <li>🚩 Moda de escanteios:
         <strong>${safe(data.discipline.cornersMode)}</strong>
       </li>
     </ul>
-
-    <p style="opacity:.8; font-size:14px;">
-      ℹ️ Alguns dados podem não estar disponíveis conforme o plano ou estatísticas da partida.
+    <p style="opacity:.8;font-size:14px;">
+      ℹ️ Alguns dados podem não estar disponíveis conforme o plano.
     </p>
   `;
-
-  if (result) result.innerHTML = html;
 }
 
 /* =============================
