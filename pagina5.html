@@ -20,81 +20,81 @@ body{
     linear-gradient(180deg, #020617, #01030f);
   color:#fff;
   min-height:100vh;
-  display:block;
-  padding:24px 12px 60px;
+  padding:20px 10px 50px;
 }
 
 .container{
   width:100%;
-  max-width:520px;
+  max-width:500px;
   margin:0 auto;
   background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
-  border-radius:24px;
-  padding:32px 26px;
-  text-align:center;
+  border-radius:22px;
+  padding:26px 22px;
   box-shadow:
     0 24px 70px rgba(0,0,0,.7),
     inset 0 0 0 1px rgba(0,255,156,.18);
 }
 
 .logo{
-  max-width:120px;
-  margin:0 auto 16px;
+  max-width:110px;
+  margin:0 auto 14px;
   display:block;
-  filter:drop-shadow(0 0 12px rgba(0,255,156,.35));
+  filter:drop-shadow(0 0 10px rgba(0,255,156,.35));
 }
 
 h1{
-  margin:6px 0 4px;
-  font-size:24px;
-  letter-spacing:.5px;
+  margin:4px 0 2px;
+  font-size:22px;
+  text-align:center;
 }
 
 .version{
   font-size:12px;
   color:var(--soft);
-  margin-bottom:22px;
+  text-align:center;
+  margin-bottom:18px;
 }
 
 .info{
-  font-size:14px;
+  font-size:13.5px;
   background:rgba(0,255,156,.08);
-  padding:16px;
-  border-radius:16px;
-  line-height:1.6;
+  padding:14px;
+  border-radius:14px;
+  line-height:1.55;
   border:1px solid rgba(0,255,156,.25);
   color:#c7fbe7;
-  margin-bottom:22px;
+  margin-bottom:18px;
 }
 
 label{
   display:block;
-  margin-top:18px;
+  margin-top:16px;
   font-size:13px;
   color:var(--soft);
+  text-align:left;
 }
 
-input,select{
+input{
   width:100%;
-  padding:14px;
+  padding:12px;
   margin-top:6px;
-  border-radius:14px;
+  border-radius:12px;
   border:1px solid rgba(255,255,255,.08);
   background:rgba(2,6,23,.9);
   color:#fff;
-  font-size:15px;
-  text-align:center;
+  font-size:14px;
+  text-align:left;
 }
 
 button{
   width:100%;
-  padding:16px;
-  border-radius:18px;
+  padding:14px;
+  border-radius:16px;
   border:none;
-  font-size:16px;
+  font-size:15px;
   font-weight:700;
   cursor:pointer;
-  margin-top:14px;
+  margin-top:12px;
 }
 
 button.primary{
@@ -110,24 +110,26 @@ button.secondary{
 }
 
 .results{
-  margin-top:18px;
+  margin-top:16px;
   text-align:left;
 }
 
 .competition{
-  margin-bottom:14px;
+  margin-bottom:12px;
 }
 
 .competition h3{
   cursor:pointer;
   color:var(--neon);
   margin-bottom:6px;
+  font-size:14px;
 }
 
 .match{
-  padding:8px 10px;
-  border-radius:10px;
+  padding:7px 9px;
+  border-radius:9px;
   cursor:pointer;
+  font-size:13.5px;
 }
 
 .match:hover{
@@ -140,44 +142,45 @@ button.secondary{
 }
 
 .status{
-  margin-top:22px;
+  margin-top:18px;
   background:rgba(255,0,0,.08);
   border:1px solid rgba(255,0,0,.35);
   color:#ffb4b4;
-  padding:14px;
-  border-radius:14px;
-  font-size:14px;
+  padding:12px;
+  border-radius:12px;
+  font-size:13px;
+  text-align:center;
 }
 
 /* =============================
-   MÉTRICAS PREMIUM
+   MÉTRICAS PREMIUM (CORRETAS)
 ============================= */
 
 .metrics{
-  margin-top:26px;
+  margin-top:22px;
   display:grid;
   grid-template-columns:1fr;
-  gap:14px;
+  gap:10px;
 }
 
 .metric-card{
   background:rgba(0,255,156,.06);
   border:1px solid rgba(0,255,156,.25);
-  border-radius:16px;
-  padding:14px;
+  border-radius:14px;
+  padding:12px;
 }
 
 .metric-card h4{
-  margin:0 0 8px;
-  font-size:14px;
+  margin:0 0 6px;
+  font-size:13.5px;
   color:var(--neon);
 }
 
 .metric-card p{
   margin:0;
-  font-size:13px;
+  font-size:12.5px;
   color:#c7fbe7;
-  line-height:1.5;
+  line-height:1.45;
 }
 </style>
 </head>
@@ -191,7 +194,7 @@ button.secondary{
 <div class="version">Página 5 • v1.3</div>
 
 <div class="info">
-🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br><br>
+🔐 Utilize esta página no <strong>navegador da sua carteira</strong>.<br>
 💡 Cada pagamento libera <strong>1 análise Premium</strong>.
 </div>
 
@@ -217,30 +220,20 @@ button.secondary{
 
 <div class="metrics" id="results">
 
-<div class="metric-card">
-<h4>📊 Head-to-Head</h4>
-<p>Histórico de confrontos, médias de gols e domínio.</p>
-</div>
+  <div class="metric-card">
+    <h4>👤 Jogadores</h4>
+    <p>Finalizações, cartões, participação direta no jogo.</p>
+  </div>
 
-<div class="metric-card">
-<h4>⚽ Gols & Over/Under</h4>
-<p>Médias FT/HT, BTTS, tendências ofensivas.</p>
-</div>
+  <div class="metric-card">
+    <h4>🟨 Cartões</h4>
+    <p>Médias por equipe, árbitro e perfil disciplinar.</p>
+  </div>
 
-<div class="metric-card">
-<h4>🟨 Cartões</h4>
-<p>Médias por equipe, árbitro e agressividade.</p>
-</div>
-
-<div class="metric-card">
-<h4>🚩 Escanteios</h4>
-<p>Médias ofensivas, pressão e ritmo de jogo.</p>
-</div>
-
-<div class="metric-card">
-<h4>👤 Jogadores</h4>
-<p>Finalizações, cartões, participação direta.</p>
-</div>
+  <div class="metric-card">
+    <h4>🚩 Escanteios</h4>
+    <p>Pressão ofensiva, ritmo de jogo e volume de ataque.</p>
+  </div>
 
 </div>
 
