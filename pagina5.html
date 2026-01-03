@@ -93,9 +93,7 @@ button.secondary{
 
 .results{margin-top:16px}
 
-.competition{
-  margin-bottom:12px;
-}
+.competition{margin-bottom:12px}
 
 .competition h3{
   color:var(--neon);
@@ -213,16 +211,10 @@ function selectMatch(el){
   const status=document.getElementById("paymentStatus");
   let credit=0;
 
-  const lock=()=>{btn.disabled=true;btn.style.opacity=".45"};
-  const unlock=()=>{btn.disabled=false;btn.style.opacity="1"};
+  const lock=()=>{btn.disabled=true;btn.style.opacity=".45";btn.style.cursor="not-allowed"};
+  const unlock=()=>{btn.disabled=false;btn.style.opacity="1";btn.style.cursor="pointer"};
 
   lock();
-
-  // 🔑 caso pagamento já tenha ocorrido
-  if(status.innerText.toLowerCase().includes("confirmado")){
-    credit=1;
-    unlock();
-  }
 
   window.addEventListener("nox-payment-ok",()=>{
     credit=1;
@@ -230,12 +222,18 @@ function selectMatch(el){
     status.innerText="✅ Pagamento confirmado • 1 análise disponível";
   });
 
-  btn.addEventListener("click",()=>{
+  /* ✅ CORREÇÃO FINAL (ADIÇÃO) */
+  btn.addEventListener("click",(e)=>{
     if(credit<=0) return;
+
     credit=0;
     lock();
     status.innerText="🔒 Análise utilizada. Efetue novo pagamento.";
-  });
+
+    if(typeof analyzeMatch==="function"){
+      analyzeMatch();
+    }
+  },true); // capture → evita bug de WebView
 })();
 </script>
 
