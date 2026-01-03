@@ -2,8 +2,8 @@
    NOX PREMIUM • WALLET MANAGER
    Arquivo: money/wallet.js
    Suporte:
-   - MetaMask / TrustWallet (Desktop)
-   - WalletConnect v2 (Mobile / Fallback)
+   - MetaMask / TrustWallet (Desktop + Mobile)
+   - WalletConnect v2 (Fallback)
    ===================================================== */
 
 /* ===============================
@@ -32,6 +32,7 @@ const NOX_ABI = [
 let provider = null;
 let signer = null;
 let userWallet = null;
+let connecting = false;
 
 /* ===============================
    HELPERS UI
@@ -51,29 +52,23 @@ function unlockAnalyze() {
 }
 
 /* ===============================
-   DETECÇÃO DE MOBILE
-   =============================== */
-
-function isMobile() {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-/* ===============================
-   CONEXÃO WALLET (AUTO)
+   CONEXÃO WALLET (ROBUSTA)
    =============================== */
 
 async function connectWallet() {
+  if (connecting) return;
+  connecting = true;
+
   try {
     setStatus("🔌 Conectando carteira...");
 
-    // 1️⃣ Desktop com MetaMask / Trust
-    if (window.ethereum && !isMobile()) {
+    // 🔥 REGRA DE OURO:
+    // SE existir window.ethereum → SEMPRE usar
+    if (window.ethereum) {
       provider = new ethers.BrowserProvider(window.ethereum);
-
       await provider.send("eth_requestAccounts", []);
-    }
-
-    // 2️⃣ Mobile ou fallback → WalletConnect v2
+    } 
+    // Fallback real → WalletConnect
     else {
       const wcProvider = await EthereumProvider.init({
         projectId: NOX_CONFIG.wcProjectId,
@@ -102,9 +97,17 @@ async function connectWallet() {
     setStatus("✅ Carteira conectada:\n" + userWallet, true);
 
   } catch (err) {
-    console.error(err);
+    console.error("Wallet error:", err);
+
+    // Usuário cancelou
+    if (err.code === 4001) {
+      setStatus("❌ Conexão rejeitada pelo usuário");
+      return;
+    }
+
     setStatus("❌ Falha ao conectar carteira");
-    alert("Erro ao conectar carteira");
+  } finally {
+    connecting = false;
   }
 }
 
@@ -151,26 +154,10 @@ async function analyze() {
 
     setStatus("✅ Pagamento confirmado!\nAnálise liberada.", true);
 
-    // 👉 AQUI você chama sua análise premium real
+    // 👉 Aqui você chama a análise premium real
 
   } catch (err) {
     console.error(err);
     setStatus("❌ Erro: " + err.message);
   }
 }
-
-/* ===============================
-   AUTO-RECONNECT (OPCIONAL)
-   =============================== */
-
-window.addEventListener("load", async () => {
-  if (window.ethereum && window.ethereum.selectedAddress) {
-    try {
-      provider = new ethers.BrowserProvider(window.ethereum);
-      signer = await provider.getSigner();
-      userWallet = await signer.getAddress();
-      unlockAnalyze();
-      setStatus("🔁 Carteira reconectada:\n" + userWallet, true);
-    } catch (_) {}
-  }
-});
