@@ -50,40 +50,17 @@ async function connectWallet() {
   try {
     setStatus("🔌 Conectando carteira...");
 
-    // PRIORIDADE TOTAL: window.ethereum
+    // PRIORIDADE ABSOLUTA → window.ethereum
     if (window.ethereum) {
       provider = new ethers.BrowserProvider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
-
-      // 🔁 TENTAR TROCAR / ADICIONAR BSC
-      try {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: NOX_CONFIG.chainHex }]
-        });
-      } catch (err) {
-        if (err.code === 4902) {
-          await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-              chainId: NOX_CONFIG.chainHex,
-              chainName: NOX_CONFIG.chainName,
-              rpcUrls: [NOX_CONFIG.rpcUrl],
-              nativeCurrency: {
-                name: "BNB",
-                symbol: "BNB",
-                decimals: 18
-              },
-              blockExplorerUrls: ["https://bscscan.com"]
-            }]
-          });
-        } else {
-          throw err;
-        }
+    } 
+    // Fallback REAL → WalletConnect v2
+    else {
+      if (!window.WalletConnectEthereumProvider) {
+        throw new Error("WalletConnect não carregado");
       }
 
-    } else {
-      // WALLETCONNECT CORRETO (UMD)
       const wcProvider =
         await window.WalletConnectEthereumProvider.init({
           projectId: NOX_CONFIG.wcProjectId,
@@ -101,6 +78,13 @@ async function connectWallet() {
     signer = await provider.getSigner();
     userWallet = await signer.getAddress();
 
+    const network = await provider.getNetwork();
+
+    if (Number(network.chainId) !== NOX_CONFIG.chainId) {
+      setStatus("❌ Troque para BSC Mainnet");
+      return;
+    }
+
     unlockAnalyze();
     setStatus("✅ Carteira conectada:\n" + userWallet, true);
 
@@ -108,7 +92,7 @@ async function connectWallet() {
     console.error("Wallet error:", err);
 
     if (err.code === 4001) {
-      setStatus("❌ Conexão rejeitada pelo usuário");
+      setStatus("❌ Conexão rejeitada");
     } else {
       setStatus("❌ Falha ao conectar carteira");
     }
@@ -118,7 +102,7 @@ async function connectWallet() {
 }
 
 /* ===============================
-   PAY + BACKEND
+   PAYMENT + BACKEND
    =============================== */
 
 async function analyze() {
@@ -137,7 +121,7 @@ async function analyze() {
     );
 
     const tx = await contract.payForAnalysis();
-    setStatus("⏳ Aguardando confirmação...\n" + tx.hash);
+    setStatus("⏳ Confirmando...\n" + tx.hash);
 
     const receipt = await tx.wait();
 
@@ -155,7 +139,7 @@ async function analyze() {
 
     const data = await res.json();
     if (!data.ok) {
-      throw new Error(data.error || "Pagamento não validado");
+      throw new Error(data.error || "Pagamento inválido");
     }
 
     setStatus("✅ Pagamento confirmado!\nAnálise liberada.", true);
@@ -164,4 +148,4 @@ async function analyze() {
     console.error(err);
     setStatus("❌ Erro: " + err.message);
   }
-                            }
+}
