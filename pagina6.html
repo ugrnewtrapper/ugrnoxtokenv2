@@ -2,59 +2,63 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Loteria Nox 🎟️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loteria Nox 🎟️ • UGRNOXTOKEN</title>
 
 <style>
 :root{
   --gold:#f5c542;
+  --gold-dark:#c89b1e;
   --bg:#0b0b0b;
-  --card:#151515;
+  --text:#fff;
 }
 
 body{
   background:radial-gradient(circle at top,#1c1c1c,var(--bg));
-  color:#fff;
+  color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
-  margin:0;
+  display:flex;
+  justify-content:center;
 }
 
 main{
   max-width:900px;
-  margin:auto;
   padding:40px 20px;
   text-align:center;
 }
 
 .scratch-card{
-  max-width:320px;
-  margin:30px auto;
-  background:linear-gradient(135deg,#1a1a1a,#0f0f0f);
+  width:280px;
+  margin:40px auto;
+  background:#0f0f0f;
   border-radius:20px;
-  padding:22px;
-  box-shadow:0 0 40px rgba(245,197,66,.35);
+  padding:24px;
+  box-shadow:0 14px 40px rgba(245,197,66,.45);
 }
 
-.scratch-card strong{
-  display:block;
-  font-size:1.05rem;
-  word-break:break-word;
+.price{
+  font-size:1rem;
+  margin-bottom:6px;
+}
+
+.prize{
+  font-size:1.1rem;
+  margin-bottom:14px;
+  color:#00ff9c;
 }
 
 .btn{
-  margin-top:18px;
-  padding:14px 28px;
-  background:linear-gradient(135deg,var(--gold),#c89b1e);
+  padding:12px 28px;
   border:none;
   border-radius:30px;
-  font-weight:bold;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
   cursor:pointer;
+  font-weight:bold;
 }
 
 #paymentStatus{
   margin-top:14px;
-  min-height:22px;
-  font-size:.95rem;
+  min-height:24px;
 }
 </style>
 </head>
@@ -65,18 +69,13 @@ main{
 <h1>Loteria Nox 🎟️</h1>
 
 <div class="scratch-card">
-  💰 Preço:
-  <strong><span id="uiPrice">--</span> UGR</strong>
-
-  🏆 Prêmio:
-  <strong><span id="uiPrize">--</span> UGR</strong>
-
+  <div class="price">💰 Preço: <strong><span id="uiPrice">--</span> UGR</strong></div>
+  <div class="prize">🏆 Prêmio: <strong><span id="uiPrize">--</span> UGR</strong></div>
   <button id="payBtn" class="btn">COMPRAR</button>
   <div id="paymentStatus"></div>
 </div>
 
-</main>
-
 <script type="module" src="money/lotteryv12.js"></script>
+</main>
 </body>
 </html>
