@@ -8,9 +8,7 @@
 <style>
 *,
 *::before,
-*::after{
-  box-sizing:border-box; /* ✅ CORREÇÃO CRÍTICA */
-}
+*::after{box-sizing:border-box}
 
 :root{
   --neon:#00ff9c;
@@ -76,29 +74,12 @@ border:none;
 font-weight:700;
 margin-top:12px;
 position:relative;
-z-index:2; /* ✅ GARANTE CLIQUE */
+z-index:5;
 }
 button.secondary{
 background:transparent;
 border:1px solid rgba(0,255,156,.5);
 color:var(--neon);
-}
-.results{margin-top:16px}
-.competition{margin-bottom:12px}
-.competition h3{
-color:var(--neon);
-font-size:14px;
-margin-bottom:6px;
-}
-.match{
-padding:7px 9px;
-border-radius:9px;
-cursor:pointer;
-font-size:13.5px;
-}
-.match.selected{
-background:rgba(0,255,156,.35);
-color:#00150c;
 }
 .status{
 margin-top:16px;
@@ -109,8 +90,6 @@ border-radius:12px;
 font-size:13px;
 text-align:center;
 }
-
-/* BALÕES */
 .balloons{
 margin-top:18px;
 display:grid;
@@ -162,7 +141,7 @@ font-size:13px;
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<div id="results" class="balloons">
+<div class="balloons">
 <div class="balloon" id="res-goals"></div>
 <div class="balloon" id="res-assists"></div>
 <div class="balloon" id="res-shots"></div>
@@ -173,56 +152,21 @@ font-size:13px;
 </div>
 
 <script>
-const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
-let selectedFixture=null;
-
-async function loadCompetitions(){
-const res=await fetch(BACKEND_LIST,{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ apiKey:apikey.value, date:date.value })
+document.getElementById("payBtn").addEventListener("click",()=>{
+  window.dispatchEvent(new Event("nox-pay-click"));
 });
-const data=await res.json();
-let html="";
-
-data.competitions.forEach(c=>{
-html+=`<div class="competition"><h3>🏆 ${c.league}</h3>`;
-c.matches.forEach(m=>{
-html+=`<div class="match" onclick="selectMatch(this)" data-fixture="${m.fixtureId}">
-${m.time} ${m.home} x ${m.away}
-</div>`;
-});
-html+=`</div>`;
-});
-
-competitions.innerHTML=html;
-}
-
-function selectMatch(el){
-document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
-el.classList.add("selected");
-selectedFixture=el.dataset.fixture;
-}
 </script>
 
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
 
 <script>
-(() => {
-const status=document.getElementById("paymentStatus");
-
 window.addEventListener("nox-payment-ok",()=>{
-if(!selectedFixture) return;
-
-status.innerText="⏳ Pagamento confirmado • Gerando análise...";
-
 if(typeof analyzeMatch==="function"){
 analyzeMatch();
-status.innerText="✅ Análise Premium concluída";
+document.getElementById("paymentStatus").innerText="✅ Análise Premium concluída";
 }
 });
-})();
 </script>
 
 </body>
