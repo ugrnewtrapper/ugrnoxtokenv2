@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loteria Nox 🎟️ • UGRNOXTOKEN</title>
+
+  <style>
+    :root{
+      --gold:#f5c542;
+      --gold-dark:#c89b1e;
+      --bg:#0b0b0b;
+      --text:#ffffff;
+      --card:#151515;
+      --glow:rgba(245,197,66,.45);
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,Helvetica,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at top,#1c1c1c,var(--bg));
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      overflow-y:auto;
+    }
+
+    main{
+      max-width:900px;
+      padding:48px 24px;
+      text-align:center;
+      animation:fadeIn 1.2s ease;
+    }
+
+    .logo{
+      width:150px;
+      margin:0 auto 30px;
+      animation:float 4s ease-in-out infinite;
+      filter:drop-shadow(0 0 18px var(--glow));
+    }
+
+    h1{
+      font-size:2.6rem;
+      color:var(--gold);
+      margin-bottom:12px;
+      text-shadow:0 0 14px var(--glow);
+    }
+
+    h2{
+      font-size:1.4rem;
+      font-weight:normal;
+      opacity:.9;
+      margin-bottom:32px;
+    }
+
+    .box{
+      background:linear-gradient(180deg,#191919,#111);
+      border-radius:22px;
+      padding:36px;
+      box-shadow:0 16px 50px rgba(0,0,0,.7);
+      margin-bottom:40px;
+      text-align:left;
+      animation:fadeUp 1.3s ease;
+      border:1px solid rgba(245,197,66,.15);
+    }
+
+    .box p{
+      font-size:1.05rem;
+      line-height:1.75;
+      margin-bottom:16px;
+      opacity:.96;
+    }
+
+    .highlight{
+      color:var(--gold);
+      font-weight:bold;
+    }
+
+    /* RASPADINHA */
+    .scratch-wrapper{
+      display:flex;
+      justify-content:center;
+      margin:40px 0;
+      animation:fadeUp 1.4s ease;
+    }
+
+    .scratch-card{
+      width:280px;
+      height:180px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+      border-radius:20px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 14px 40px rgba(245,197,66,.45);
+      cursor:pointer;
+      transition:transform .25s ease;
+    }
+
+    .scratch-card:hover{
+      transform:scale(1.04);
+    }
+
+    .scratch-prize{
+      position:absolute;
+      inset:0;
+      background:#0f0f0f;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.4rem;
+      font-weight:bold;
+      color:#00ff9c;
+      z-index:1;
+      text-align:center;
+      padding:20px;
+    }
+
+    .scratch-cover{
+      position:absolute;
+      inset:0;
+      background:repeating-linear-gradient(
+        45deg,
+        #d6d6d6,
+        #d6d6d6 10px,
+        #b5b5b5 10px,
+        #b5b5b5 20px
+      );
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#000;
+      font-weight:bold;
+      transition:opacity .6s ease;
+    }
+
+    .scratch-card.scratched .scratch-cover{
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:14px 34px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+      color:#000;
+      text-decoration:none;
+      font-weight:bold;
+      border-radius:32px;
+      box-shadow:0 10px 30px rgba(245,197,66,.45);
+      transition:.25s;
+      margin:6px;
+    }
+
+    .btn:hover{
+      transform:translateY(-4px) scale(1.06);
+      box-shadow:0 18px 46px rgba(245,197,66,.7);
+    }
+
+    footer{
+      margin-top:50px;
+      font-size:.9rem;
+      opacity:.7;
+      text-align:center;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0}
+      to{opacity:1}
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(26px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-12px)}
+    }
+  </style>
+</head>
+
+<body>
+<main>
+
+  <img src="/images/logo.png" alt="UGRNOXTOKEN Logo" class="logo">
+
+  <h1>Loteria Nox 🎟️</h1>
+  <h2>Loteria descentralizada 100% on-chain</h2>
+
+  <div class="box">
+    <p>
+      A <span class="highlight">Loteria Nox</span> é um sistema de raspadinhas
+      totalmente descentralizado, executado por meio de um
+      <strong>contrato inteligente aberto na BNB Chain</strong>.
+    </p>
+
+    <p>
+      O código do contrato é público, auditável e imutável após o deploy.
+      <strong>Não existe qualquer interferência humana</strong>,
+      controle administrativo ou possibilidade de alteração das regras.
+    </p>
+
+    <p>
+      À medida que as raspadinhas são adquiridas,
+      o valor é acumulado diretamente no contrato.
+      Quando o <strong>valor de premiação pré-definido</strong> é alcançado,
+      o próprio contrato executa automaticamente
+      a liberação do prêmio para a próxima carteira vencedora.
+    </p>
+
+    <p>
+      🔒 <strong>100% executado por contrato</strong><br>
+      🔒 <strong>Regras imutáveis</strong><br>
+      🔒 <strong>Resultados impossíveis de manipular</strong><br>
+      🔒 <strong>Nenhuma ação do dono</strong>
+    </p>
+  </div>
+
+  <h2>Raspadinha de Demonstração (Teste)</h2>
+
+  <div class="scratch-wrapper">
+    <div class="scratch-card" onclick="this.classList.add('scratched')">
+      <div class="scratch-prize">
+        🎉 PRÊMIO DE TESTE 🎉
+      </div>
+      <div class="scratch-cover">
+        RASPE AQUI
+      </div>
+    </div>
+  </div>
+
+  <p style="opacity:.85">
+    Esta raspadinha é apenas uma simulação visual.
+    A integração com carteira, contrato inteligente
+    e compras on-chain será implementada nas próximas versões.
+  </p>
+
+  <a href="index.html" class="btn">⬅️ Voltar para Início</a>
+
+  <footer>
+    <p>Loteria Nox • Versão 0.1 • BNB Chain</p>
+  </footer>
+
+</main>
+</body>
+  </html>
