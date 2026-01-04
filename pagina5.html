@@ -6,6 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*,
+*::before,
+*::after{
+  box-sizing:border-box; /* ✅ CORREÇÃO CRÍTICA */
+}
+
 :root{
   --neon:#00ff9c;
   --dark:#020617;
@@ -31,6 +37,7 @@ padding:24px 22px;
 box-shadow:
 0 24px 70px rgba(0,0,0,.7),
 inset 0 0 0 1px rgba(0,255,156,.18);
+position:relative;
 }
 .nav-back{margin-bottom:10px}
 .nav-back a{color:var(--neon);font-size:13px;text-decoration:none}
@@ -68,6 +75,8 @@ border-radius:16px;
 border:none;
 font-weight:700;
 margin-top:12px;
+position:relative;
+z-index:2; /* ✅ GARANTE CLIQUE */
 }
 button.secondary{
 background:transparent;
@@ -101,7 +110,7 @@ font-size:13px;
 text-align:center;
 }
 
-/* BALÕES DE RESULTADO */
+/* BALÕES */
 .balloons{
 margin-top:18px;
 display:grid;
@@ -120,6 +129,7 @@ font-size:13px;
 
 <body>
 <div class="container">
+
 <div class="nav-back">
 <a href="index.html">← Voltar para início</a>
 </div>
@@ -152,7 +162,6 @@ font-size:13px;
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<!-- BALÕES DE RESULTADO -->
 <div id="results" class="balloons">
 <div class="balloon" id="res-goals"></div>
 <div class="balloon" id="res-assists"></div>
@@ -202,14 +211,11 @@ selectedFixture=el.dataset.fixture;
 <script>
 (() => {
 const status=document.getElementById("paymentStatus");
-let credit=0;
 
 window.addEventListener("nox-payment-ok",()=>{
 if(!selectedFixture) return;
 
-credit=1;
 status.innerText="⏳ Pagamento confirmado • Gerando análise...";
-credit=0;
 
 if(typeof analyzeMatch==="function"){
 analyzeMatch();
