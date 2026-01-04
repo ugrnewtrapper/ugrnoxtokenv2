@@ -82,7 +82,6 @@
       font-weight:bold;
     }
 
-    /* RASPADINHA */
     .scratch-wrapper{
       display:flex;
       justify-content:center;
@@ -98,12 +97,6 @@
       position:relative;
       overflow:hidden;
       box-shadow:0 14px 40px rgba(245,197,66,.45);
-      cursor:pointer;
-      transition:transform .25s ease;
-    }
-
-    .scratch-card:hover{
-      transform:scale(1.04);
     }
 
     .scratch-prize{
@@ -113,36 +106,14 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:1.4rem;
+      font-size:1.2rem;
       font-weight:bold;
       color:#00ff9c;
       z-index:1;
       text-align:center;
       padding:20px;
-    }
-
-    .scratch-cover{
-      position:absolute;
-      inset:0;
-      background:repeating-linear-gradient(
-        45deg,
-        #d6d6d6,
-        #d6d6d6 10px,
-        #b5b5b5 10px,
-        #b5b5b5 20px
-      );
-      z-index:2;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#000;
-      font-weight:bold;
-      transition:opacity .6s ease;
-    }
-
-    .scratch-card.scratched .scratch-cover{
-      opacity:0;
-      pointer-events:none;
+      flex-direction:column;
+      gap:6px;
     }
 
     .btn{
@@ -150,17 +121,25 @@
       padding:14px 34px;
       background:linear-gradient(135deg,var(--gold),var(--gold-dark));
       color:#000;
-      text-decoration:none;
       font-weight:bold;
       border-radius:32px;
       box-shadow:0 10px 30px rgba(245,197,66,.45);
       transition:.25s;
-      margin:6px;
+      margin:10px;
+      border:none;
+      cursor:pointer;
     }
 
     .btn:hover{
       transform:translateY(-4px) scale(1.06);
       box-shadow:0 18px 46px rgba(245,197,66,.7);
+    }
+
+    #paymentStatus{
+      margin-top:16px;
+      font-size:1rem;
+      opacity:.95;
+      min-height:24px;
     }
 
     footer{
@@ -224,24 +203,19 @@
     </p>
   </div>
 
-  <h2>Raspadinha de Demonstração (Teste)</h2>
+  <h2>Raspadinha On-Chain</h2>
 
   <div class="scratch-wrapper">
-    <div class="scratch-card" onclick="this.classList.add('scratched')">
+    <div class="scratch-card">
       <div class="scratch-prize">
-        🎉 PRÊMIO DE TESTE 🎉
-      </div>
-      <div class="scratch-cover">
-        RASPE AQUI
+        💰 Preço: <strong>10 UGR NOX</strong>
+        🏆 Prêmio Atual: <strong>100 UGR NOX</strong>
+
+        <button id="payBtn" class="btn">COMPRAR RASPADINHA</button>
+        <div id="paymentStatus"></div>
       </div>
     </div>
   </div>
-
-  <p style="opacity:.85">
-    Esta raspadinha é apenas uma simulação visual.
-    A integração com carteira, contrato inteligente
-    e compras on-chain será implementada nas próximas versões.
-  </p>
 
   <a href="index.html" class="btn">⬅️ Voltar para Início</a>
 
@@ -250,5 +224,9 @@
   </footer>
 
 </main>
+
+<!-- SCRIPT OFICIAL -->
+<script src="money/lotteryv12.js" defer></script>
+
 </body>
-  </html>
+</html>
