@@ -8,7 +8,7 @@ const CFG = Object.freeze({
   chainHex: "0x38",
 
   // 🔁 MESMO DOMÍNIO DO SEU CLOUDFLARE WORKER
-  backend: "https://backendnox.srrimas2017.workers.dev",
+  backend: "https://backendnoxv22.srrimas2017.workers.dev/",
 
   contract: "0xE058dac610F2a6040B35B4d3C9F8ABEfe57bb670",
   token: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8" // UGR
