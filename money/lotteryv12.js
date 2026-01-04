@@ -7,7 +7,8 @@ const CFG = {
   backend: "https://backendnoxv22.srrimas2017.workers.dev/",
   chainId: 56,
   chainHex: "0x38",
-  contract: "0xE058dac610F2a6040B35B4d3C9F8ABEfe57bb670"
+  contract: "0xE058dac610F2a6040B35B4d3C9F8ABEfe57bb670",
+  token: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
 };
 
 /* =============================
@@ -21,20 +22,25 @@ const statusBox = document.getElementById("paymentStatus");
 const setStatus = (html) => statusBox.innerHTML = html;
 
 /* =============================
-LOAD PUBLIC DATA
+LOAD PRICE / PRIZE (NO WALLET)
 ============================= */
 async function loadPublicData() {
   try {
     const res = await fetch(CFG.backend);
     const data = await res.json();
 
-    uiPrice.textContent = Number(data.scratchPrice)
-      .toLocaleString("pt-BR", { maximumFractionDigits: 4 });
+    uiPrice.textContent = Number(data.scratchPrice).toLocaleString("pt-BR", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
+    });
 
-    uiPrize.textContent = Number(data.prizeAmount)
-      .toLocaleString("pt-BR", { maximumFractionDigits: 4 });
+    uiPrize.textContent = Number(data.prizeAmount).toLocaleString("pt-BR", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4
+    });
 
-  } catch {
+  } catch (e) {
+    console.error(e);
     uiPrice.textContent = "--";
     uiPrize.textContent = "--";
   }
@@ -43,12 +49,12 @@ async function loadPublicData() {
 loadPublicData();
 
 /* =============================
-BUY FLOW
+WALLET FLOW (ON CLICK)
 ============================= */
 btn.onclick = async () => {
   try {
     if (!window.ethereum) {
-      setStatus("❌ MetaMask não encontrada.");
+      setStatus("❌ Carteira Web3 não encontrada.");
       return;
     }
 
@@ -57,10 +63,9 @@ btn.onclick = async () => {
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
-
     let signer = await provider.getSigner();
-    const network = await provider.getNetwork();
 
+    const network = await provider.getNetwork();
     if (Number(network.chainId) !== CFG.chainId) {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -85,7 +90,7 @@ btn.onclick = async () => {
       return;
     }
 
-    setStatus("⏳ Processando...");
+    setStatus("⏳ Processando raspadinha...");
     const tx = await scratch.buyScratch();
     const receipt = await tx.wait();
 
@@ -105,12 +110,12 @@ btn.onclick = async () => {
     if (ganhou) {
       setStatus(`🎉 <strong>VOCÊ GANHOU!</strong><br>🏆 ${premio} UGR`);
     } else {
-      setStatus("😢 Não foi dessa vez.");
+      setStatus("😢 Não foi dessa vez. Tente novamente.");
     }
 
   } catch (err) {
     console.error(err);
-    setStatus("❌ Erro ou operação cancelada.");
+    setStatus("❌ Operação cancelada ou erro.");
   } finally {
     btn.disabled = false;
   }
