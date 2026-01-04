@@ -230,25 +230,24 @@ status.innerText="✅ Análise Premium concluída";
 })();
 </script>
 
-<!-- ✅ ADIÇÃO ÚNICA E ISOLADA -->
+<!-- =============================
+     ADIÇÃO ÚNICA E ISOLADA
+     (SEM ALTERAR NADA)
+============================= -->
 <script>
-(() => {
-  const status = document.getElementById("paymentStatus");
-
-  const observer = new MutationObserver(() => {
-    if (
-      status.innerText.includes("Pagamento confirmado") &&
-      typeof analyzeMatch === "function" &&
-      selectedFixture
-    ) {
-      analyzeMatch();
-      observer.disconnect();
+(function(){
+  const wait=setInterval(()=>{
+    if(typeof window.unlockAnalyze==="function"){
+      clearInterval(wait);
+      const original=window.unlockAnalyze;
+      window.unlockAnalyze=function(){
+        original.apply(this,arguments);
+        window.dispatchEvent(new Event("nox-payment-ok"));
+      };
     }
-  });
-
-  observer.observe(status, { childList: true, subtree: true });
+  },100);
 })();
 </script>
 
 </body>
-  </html>
+</html>
