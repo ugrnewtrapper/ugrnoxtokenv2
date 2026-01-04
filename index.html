@@ -7,10 +7,11 @@
 
   <style>
     :root {
-      --red: #e10600;
+      --red: #ff1a1a;
       --red-dark: #b00400;
-      --bg: #0e0e0e;
+      --bg: #0b0b0b;
       --text: #ffffff;
+      --glow: rgba(255, 26, 26, 0.55);
     }
 
     * {
@@ -22,11 +23,12 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1a1a1a, var(--bg));
+      background: radial-gradient(circle at top, #1c1c1c, var(--bg));
       color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
     main {
@@ -39,57 +41,81 @@
     .logo {
       width: 160px;
       margin-bottom: 24px;
-      animation: float 3s ease-in-out infinite;
+      animation: float 3s ease-in-out infinite, glow 2.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 14px var(--glow));
     }
 
     h1 {
-      font-size: 2.6rem;
+      font-size: 2.7rem;
       color: var(--red);
       margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+      animation: slideDown 1s ease;
     }
 
     h2 {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: normal;
       margin-bottom: 28px;
-      opacity: 0.9;
+      opacity: 0.92;
+      animation: slideDown 1.2s ease;
     }
 
     p {
-      font-size: 1.05rem;
-      line-height: 1.7;
+      font-size: 1.08rem;
+      line-height: 1.8;
       margin-bottom: 36px;
-      opacity: 0.95;
+      opacity: 0.96;
+      animation: fadeUp 1.4s ease;
     }
 
     .btn {
       display: inline-block;
-      padding: 14px 30px;
+      padding: 14px 32px;
       background: linear-gradient(135deg, var(--red), var(--red-dark));
       color: #000;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 30px;
-      box-shadow: 0 8px 24px rgba(225, 6, 0, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-radius: 32px;
+      box-shadow: 0 8px 26px rgba(255, 26, 26, 0.45);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
       margin: 6px;
+      animation: fadeUp 1.6s ease;
     }
 
     .btn:hover {
-      transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 14px 34px rgba(225, 6, 0, 0.6);
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 18px 40px rgba(255, 26, 26, 0.75);
+      filter: brightness(1.15);
     }
 
     footer {
       margin-top: 50px;
       font-size: 0.9rem;
       opacity: 0.7;
+      animation: fadeIn 2s ease;
     }
 
     @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
       }
       to {
         opacity: 1;
@@ -98,12 +124,13 @@
     }
 
     @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 10px var(--glow)); }
+      50% { filter: drop-shadow(0 0 20px var(--glow)); }
     }
   </style>
 </head>
@@ -114,18 +141,19 @@
     <img src="/images/logo.png" alt="UGRNOXTOKEN Logo" class="logo">
 
     <!-- Conteúdo -->
-    <h1>Conheça a UGRNOXTOKEN ⚽🔥</h1>
-    <h2>O token do futebol</h2>
+    <h1>UGRNOXTOKEN ⚽🔥</h1>
+    <h2>O token que une futebol, tecnologia e inteligência analítica</h2>
 
     <p>
-      Você que gosta de assistir futebol ⚽ precisa conhecer a
-      <strong>UGRNOXTOKEN</strong>.
-      Navegue pelas nossas páginas e descubra um token pensado para quem
-      vive o futebol de forma inteligente 🧠.
+      A <strong>UGRNOXTOKEN</strong> foi desenvolvida para quem vive o futebol
+      de forma estratégica e moderna ⚽.
+      Nosso ecossistema conecta tecnologia, dados e inovação para entregar
+      <strong>informação esportiva de alto nível</strong>, acessível em poucos segundos.
       <br><br>
-      Além do potencial de valorização 📈, o ecossistema oferece
-      produtos como <strong>análises esportivas em nível profissional</strong>,
-      entregues em apenas alguns segundos ⏱️.
+      Além do potencial de valorização 📈, a plataforma disponibiliza
+      soluções avançadas como <strong>análises esportivas profissionais,
+      calculadoras inteligentes e produtos exclusivos</strong>,
+      tudo pensado para usuários que exigem precisão, velocidade e qualidade 🧠.
     </p>
 
     <!-- Botões -->
@@ -133,10 +161,11 @@
     <a href="pagina3.html" class="btn">Análises Esportivas Grátis 📊</a>
     <a href="pagina4.html" class="btn">Calculadora Surebet PRO 🔥</a>
     <a href="pagina5.html" class="btn">Análises Esportivas Avançadas PRO 💎</a>
+    <a href="pagina6.html" class="btn">Loteria Nox 🎟️</a>
 
     <!-- Rodapé -->
     <footer>
-      <p>Versão 1.6 • PRO</p>
+      <p>Versão 2.0 • TURBO • PRO</p>
     </footer>
   </main>
 </body>
