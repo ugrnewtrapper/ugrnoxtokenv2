@@ -76,6 +76,12 @@ font-weight:700;
 margin-top:12px;
 position:relative;
 z-index:2;
+transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+button:active{
+transform:scale(.97);
+box-shadow:0 0 0 2px rgba(0,255,156,.35) inset;
+opacity:.85;
 }
 button.secondary{
 background:transparent;
@@ -155,6 +161,8 @@ font-size:13px;
 <div id="competitions" class="results"></div>
 
 <button id="payBtn" type="button" class="secondary">💳 Efetuar Pagamento Premium</button>
+
+<button id="analyzeBtn" type="button" style="display:none"></button>
 
 <div class="status" id="paymentStatus">
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
