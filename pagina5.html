@@ -8,12 +8,13 @@
 <style>
 *,
 *::before,
-*::after{box-sizing:border-box}
-
+*::after{
+  box-sizing:border-box;
+}
 :root{
-  --neon:#00ff9c;
-  --dark:#020617;
-  --soft:#94a3b8;
+--neon:#00ff9c;
+--dark:#020617;
+--soft:#94a3b8;
 }
 body{
 margin:0;
@@ -74,12 +75,29 @@ border:none;
 font-weight:700;
 margin-top:12px;
 position:relative;
-z-index:5;
+z-index:2;
 }
 button.secondary{
 background:transparent;
 border:1px solid rgba(0,255,156,.5);
 color:var(--neon);
+}
+.results{margin-top:16px}
+.competition{margin-bottom:12px}
+.competition h3{
+color:var(--neon);
+font-size:14px;
+margin-bottom:6px;
+}
+.match{
+padding:7px 9px;
+border-radius:9px;
+cursor:pointer;
+font-size:13.5px;
+}
+.match.selected{
+background:rgba(0,255,156,.35);
+color:#00150c;
 }
 .status{
 margin-top:16px;
@@ -107,8 +125,8 @@ font-size:13px;
 </head>
 
 <body>
-<div class="container">
 
+<div class="container">
 <div class="nav-back">
 <a href="index.html">← Voltar para início</a>
 </div>
@@ -133,6 +151,7 @@ font-size:13px;
 </div>
 
 <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
+
 <div id="competitions" class="results"></div>
 
 <button id="payBtn" class="secondary">💳 Efetuar Pagamento Premium</button>
@@ -141,32 +160,66 @@ font-size:13px;
 🔒 Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<div class="balloons">
+<div id="results" class="balloons">
 <div class="balloon" id="res-goals"></div>
 <div class="balloon" id="res-assists"></div>
 <div class="balloon" id="res-shots"></div>
 <div class="balloon" id="res-corners"></div>
 <div class="balloon" id="res-cards"></div>
 </div>
-
 </div>
 
 <script>
-document.getElementById("payBtn").addEventListener("click",()=>{
-  window.dispatchEvent(new Event("nox-pay-click"));
+const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
+let selectedFixture=null;
+
+async function loadCompetitions(){
+const res=await fetch(BACKEND_LIST,{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ apiKey:apikey.value, date:date.value })
 });
+const data=await res.json();
+let html="";
+
+data.competitions.forEach(c=>{
+html+=`<div class="competition"><h3>🏆 ${c.league}</h3>`;
+c.matches.forEach(m=>{
+html+=`<div class="match" onclick="selectMatch(this)" data-fixture="${m.fixtureId}">
+${m.time} ${m.home} x ${m.away}
+</div>`;
+});
+html+=`</div>`;
+});
+
+competitions.innerHTML=html;
+}
+
+function selectMatch(el){
+document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
+el.classList.add("selected");
+selectedFixture=el.dataset.fixture;
+}
 </script>
 
 <script type="module" src="money/walletv12.js"></script>
 <script src="statistics/statistics.js"></script>
 
 <script>
+(() => {
+const status=document.getElementById("paymentStatus");
+
 window.addEventListener("nox-payment-ok",()=>{
+if(!selectedFixture) return;
+
+status.innerText="⏳ Pagamento confirmado • Gerando análise...";
+
 if(typeof analyzeMatch==="function"){
 analyzeMatch();
-document.getElementById("paymentStatus").innerText="✅ Análise Premium concluída";
+status.innerText="✅ Análise Premium concluída";
 }
 });
+})();
 </script>
 
 </body>
