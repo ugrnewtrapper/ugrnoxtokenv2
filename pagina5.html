@@ -230,5 +230,25 @@ status.innerText="✅ Análise Premium concluída";
 })();
 </script>
 
+<!-- ✅ ADIÇÃO ÚNICA E ISOLADA -->
+<script>
+(() => {
+  const status = document.getElementById("paymentStatus");
+
+  const observer = new MutationObserver(() => {
+    if (
+      status.innerText.includes("Pagamento confirmado") &&
+      typeof analyzeMatch === "function" &&
+      selectedFixture
+    ) {
+      analyzeMatch();
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(status, { childList: true, subtree: true });
+})();
+</script>
+
 </body>
-</html>
+  </html>
