@@ -28,158 +28,111 @@ const ERC20_ABI = [
 ];
 
 /* =============================
-   INIT AFTER DOM
+   UI (TEXT ONLY)
 ============================= */
-document.addEventListener("DOMContentLoaded", () => {
+const uiPrice = document.getElementById("uiPrice");
+const uiPrize = document.getElementById("uiPrize");
+const statusBox = document.getElementById("paymentStatus");
+const btn = document.getElementById("payBtn");
 
-  /* =============================
-     UI
-  ============================= */
-  const btn = document.getElementById("payBtn");
-  const statusBox = document.getElementById("paymentStatus");
-  const uiPrice = document.getElementById("uiPrice");
-  const uiPrize = document.getElementById("uiPrize");
+const setStatus = (html) => statusBox.innerHTML = html;
 
-  if (!btn || !statusBox || !uiPrice || !uiPrize) {
-    console.error("UI elements missing");
-    return;
+/* =============================
+   PREÇO / PRÊMIO (SEM WALLET)
+============================= */
+(async () => {
+  try {
+    const res = await fetch(CFG.backend);
+    const data = await res.json();
+
+    uiPrice.textContent = data.scratchPrice;
+    uiPrize.textContent = data.prizeAmount;
+  } catch (err) {
+    console.error("Erro ao buscar backend:", err);
+    uiPrice.textContent = "--";
+    uiPrize.textContent = "--";
   }
+})();
 
-  /* =============================
-     HELPERS
-  ============================= */
-  const setStatus = (html) => statusBox.innerHTML = html;
-  const lock = () => {
-    btn.disabled = true;
-    btn.textContent = "PROCESSANDO...";
-  };
-  const unlock = () => {
-    btn.disabled = false;
-    btn.textContent = "COMPRAR RASPADINHA";
-  };
+/* =============================
+   FLUXO COM WALLET (SÓ NO CLICK)
+============================= */
+let provider;
+let signer;
+let busy = false;
 
-  /* =============================
-     STATE
-  ============================= */
-  let provider;
-  let signer;
-  let busy = false;
+btn.onclick = async () => {
+  if (busy) return;
+  busy = true;
+  btn.disabled = true;
 
-  /* =============================
-     WALLET CHECK
-  ============================= */
-  if (!window.ethereum) {
-    setStatus("❌ Carteira Web3 não encontrada.");
-    lock();
-    return;
-  }
-
-  provider = new ethers.BrowserProvider(window.ethereum);
-
-  /* =============================
-     FLUXO PRINCIPAL
-  ============================= */
-  btn.onclick = async () => {
-    if (busy) return;
-    busy = true;
-    lock();
-
-    try {
-      setStatus("🔐 Conectando carteira...");
-      await provider.send("eth_requestAccounts", []);
-      signer = await provider.getSigner();
-
-      const network = await provider.getNetwork();
-      if (Number(network.chainId) !== CFG.chainId) {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: CFG.chainHex }]
-        });
-        signer = await provider.getSigner();
-      }
-
-      const scratch = new ethers.Contract(CFG.contract, SCRATCH_ABI, signer);
-      const token = new ethers.Contract(CFG.token, ERC20_ABI, signer);
-
-      if (await scratch.paused()) {
-        setStatus("⛔ Ciclo pausado. Aguarde.");
-        unlock();
-        return;
-      }
-
-      /* =============================
-         PREÇO / PRÊMIO
-      ============================= */
-      setStatus("📡 Consultando raspadinha...");
-
-      let price, prize;
-
-      try {
-        const data = await fetch(CFG.backend).then(r => r.json());
-        price = data.scratchPrice;
-        prize = data.prizeAmount;
-      } catch {
-        const p = await scratch.SCRATCH_PRICE();
-        const pr = await scratch.prizeAmount();
-        price = ethers.formatEther(p);
-        prize = ethers.formatEther(pr);
-      }
-
-      uiPrice.textContent = price;
-      uiPrize.textContent = prize;
-
-      setStatus(`
-        🎟️ Raspadinha<br>
-        💰 Preço: ${price} UGR<br>
-        🏆 Prêmio: ${prize} UGR<br><br>
-        ✍️ Confirme na carteira
-      `);
-
-      /* =============================
-         APPROVE
-      ============================= */
-      const wallet = await signer.getAddress();
-      const allowance = await token.allowance(wallet, CFG.contract);
-      const needed = await scratch.SCRATCH_PRICE();
-
-      if (allowance < needed) {
-        setStatus("✍️ Aprovando token UGR...");
-        const txApprove = await token.approve(CFG.contract, needed);
-        await txApprove.wait();
-      }
-
-      /* =============================
-         COMPRA
-      ============================= */
-      setStatus("⏳ Processando raspadinha...");
-      const tx = await scratch.buyScratch();
-      const receipt = await tx.wait();
-
-      let ganhou = false;
-      let premio = "0";
-
-      for (const log of receipt.logs) {
-        try {
-          const parsed = scratch.interface.parseLog(log);
-          if (parsed.name === "CycleCompleted") {
-            ganhou = true;
-            premio = ethers.formatEther(parsed.args.prize);
-          }
-        } catch {}
-      }
-
-      if (ganhou) {
-        setStatus(`🎉 <strong>VOCÊ GANHOU!</strong><br>🏆 ${premio} UGR`);
-      } else {
-        setStatus("😢 Não foi dessa vez.");
-      }
-
-    } catch (err) {
-      console.error(err);
-      setStatus("❌ Operação cancelada ou erro.");
-    } finally {
-      busy = false;
-      unlock();
+  try {
+    if (!window.ethereum) {
+      setStatus("❌ Carteira Web3 não encontrada.");
+      return;
     }
-  };
-});
+
+    provider = new ethers.BrowserProvider(window.ethereum);
+
+    setStatus("🔐 Conectando carteira...");
+    await provider.send("eth_requestAccounts", []);
+    signer = await provider.getSigner();
+
+    const network = await provider.getNetwork();
+    if (Number(network.chainId) !== CFG.chainId) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: CFG.chainHex }]
+      });
+      signer = await provider.getSigner();
+    }
+
+    const scratch = new ethers.Contract(CFG.contract, SCRATCH_ABI, signer);
+    const token = new ethers.Contract(CFG.token, ERC20_ABI, signer);
+
+    if (await scratch.paused()) {
+      setStatus("⛔ Ciclo pausado.");
+      return;
+    }
+
+    const wallet = await signer.getAddress();
+    const needed = await scratch.SCRATCH_PRICE();
+    const allowance = await token.allowance(wallet, CFG.contract);
+
+    if (allowance < needed) {
+      setStatus("✍️ Aprovando token...");
+      const txA = await token.approve(CFG.contract, needed);
+      await txA.wait();
+    }
+
+    setStatus("⏳ Processando raspadinha...");
+    const tx = await scratch.buyScratch();
+    const receipt = await tx.wait();
+
+    let ganhou = false;
+    let premio = "0";
+
+    for (const log of receipt.logs) {
+      try {
+        const parsed = scratch.interface.parseLog(log);
+        if (parsed.name === "CycleCompleted") {
+          ganhou = true;
+          premio = ethers.formatEther(parsed.args.prize);
+        }
+      } catch {}
+    }
+
+    if (ganhou) {
+      setStatus(`🎉 <strong>VOCÊ GANHOU!</strong><br>🏆 ${premio} UGR`);
+    } else {
+      setStatus("😢 Não foi dessa vez.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    setStatus("❌ Erro ou operação cancelada.");
+  } finally {
+    busy = false;
+    btn.disabled = false;
+  }
+};
