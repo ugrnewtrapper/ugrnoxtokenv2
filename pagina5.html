@@ -138,8 +138,8 @@ onerror="this.src='https://via.placeholder.com/110x60?text=NOX+Logo'">
 <div class="version">Versão 4.0 • TURBO</div>
 
 <div class="info">
-🔐 Utilize no navegador da sua carteira.<br>
-💡 Cada pagamento libera <strong>1 análise Premium</strong>.
+Utilize no navegador da sua carteira.<br>
+Cada pagamento libera <strong>1 análise Premium</strong>.
 </div>
 
 <label>API Key</label>
@@ -148,24 +148,18 @@ onerror="this.src='https://via.placeholder.com/110x60?text=NOX+Logo'">
 <label>Data</label>
 <input id="date" type="date">
 
-<button id="loadBtn" class="secondary">📅 Carregar Partidas</button>
+<button id="loadBtn" class="secondary">Carregar Partidas</button>
 
 <div id="competitions" class="results"></div>
 
-<button id="payBtn" class="secondary">💳 Efetuar Pagamento Premium</button>
-<button id="analyzeBtn" style="display:none">📊 Analisar Partida</button>
+<button id="payBtn" class="secondary">Efetuar Pagamento Premium</button>
+<button id="analyzeBtn" style="display:none">Analisar Partida</button>
 
 <div class="status" id="paymentStatus">
-🔒 Acesso Premium bloqueado. Efetue o pagamento.
+Acesso Premium bloqueado. Efetue o pagamento.
 </div>
 
-<div id="results" class="balloons">
-<div class="balloon" id="res-goals"></div>
-<div class="balloon" id="res-assists"></div>
-<div class="balloon" id="res-shots"></div>
-<div class="balloon" id="res-corners"></div>
-<div class="balloon" id="res-cards"></div>
-</div>
+<div id="results" class="balloons"></div>
 
 </div>
 
@@ -175,7 +169,7 @@ let loading=false;
 
 /* HARDENING PASSIVO */
 document.addEventListener("keydown",e=>{
-if(e.key==="F12") console.warn("⚠️ Ambiente monitorado");
+if(e.key==="F12") console.warn("Ambiente monitorado");
 });
 
 /* CARREGAR PARTIDAS */
@@ -192,7 +186,7 @@ loading=false;
 return;
 }
 
-competitions.innerHTML="⏳ Carregando partidas...";
+competitions.innerHTML="Carregando partidas...";
 
 try{
 const res=await fetch(BACKEND_LIST,{
@@ -209,11 +203,11 @@ competitions.innerHTML="";
 data.competitions.forEach(c=>{
 const box=document.createElement("div");
 box.className="competition";
-box.innerHTML=`<h3>🏆 ${c.league}</h3>`;
+box.innerHTML=`<h3>${c.league}</h3>`;
 c.matches.forEach(m=>{
 const el=document.createElement("div");
 el.className="match";
-el.dataset.fixture=m.fixtureId;
+el.dataset.fixture = Number(m.fixtureId);
 el.textContent=`${m.time} ${m.home} x ${m.away}`;
 el.onclick=()=>window.selectMatch(el);
 box.appendChild(el);
@@ -221,17 +215,11 @@ box.appendChild(el);
 competitions.appendChild(box);
 });
 }catch{
-competitions.innerHTML="❌ Falha ao carregar partidas.";
+competitions.innerHTML="Falha ao carregar partidas.";
 }finally{
 loading=false;
 }
 };
-
-/* PAGAMENTO CONFIRMADO */
-window.addEventListener("nox-payment-ok",()=>{
-paymentStatus.innerText="✅ Pagamento confirmado. Selecione a partida.";
-analyzeBtn.style.display="block";
-});
 
 /* ANALISAR */
 analyzeBtn.onclick=()=>{
@@ -239,8 +227,8 @@ if(!window.selectedFixture){
 alert("Selecione uma partida");
 return;
 }
-paymentStatus.innerText="📊 Gerando análise Premium...";
-if(typeof analyzeMatch==="function") analyzeMatch();
+paymentStatus.innerText="Gerando análise Premium...";
+if(typeof window.analyzeMatch==="function") window.analyzeMatch();
 };
 </script>
 
