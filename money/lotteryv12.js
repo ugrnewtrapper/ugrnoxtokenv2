@@ -19,7 +19,7 @@ const uiPrize = document.getElementById("uiPrize");
 const btn = document.getElementById("payBtn");
 const statusBox = document.getElementById("paymentStatus");
 
-const setStatus = (html) => statusBox.innerHTML = html;
+const setStatus = (html) => (statusBox.innerHTML = html);
 
 /* =============================
 LOAD PRICE / PRIZE (NO WALLET)
@@ -40,12 +40,11 @@ async function loadPublicData() {
       maximumFractionDigits: 4
     });
 
-    // Desabilita compra se ciclo pausado
+    // Bloqueia botão se ciclo pausado
     if (data.paused) {
       setStatus("⛔ Ciclo pausado pelo contrato.");
       btn.disabled = true;
     }
-
   } catch (e) {
     console.error("Erro ao carregar dados públicos:", e);
     uiPrice.textContent = "--";
@@ -109,7 +108,7 @@ btn.onclick = async () => {
     for (const log of receipt.logs) {
       try {
         const parsed = scratch.interface.parseLog(log);
-        if (parsed && parsed.name === "CycleCompleted") {
+        if (parsed?.name === "CycleCompleted") {
           ganhou = true;
           premio = ethers.formatEther(parsed.args[2] || 0);
           break; // apenas o primeiro evento relevante
@@ -124,7 +123,6 @@ btn.onclick = async () => {
     } else {
       setStatus("😢 Não foi dessa vez. Tente novamente.");
     }
-
   } catch (err) {
     console.error("Erro na compra da raspadinha:", err);
     setStatus("❌ Operação cancelada ou erro.");
