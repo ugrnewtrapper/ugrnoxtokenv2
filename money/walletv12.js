@@ -4,11 +4,15 @@ import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
    CONFIGURAÇÃO
 ================================ */
 const CFG = {
-  chainId: 56, // BSC
+  chainId: 56,
   chainHex: "0x38",
-  rpc: "https://bsc-dataseed.binance.org/",
   paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
-  tokenContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
+  tokenContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+  approveMultiplier: 2n,
+
+  // 🔐 Blindagem
+  storageKey: "NOX_PREMIUM_STATE",
+  lockTTL: 5 * 60 * 1000 // 5 minutos
 };
 
 /* ===============================
@@ -25,32 +29,6 @@ const ERC20_ABI = [
 ];
 
 /* ===============================
-   UI ELEMENTS
-================================ */
-const payBtn = document.getElementById("payBtn");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const statusBox = document.getElementById("paymentStatus");
-
-/* ===============================
-   HELPERS
-================================ */
-const setStatus = (html) => {
-  if (statusBox) statusBox.innerHTML = html;
-};
-
-const lockAnalyze = () => {
-  if (!analyzeBtn) return;
-  analyzeBtn.disabled = true;
-  analyzeBtn.style.display = "none";
-};
-
-const unlockAnalyze = () => {
-  if (!analyzeBtn) return;
-  analyzeBtn.disabled = false;
-  analyzeBtn.style.display = "block";
-};
-
-/* ===============================
    STATE
 ================================ */
 let provider;
@@ -59,55 +37,113 @@ let wallet;
 let busy = false;
 
 /* ===============================
-   INIT
+   STORAGE BLINDADO
 ================================ */
-lockAnalyze();
+const now = () => Date.now();
 
-if (!window.ethereum) {
-  setStatus("❌ Carteira Web3 não encontrada.<br>Abra no navegador da sua carteira.");
-  if (payBtn) payBtn.disabled = true;
-  throw new Error("No wallet");
-}
+const loadState = () => {
+  try {
+    return JSON.parse(localStorage.getItem(CFG.storageKey)) || {};
+  } catch {
+    return {};
+  }
+};
 
-provider = new ethers.BrowserProvider(window.ethereum);
+const saveState = data => {
+  localStorage.setItem(CFG.storageKey, JSON.stringify(data));
+};
+
+const clearState = () => {
+  localStorage.removeItem(CFG.storageKey);
+};
 
 /* ===============================
-   CONEXÃO + PAGAMENTO
+   UI HELPERS
 ================================ */
-if (payBtn) {
+const el = id => document.getElementById(id);
+
+const setStatus = html => {
+  const box = el("paymentStatus");
+  if (box) box.innerHTML = html;
+};
+
+const lockAnalyze = () => {
+  const btn = el("analyzeBtn");
+  if (!btn) return;
+  btn.disabled = true;
+  btn.style.display = "none";
+};
+
+const unlockAnalyze = () => {
+  const btn = el("analyzeBtn");
+  if (!btn) return;
+  btn.disabled = false;
+  btn.style.display = "block";
+};
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+  lockAnalyze();
+
+  if (!window.ethereum) {
+    setStatus("❌ Carteira Web3 não encontrada.");
+    el("payBtn")?.setAttribute("disabled", "true");
+    return;
+  }
+
+  provider = new ethers.BrowserProvider(window.ethereum);
+
+  /* 🔁 RESTORE STATE (ANTI REFRESH / REPLAY) */
+  const saved = loadState();
+  if (
+    saved?.paid === true &&
+    saved?.used !== true &&
+    now() - saved.timestamp < CFG.lockTTL
+  ) {
+    setStatus("✅ Pagamento confirmado.<br>Análise Premium disponível.");
+    unlockAnalyze();
+  }
+
+  /* 🔁 LISTENERS GLOBAIS */
+  window.ethereum.on("accountsChanged", clearState);
+  window.ethereum.on("chainChanged", clearState);
+
+  const payBtn = el("payBtn");
+  if (!payBtn) return;
+
   payBtn.onclick = async () => {
     if (busy) return;
+
+    const state = loadState();
+    if (state?.paid && !state?.used) {
+      setStatus("⚠️ Já existe uma análise Premium disponível.");
+      unlockAnalyze();
+      return;
+    }
+
     busy = true;
     lockAnalyze();
 
     try {
-      /* 🔐 CONECTAR CARTEIRA */
+      /* 🔐 CONNECT */
       const accounts = await provider.send("eth_requestAccounts", []);
       wallet = accounts?.[0];
-      if (!wallet) throw new Error("Wallet não encontrada");
+      if (!wallet) throw new Error("Wallet inválida");
 
       signer = await provider.getSigner();
 
-      /* 🌐 CHECAR / TROCAR REDE */
-      let network = await provider.getNetwork();
-      if (Number(network.chainId) !== CFG.chainId) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: CFG.chainHex }]
-          });
-          network = await provider.getNetwork();
-          if (Number(network.chainId) !== CFG.chainId) {
-            throw new Error("Rede incorreta");
-          }
-        } catch {
-          setStatus("❌ Conecte à rede BSC.");
-          busy = false;
-          return;
-        }
+      /* 🌐 NETWORK */
+      const net = await provider.getNetwork();
+      if (Number(net.chainId) !== CFG.chainId) {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: CFG.chainHex }]
+        });
       }
 
-      /* 💰 CONTRATOS */
+      /* 💰 CONTRACTS */
       const token = new ethers.Contract(
         CFG.tokenContract,
         ERC20_ABI,
@@ -119,42 +155,70 @@ if (payBtn) {
         signer
       );
 
-      const price = await payment.pricePerAnalysis(); // bigint
-      const allowance = await token.allowance(wallet, CFG.paymentContract); // bigint
+      const price = await payment.pricePerAnalysis();
+      const allowance = await token.allowance(wallet, CFG.paymentContract);
 
-      /* 📝 APPROVE (BigInt-safe) */
+      /* 📝 APPROVE */
       if (allowance < price) {
-        setStatus("✍️ Aguardando aprovação do token...");
-        const txApprove = await token.approve(
+        setStatus("✍️ Aguardando aprovação...");
+        const txA = await token.approve(
           CFG.paymentContract,
-          price
+          price * CFG.approveMultiplier
         );
-        await txApprove.wait();
+        await txA.wait();
       }
 
-      /* 💳 PAGAMENTO */
+      /* 💳 PAY */
       setStatus("💳 Confirmando pagamento...");
-      const txPay = await payment.payForAnalysis();
-      await txPay.wait();
+      const txP = await payment.payForAnalysis();
+      const receipt = await txP.wait();
 
-      /* ✅ LIBERADO */
+      /* 🔐 SAVE STATE (ANTI REPLAY) */
+      saveState({
+        paid: true,
+        used: false,
+        txHash: receipt.hash,
+        wallet,
+        timestamp: now()
+      });
+
       setStatus("✅ Pagamento confirmado.<br>1 análise Premium liberada.");
       unlockAnalyze();
 
-      // 🔔 Evento global único e confiável
       window.dispatchEvent(new Event("nox-payment-ok"));
 
-    } catch (err) {
-      console.error(err);
-      setStatus("❌ Operação cancelada ou erro na transação.");
+    } catch (e) {
+      console.error(e);
+      setStatus(
+        e?.code === 4001
+          ? "❌ Transação cancelada."
+          : "❌ Falha no pagamento."
+      );
+      clearState();
     } finally {
       busy = false;
     }
   };
-}
+
+  /* ===============================
+     CONSUMO ÚNICO DA ANÁLISE
+  ================================ */
+  window.addEventListener("nox-analysis-used", () => {
+    const state = loadState();
+    if (!state?.paid || state?.used) return;
+
+    saveState({
+      ...state,
+      used: true
+    });
+
+    lockAnalyze();
+    setStatus("⏳ Análise Premium utilizada.");
+  });
+});
 
 /* ===============================
-   EVENTOS GLOBAIS (EXPOSIÇÃO)
+   EXPOSIÇÃO GLOBAL
 ================================ */
 window.lockAnalyze = lockAnalyze;
 window.unlockAnalyze = unlockAnalyze;
