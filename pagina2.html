@@ -7,131 +7,153 @@
 
   <style>
     :root {
-      --orange: #ff7a00;
-      --orange-dark: #e56700;
-      --bg: #0b0b0b;
-      --text: #ffffff;
-      --glow: 0 0 25px rgba(255,122,0,0.6);
+      --primary: #ff8c1a;
+      --primary-dark: #e67600;
+      --secondary: #1a1a1a;
+      --background: #0a0a0a;
+      --card: #111111;
+      --text-main: #ffffff;
+      --text-soft: #cfcfcf;
+      --border-soft: rgba(255,255,255,0.08);
+      --glow: 0 0 30px rgba(255,140,26,0.45);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     }
 
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top, rgba(255,122,0,0.15), transparent 60%),
-        radial-gradient(circle at bottom, rgba(255,122,0,0.1), transparent 60%),
-        var(--bg);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        radial-gradient(circle at top, rgba(255,140,26,0.12), transparent 55%),
+        radial-gradient(circle at bottom, rgba(255,140,26,0.08), transparent 60%),
+        var(--background);
+      color: var(--text-main);
     }
 
+    /* ===== TOPO ===== */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 18px 26px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,10,10,0.85),
+        rgba(10,10,10,0.35),
+        transparent
+      );
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+
+    .home-btn {
+      text-decoration: none;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: all 0.25s ease;
+    }
+
+    .home-btn:hover {
+      background: var(--primary);
+      color: #000;
+      box-shadow: var(--glow);
+    }
+
+    /* ===== CONTEÚDO ===== */
     main {
-      max-width: 950px;
-      padding: 50px 24px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 140px 24px 70px;
       text-align: center;
       animation: fadeUp 1.2s ease;
     }
 
     .logo {
-      width: 170px;
-      margin-bottom: 28px;
+      width: 180px;
+      margin-bottom: 34px;
       filter: drop-shadow(var(--glow));
-      animation: float 3s ease-in-out infinite;
+      animation: float 3.5s ease-in-out infinite;
     }
 
     h1 {
-      font-size: 2.8rem;
-      color: var(--orange);
-      margin-bottom: 14px;
-      text-shadow: 0 0 18px rgba(255,122,0,0.4);
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(255,140,26,0.45);
     }
 
     h2 {
-      font-size: 1.5rem;
-      font-weight: normal;
-      margin-bottom: 30px;
-      opacity: 0.9;
+      font-size: 1.55rem;
+      font-weight: 400;
+      color: var(--text-soft);
+      margin-bottom: 38px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #121212, #0d0d0d);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 38px 32px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+      margin-bottom: 42px;
     }
 
     p {
       font-size: 1.08rem;
-      line-height: 1.8;
-      margin-bottom: 36px;
-      opacity: 0.95;
+      line-height: 1.85;
+      color: var(--text-soft);
     }
 
     .highlight {
-      color: var(--orange);
-      font-weight: bold;
+      color: var(--primary);
+      font-weight: 600;
     }
 
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      justify-content: center;
-      margin-bottom: 40px;
-    }
-
-    .btn {
-      padding: 14px 30px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: all 0.25s ease;
-      display: inline-block;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
-      color: #000;
-      box-shadow: 0 8px 28px rgba(255,122,0,0.45);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 14px 38px rgba(255,122,0,0.7);
-    }
-
-    .btn-outline {
-      border: 2px solid var(--orange);
-      color: var(--orange);
-      background: transparent;
-    }
-
-    .btn-outline:hover {
-      background: var(--orange);
-      color: #000;
-      box-shadow: var(--glow);
-      transform: translateY(-2px);
-    }
-
-    .swap-links {
+    /* ===== CTA ===== */
+    .cta {
       margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
     }
 
+    .btn-buy {
+      display: inline-block;
+      padding: 18px 46px;
+      border-radius: 40px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #000;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 10px 32px rgba(255,140,26,0.55);
+      transition: all 0.3s ease;
+    }
+
+    .btn-buy:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 18px 45px rgba(255,140,26,0.8);
+    }
+
+    /* ===== FOOTER ===== */
     footer {
-      margin-top: 50px;
-      font-size: 0.9rem;
-      opacity: 0.7;
+      margin-top: 60px;
+      font-size: 0.85rem;
+      opacity: 0.6;
     }
 
+    /* ===== ANIMAÇÕES ===== */
     @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(25px);
+        transform: translateY(28px);
       }
       to {
         opacity: 1;
@@ -144,53 +166,71 @@
         transform: translateY(0);
       }
       50% {
-        transform: translateY(-12px);
+        transform: translateY(-14px);
+      }
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.3rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+
+      .btn-buy {
+        width: 100%;
+        padding: 18px 0;
       }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- TOPO -->
+  <header>
+    <a href="index.html" class="home-btn">🏠 Página Inicial</a>
+  </header>
+
+  <!-- CONTEÚDO -->
   <main>
-    <!-- Logo -->
     <img src="/images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo"/>
 
-    <!-- Conteúdo -->
-    <h1>UGRNOXTOKEN ⚽</h1>
-    <h2>Onde o futebol encontra o mercado cripto</h2>
+    <h1>UGRNOXTOKEN</h1>
+    <h2>Criptoativo focado em futebol, tecnologia e performance</h2>
 
-    <p>
-      A <span class="highlight">UGRNOXTOKEN</span> nasce para unir a paixão
-      global pelo futebol com um ecossistema cripto moderno e escalável.
-      Pensado para investidores visionários, o projeto conecta
-      <strong>análises esportivas profissionais</strong>, tecnologia e
-      potencial de crescimento real 📈.
-      <br><br>
-      Se você acredita em projetos com identidade forte, utilidade clara
-      e foco em performance, este é o seu momento de entrar em campo 🏟️.
-    </p>
-
-    <!-- Botões de navegação -->
-    <div class="buttons">
-      <a href="index.html" class="btn btn-outline">🏠 Página Inicial</a>
-      <a href="pagina3.html" class="btn btn-outline">Análises Esportivas Grátis 📊</a>
+    <div class="card">
+      <p>
+        A <span class="highlight">UGRNOXTOKEN</span> é um projeto desenvolvido
+        para investidores que buscam mais do que especulação.
+        Seu ecossistema conecta <strong>análise esportiva profissional</strong>,
+        dados estratégicos e tecnologia blockchain em um modelo
+        moderno, transparente e escalável.
+        <br><br>
+        Com identidade sólida, proposta clara e foco em crescimento
+        sustentável, a UGRNOX posiciona-se como um ativo
+        alinhado à nova geração de produtos cripto ligados ao esporte.
+      </p>
     </div>
 
-    <!-- Links de Swap -->
-    <div class="swap-links">
+    <div class="cta">
       <a
         href="https://pancakeswap.finance/swap?outputCurrency=0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
         target="_blank"
-        class="btn btn-primary"
+        rel="noopener noreferrer"
+        class="btn-buy"
       >
-        Comprar na PancakeSwap
+        Comprar UGRNOXTOKEN na PancakeSwap
       </a>
     </div>
 
-    <!-- Rodapé -->
     <footer>
-      <p>Versão 0.1 • Investor Page</p>
+      <p>UGRNOXTOKEN • Investor Page • Versão 3.0 ULTRA</p>
     </footer>
   </main>
+
 </body>
 </html>
