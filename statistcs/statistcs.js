@@ -9,8 +9,8 @@ let selectedFixture = null;
    SELECIONAR PARTIDA
    (CHAMADO PELO HTML)
 ============================= */
-function selectMatch(event, el) {
-  event.stopPropagation();
+function selectMatch(el, event) {
+  if (event) event.stopPropagation();
 
   document.querySelectorAll(".match").forEach(m =>
     m.classList.remove("selected")
@@ -55,56 +55,61 @@ async function analyzeMatch() {
 
   result.innerHTML = "📊 Analisando dados Premium...";
 
-  const res = await fetch(BACKEND_ANALYZE, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      apiKey,
-      fixtureId: Number(selectedFixture)
-    })
-  });
+  try {
+    const res = await fetch(BACKEND_ANALYZE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey,
+        fixtureId: Number(selectedFixture)
+      })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (data.error) {
-    result.innerHTML = "❌ " + data.error;
-    return;
+    if (data.error) {
+      result.innerHTML = "❌ " + data.error;
+      return;
+    }
+
+    result.innerHTML = `
+      <h3>${data.teams.home} x ${data.teams.away}</h3>
+      <ul>
+        <li>⚽ Artilheiro:
+          <strong>${data.players?.topGoals?.player || "—"}
+          (${data.players?.topGoals?.value || "—"})</strong>
+        </li>
+
+        <li>🎯 Assistências:
+          <strong>${data.players?.topAssists?.player || "—"}
+          (${data.players?.topAssists?.value || "—"})</strong>
+        </li>
+
+        <li>🥅 Chutes:
+          <strong>${data.players?.topShots?.player || "—"}
+          (${data.players?.topShots?.value || "—"})</strong>
+        </li>
+
+        <li>🟨 Moda de cartões:
+          <strong>${data.discipline?.cardsMode || "—"}</strong>
+        </li>
+
+        <li>🚩 Moda de escanteios:
+          <strong>${data.discipline?.cornersMode || "—"}</strong>
+        </li>
+      </ul>
+    `;
+  } catch (err) {
+    console.error(err);
+    result.innerHTML = "❌ Erro ao buscar análise.";
   }
-
-  result.innerHTML = `
-    <h3>${data.teams.home} x ${data.teams.away}</h3>
-    <ul>
-      <li>⚽ Artilheiro:
-        <strong>${data.players?.topGoals?.player || "—"}
-        (${data.players?.topGoals?.value || "—"})</strong>
-      </li>
-
-      <li>🎯 Assistências:
-        <strong>${data.players?.topAssists?.player || "—"}
-        (${data.players?.topAssists?.value || "—"})</strong>
-      </li>
-
-      <li>🥅 Chutes:
-        <strong>${data.players?.topShots?.player || "—"}
-        (${data.players?.topShots?.value || "—"})</strong>
-      </li>
-
-      <li>🟨 Moda de cartões:
-        <strong>${data.discipline?.cardsMode || "—"}</strong>
-      </li>
-
-      <li>🚩 Moda de escanteios:
-        <strong>${data.discipline?.cornersMode || "—"}</strong>
-      </li>
-    </ul>
-  `;
 }
 
 /* =============================
    BINDS PREMIUM
 ============================= */
-document.getElementById("analyzeBtn")
-  ?.addEventListener("click", analyzeMatch);
+const analyzeBtn = document.getElementById("analyzeBtn");
+if (analyzeBtn) analyzeBtn.addEventListener("click", analyzeMatch);
 
 /* =============================
    EXPOSIÇÃO GLOBAL
