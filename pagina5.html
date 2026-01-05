@@ -148,12 +148,12 @@ Cada pagamento libera <strong>1 análise Premium</strong>.
 <label>Data</label>
 <input id="date" type="date">
 
-<button id="loadBtn" class="secondary">Carregar Partidas</button>
+<button id="loadBtn" type="button" class="secondary">Carregar Partidas</button>
 
 <div id="competitions" class="results"></div>
 
-<button id="payBtn" class="secondary">Efetuar Pagamento Premium</button>
-<button id="analyzeBtn" style="display:none">Analisar Partida</button>
+<button id="payBtn" type="button" class="secondary">Efetuar Pagamento Premium</button>
+<button id="analyzeBtn" type="button" style="display:none">Analisar Partida</button>
 
 <div class="status" id="paymentStatus">
 Acesso Premium bloqueado. Efetue o pagamento.
@@ -167,6 +167,9 @@ Acesso Premium bloqueado. Efetue o pagamento.
 const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
 let loading=false;
 
+/* GARANTIA DE ESTADO GLOBAL */
+window.selectedFixture = null;
+
 /* HARDENING PASSIVO */
 document.addEventListener("keydown",e=>{
 if(e.key==="F12") console.warn("Ambiente monitorado");
@@ -176,6 +179,10 @@ if(e.key==="F12") console.warn("Ambiente monitorado");
 loadBtn.onclick=async()=>{
 if(loading) return;
 loading=true;
+
+/* RESET ABSOLUTO DE SELEÇÃO */
+window.selectedFixture = null;
+document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
 
 const apiKey=apikey.value.trim();
 const date=document.getElementById("date").value;
@@ -204,14 +211,22 @@ data.competitions.forEach(c=>{
 const box=document.createElement("div");
 box.className="competition";
 box.innerHTML=`<h3>${c.league}</h3>`;
+
 c.matches.forEach(m=>{
 const el=document.createElement("div");
 el.className="match";
 el.dataset.fixture = Number(m.fixtureId);
 el.textContent=`${m.time} ${m.home} x ${m.away}`;
-el.onclick=()=>window.selectMatch(el);
+
+el.addEventListener("click",()=>{
+if(typeof window.selectMatch==="function"){
+window.selectMatch(el);
+}
+});
+
 box.appendChild(el);
 });
+
 competitions.appendChild(box);
 });
 }catch{
@@ -221,18 +236,18 @@ loading=false;
 }
 };
 
-/* ANALISAR */
+/* ANALISAR — SEM DUPLA VALIDAÇÃO */
 analyzeBtn.onclick=()=>{
-if(!window.selectedFixture){
-alert("Selecione uma partida");
-return;
+if(typeof window.analyzeMatch==="function"){
+window.analyzeMatch();
 }
-paymentStatus.innerText="Gerando análise Premium...";
-if(typeof window.analyzeMatch==="function") window.analyzeMatch();
 };
 </script>
 
+<!-- JS PREMIUM (o código que você enviou) -->
 <script type="module" src="money/walletv12.js"></script>
+
+<!-- opcional -->
 <script type="module" src="statistics/statistics.js"></script>
 
 </body>
