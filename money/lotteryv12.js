@@ -116,11 +116,16 @@ btn.onclick = async () => {
     /* =============================
        EXECUÇÃO
     ============================= */
-    setStatus("⏳ Processando raspadinha...");
-    const tx = await scratch.buyScratch({
+    // Executa compra (Trust Wallet SAFE)
+setStatus("⏳ Processando raspadinha...");
+
+const tx = await signer.sendTransaction({
+  to: CFG.contract,
+  data: "0x11d1735b", // buyScratch()
   gasLimit: 300000
 });
-    const receipt = await tx.wait();
+
+const receipt = await tx.wait();
 
     /* =============================
        PROCESSA EVENTOS (ROBUSTO)
