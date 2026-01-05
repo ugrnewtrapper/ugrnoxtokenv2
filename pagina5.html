@@ -239,7 +239,7 @@ async function loadCompetitions(){
       <h3>🏆 ${c.league}</h3>`;
     c.matches.forEach(m=>{
       html+=`<div class="match"
-        onclick="window.selectMatch(this,event)"
+        onclick="window.selectMatch(this)"
         data-fixture="${m.fixtureId}">
         ${m.time} ${m.home} x ${m.away}
       </div>`;
