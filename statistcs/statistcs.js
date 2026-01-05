@@ -13,18 +13,17 @@ let analysisConsumed = false; // garante 1 pagamento = 1 análise
    SELECIONAR PARTIDA
    (CHAMADO PELO HTML)
 ============================= */
-function selectMatch(event, el) {
-  if (event) event.stopPropagation();
-
+function selectMatch(el) {
   document.querySelectorAll(".match").forEach(m =>
     m.classList.remove("selected")
   );
 
   el.classList.add("selected");
-  window.selectedFixture = el.dataset.fixture;
+  selectedFixture = Number(el.dataset.fixture);
 
-  const result = document.getElementById("results") 
-              || document.getElementById("result");
+  const result =
+    document.getElementById("results") ||
+    document.getElementById("result");
 
   if (result) {
     result.innerHTML = `
