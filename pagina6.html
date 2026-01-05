@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loteria Nox 🎟️ • UGRNOXTOKEN</title>
+  <title>Raspadinha Nox • UGRNOXTOKEN</title>
 
   <style>
     :root{
-      --primary: #0d4f6d;       /* azul petróleo */
+      --primary: #0d6eaf;        /* azul mais vibrante */
       --primary-dark: #084c61;
-      --bg: #0b0f12;            /* fundo escuro */
-      --text: #e0e0e0;           /* texto claro */
-      --card: #13232e;           /* card azul escuro */
+      --bg: #0b0f12;            
+      --text: #e0e0e0;           
+      --card: #132f44;           
       --overlay: rgba(0,0,0,0.75);
-      --glow: rgba(13,79,109,0.5);
+      --glow: rgba(13,110,175,0.5);
       --success: #00ff9c;
       --error: #ff5555;
-      --highlight: #00c9ff;     /* destaque azul claro */
+      --highlight: #00c9ff;     
     }
 
     *{
@@ -40,6 +40,25 @@
       padding: 48px 24px;
       text-align: center;
       animation: fadeIn 1.2s ease;
+      position: relative;
+    }
+
+    /* Botão topo voltar */
+    #backBtn {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      background: none;
+      border: none;
+      color: var(--highlight);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color .3s;
+    }
+    #backBtn:hover{
+      color: var(--success);
     }
 
     .logo{
@@ -93,6 +112,20 @@
       gap: 18px;
       margin: 40px 0;
       animation: fadeUp 1.4s ease;
+    }
+
+    /* Melhor organização preço/prêmio */
+    .scratch-info{
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-size: 1.05rem;
+      opacity: .9;
+      margin-bottom: 16px;
+    }
+    .scratch-info span{
+      font-weight: bold;
+      color: var(--highlight);
     }
 
     .scratch-card{
@@ -209,14 +242,17 @@
 <body>
 
 <main>
+  <!-- Botão topo voltar -->
+  <a href="index.html" id="backBtn">⬅ Voltar</a>
+
   <img src="/images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo">
 
-  <h1>Loteria Nox 🎟️</h1>
-  <h2>Loteria descentralizada 100% on-chain</h2>
+  <h1>Raspadinha Nox</h1>
+  <h2>Versão 3.0 ULTRA</h2>
 
   <div class="box">
     <p>
-      A <span class="highlight">Loteria Nox</span> é um sistema de raspadinhas
+      A <span class="highlight">Raspadinha Nox</span> é um sistema de raspadinhas
       totalmente descentralizado, executado por meio de um
       <strong>contrato inteligente aberto na BNB Chain</strong>.
     </p>
@@ -246,14 +282,14 @@
   <h2>Raspadinha On-Chain</h2>
 
   <div class="scratch-wrapper">
-    <p style="text-align:center;font-size:1.05rem;opacity:.9;max-width:280px;">
-      💰 <strong>Preço da raspadinha:</strong> 10 UGR NOX &nbsp;|&nbsp;
-      🏆 <strong>Prêmio:</strong> 100 UGR NOX
-    </p>
+    <div class="scratch-info">
+      <span>Preço: 10 UGR NOX</span>
+      <span>Prêmio: 100 UGR NOX</span>
+    </div>
 
     <div class="scratch-card">
       <div class="scratch-overlay" onclick="this.classList.add('revealed')">
-        Raspar 🎟️
+        Raspar
       </div>
 
       <div class="scratch-prize">
@@ -273,10 +309,8 @@
     </div>
   </div>
 
-  <a href="index.html" class="btn">⬅️ Voltar para Início</a>
-
   <footer>
-    <p>Loteria Nox • Versão 0.1 • BNB Chain</p>
+    <p>Raspadinha Nox • Versão 3.0 ULTRA • BNB Chain</p>
   </footer>
 </main>
 
