@@ -26,21 +26,18 @@ LOAD PRICE / PRIZE (NO WALLET)
 ============================= */
 async function loadPublicData() {
   try {
-    const res = await fetch(CFG.backend);
+    const res = await fetch(CFG.backend, { cache: "no-store" });
     if (!res.ok) throw new Error(`Backend retornou ${res.status}`);
     const data = await res.json();
 
     uiPrice.textContent = Number(data.scratchPrice || 0).toLocaleString("pt-BR", {
-      minimumFractionDigits: 0,
       maximumFractionDigits: 4
     });
 
     uiPrize.textContent = Number(data.prizeAmount || 0).toLocaleString("pt-BR", {
-      minimumFractionDigits: 0,
       maximumFractionDigits: 4
     });
 
-    // Bloqueia botão se ciclo pausado
     if (data.paused) {
       setStatus("⛔ Ciclo pausado pelo contrato.");
       btn.disabled = true;
@@ -56,21 +53,37 @@ async function loadPublicData() {
 loadPublicData();
 
 /* =============================
-WALLET FLOW (ON CLICK)
+DETECT PROVIDER (META / TRUST)
+============================= */
+function getWeb3Provider() {
+  if (!window.ethereum) return null;
+
+  // Trust Wallet mobile precisa de fallback
+  if (window.ethereum.isTrust || window.ethereum.isTrustWallet) {
+    return new ethers.BrowserProvider(window.ethereum, "any");
+  }
+
+  // MetaMask / outros
+  return new ethers.BrowserProvider(window.ethereum);
+}
+
+/* =============================
+WALLET FLOW
 ============================= */
 btn.onclick = async () => {
   btn.disabled = true;
+
   try {
-    if (!window.ethereum) throw new Error("Carteira Web3 não encontrada.");
+    const provider = getWeb3Provider();
+    if (!provider) throw new Error("Carteira Web3 não encontrada.");
 
     setStatus("🔐 Conectando carteira...");
-    const provider = new ethers.BrowserProvider(window.ethereum);
-
-    // Solicita contas
     await provider.send("eth_requestAccounts", []);
     let signer = await provider.getSigner();
 
-    // Confere rede
+    /* =============================
+       CONFERE / TROCA REDE
+    ============================= */
     const network = await provider.getNetwork();
     if (Number(network.chainId) !== CFG.chainId) {
       setStatus("🔄 Mudando para a rede BSC...");
@@ -81,47 +94,55 @@ btn.onclick = async () => {
       signer = await provider.getSigner();
     }
 
-    // Conecta contrato
+    /* =============================
+       CONTRATO
+    ============================= */
     const scratch = new ethers.Contract(
       CFG.contract,
       [
         "function buyScratch()",
-        "function paused() view returns(bool)",
+        "function paused() view returns (bool)",
         "event CycleCompleted(uint256,address,uint256,uint256,uint256)"
       ],
       signer
     );
 
-    // Confere se ciclo pausado
     const isPaused = await scratch.paused().catch(() => true);
     if (isPaused) {
       setStatus("⛔ Ciclo pausado.");
       return;
     }
 
-    // Executa compra
+    /* =============================
+       EXECUÇÃO
+    ============================= */
     setStatus("⏳ Processando raspadinha...");
     const tx = await scratch.buyScratch();
     const receipt = await tx.wait();
 
-    // Processa logs de eventos
+    /* =============================
+       PROCESSA EVENTOS (ROBUSTO)
+    ============================= */
     let ganhou = false;
     let premio = "0";
 
     for (const log of receipt.logs) {
       try {
+        if (log.address.toLowerCase() !== CFG.contract.toLowerCase()) continue;
         const parsed = scratch.interface.parseLog(log);
-        if (parsed?.name === "CycleCompleted") {
+        if (parsed && parsed.name === "CycleCompleted") {
           ganhou = true;
-          premio = ethers.formatEther(parsed.args?.[2] || 0);
+          premio = ethers.formatEther(parsed.args[2]);
           break;
         }
-      } catch (err) {
-        console.warn("Log não reconhecido:", err);
+      } catch {
+        // Ignora logs não relacionados
       }
     }
 
-    // Atualiza status final
+    /* =============================
+       RESULTADO
+    ============================= */
     if (ganhou) {
       setStatus(`🎉 <strong>VOCÊ GANHOU!</strong><br>🏆 ${premio} UGR`);
     } else {
@@ -129,8 +150,8 @@ btn.onclick = async () => {
     }
 
   } catch (err) {
-    console.error("Erro na compra da raspadinha:", err);
-    setStatus(`❌ ${err.message || "Operação cancelada ou erro."}`);
+    console.error("Erro na raspadinha:", err);
+    setStatus(`❌ ${err?.message || "Operação cancelada ou erro."}`);
   } finally {
     btn.disabled = false;
   }
