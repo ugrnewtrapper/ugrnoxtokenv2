@@ -2,280 +2,201 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NOX Premium • Análises Avançadas</title>
+<title>NOX Premium • Análises</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*,
-*::before,
-*::after{ box-sizing:border-box; }
-
-:root{
---primary:#0f766e;
---primary-soft:#14b8a6;
---dark:#020617;
---panel:#020f1a;
---soft:#9fb3c8;
---text:#e6f1f5;
-}
-
+*,*::before,*::after{box-sizing:border-box}
 body{
 margin:0;
-font-family:"Segoe UI",Arial,sans-serif;
-background:
-radial-gradient(600px at top, rgba(20,184,166,.18), transparent 60%),
-linear-gradient(180deg, #020617, #01030f);
-color:var(--text);
-min-height:100vh;
-padding:20px 10px 50px;
+font-family:Arial,Helvetica,sans-serif;
+background:#020617;
+color:#e6f1f5;
+padding:20px 10px 40px;
 }
-
 .container{
-width:100%;
 max-width:520px;
-margin:0 auto;
-background:linear-gradient(180deg, rgba(2,15,26,.96), rgba(2,6,23,.99));
-border-radius:22px;
-padding:24px 22px;
-box-shadow:0 30px 80px rgba(0,0,0,.75),
-inset 0 0 0 1px rgba(20,184,166,.25);
+margin:auto;
+background:#020f1a;
+border-radius:20px;
+padding:22px;
+box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
-
-.nav-back{
-margin-bottom:12px;
-}
-.nav-back a{
-color:var(--primary-soft);
-font-size:14px;
-text-decoration:none;
-display:inline-flex;
-align-items:center;
-gap:6px;
-font-weight:600;
-}
-.nav-back a:hover{ opacity:.85; }
-
-.logo{
-max-width:110px;
-margin:8px auto 14px;
-display:block;
-filter:drop-shadow(0 0 14px rgba(20,184,166,.45));
-}
-
-h1{text-align:center;font-size:23px;margin:4px 0}
-.version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:18px}
-
-.info{
-font-size:13.5px;
-background:rgba(20,184,166,.10);
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(20,184,166,.35);
-margin-bottom:16px;
-}
-
-.form-group{margin-top:14px}
-label{font-size:13px;color:var(--soft);display:block;margin-bottom:6px}
-
-input{
-width:100%;
-height:44px;
-padding:0 12px;
-border-radius:12px;
-background:rgba(2,6,23,.95);
-color:#fff;
-border:1px solid rgba(255,255,255,.12);
-}
-
 button{
 width:100%;
 height:46px;
-border-radius:16px;
-border:none;
+margin-top:10px;
+border-radius:14px;
 font-weight:700;
-margin-top:12px;
-transition:.15s;
 cursor:pointer;
 }
-
-button:active{
-transform:scale(.97);
-box-shadow:0 0 0 2px rgba(20,184,166,.45) inset;
-opacity:.85;
-}
-
 button.secondary{
 background:transparent;
-border:1px solid rgba(20,184,166,.55);
-color:var(--primary-soft);
+border:1px solid #14b8a6;
+color:#14b8a6;
 }
-
-.results{margin-top:18px}
-
-.competition{margin-bottom:14px}
-.competition h3{
-color:var(--primary-soft);
-font-size:14px;
-margin-bottom:6px;
-}
-
 .match{
 padding:8px 10px;
 border-radius:10px;
 cursor:pointer;
 font-size:13.5px;
-transition:.12s;
 }
-.match:hover{background:rgba(20,184,166,.12)}
 .match.selected{
-background:rgba(20,184,166,.45);
+background:#14b8a6;
 color:#001312;
-font-weight:600;
+font-weight:700;
 }
-
 .status{
-margin-top:16px;
-background:rgba(255,180,0,.08);
-border:1px solid rgba(255,180,0,.35);
+margin-top:14px;
 padding:12px;
 border-radius:14px;
+background:#03131f;
+border:1px solid #0ea5a5;
 font-size:13px;
 text-align:center;
 }
-
-.balloons{
-margin-top:18px;
-display:grid;
-gap:10px;
-}
-
-.balloon{
-background:rgba(20,184,166,.10);
-border:1px solid rgba(20,184,166,.35);
-border-radius:16px;
-padding:12px;
-font-size:13px;
-}
-.balloon strong{color:var(--primary-soft)}
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <div class="nav-back">
-    <a href="index.html">← Voltar</a>
-  </div>
+<h2>NOX Premium</h2>
 
-  <img src="images/logo2.png" class="logo" onerror="this.src='https://via.placeholder.com/110x60?text=NOX+Logo'">
+<div id="paymentStatus" class="status">
+🔒 Acesso Premium bloqueado.
+</div>
 
-  <h1>NOX Premium</h1>
-  <div class="version">Versão 3.0 • ULTRA</div>
+<label>API Key</label>
+<input id="apikey" placeholder="Digite sua API Key">
 
-  <div class="info">
-    🔐 Utilize no navegador da sua carteira.<br>
-    💡 Cada pagamento libera <strong>1 análise Premium</strong>.
-  </div>
+<label>Data</label>
+<input id="date" type="date">
 
-  <div class="form-group">
-    <label>API Key</label>
-    <input id="apikey" placeholder="Digite sua API Key">
-  </div>
+<button id="loadBtn" class="secondary">📅 Carregar Partidas</button>
 
-  <div class="form-group">
-    <label>Data</label>
-    <input id="date" type="date">
-  </div>
+<div id="competitions"></div>
 
-  <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
+<button id="payBtn" class="secondary">💳 Efetuar Pagamento</button>
+<button id="analyzeBtn" style="display:none">📊 Analisar Partida</button>
 
-  <div id="competitions" class="results"></div>
-
-  <button id="payBtn" type="button" class="secondary">
-    💳 Efetuar Pagamento Premium
-  </button>
-
-  <button id="analyzeBtn" type="button" style="display:none">
-    📊 Analisar Partida
-  </button>
-
-  <div class="status" id="paymentStatus">
-    🔒 Acesso Premium bloqueado. Efetue o pagamento.
-  </div>
-
-  <div id="results" class="balloons">
-    <div class="balloon" id="res-goals"></div>
-    <div class="balloon" id="res-assists"></div>
-    <div class="balloon" id="res-shots"></div>
-    <div class="balloon" id="res-corners"></div>
-    <div class="balloon" id="res-cards"></div>
-  </div>
+<div id="results"></div>
 
 </div>
 
 <script>
-const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
-
-/* =============================
-   CARREGAR COMPETIÇÕES
-============================= */
-async function loadCompetitions(){
-  const apiKey=document.getElementById("apikey").value;
-  const date=document.getElementById("date").value;
-
-  if(!apiKey || !date) return alert("Informe API Key e Data");
-
-  const res=await fetch(BACKEND_LIST,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ apiKey, date })
-  });
-
-  const data=await res.json();
-  let html="";
-
-  data.competitions.forEach(c=>{
-    html+=`<div class="competition">
-      <h3>🏆 ${c.league}</h3>`;
-    c.matches.forEach(m=>{
-      html+=`<div class="match"
-        onclick="window.selectMatch(this)"
-        data-fixture="${m.fixtureId}">
-        ${m.time} ${m.home} x ${m.away}
-      </div>`;
-    });
-    html+=`</div>`;
-  });
-
-  document.getElementById("competitions").innerHTML=html;
-}
-
-/* =============================
-   EVENTO DE PAGAMENTO
-============================= */
+/* ======================================================
+   HARDENING PASSIVO (SEM QUEBRA)
+====================================================== */
 (() => {
-  const status=document.getElementById("paymentStatus");
-  const analyzeBtn=document.getElementById("analyzeBtn");
-
-  window.addEventListener("nox-payment-ok", async ()=>{
-    status.innerText="⏳ Pagamento confirmado • Gerando análise...";
-    if(analyzeBtn) analyzeBtn.style.display="block";
-
-    if(typeof analyzeMatch==="function"){
-      const ok = await analyzeMatch();
-      if(ok === false){
-        status.innerText="⚠️ Selecione uma partida antes de pagar.";
-        return;
-      }
-      status.innerText="✅ Análise Premium concluída";
-    }
+  const warn = () => console.warn("⚠️ Ambiente monitorado.");
+  document.addEventListener("keydown", e => {
+    if (e.key === "F12") warn();
   });
+  const c = console.clear;
+  console.clear = () => { warn(); c.call(console); };
 })();
+
+/* ======================================================
+   ESTADO
+====================================================== */
+const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
+let loading = false;
+let analyzing = false;
+
+/* ======================================================
+   PARTIDAS
+====================================================== */
+loadBtn.onclick = async () => {
+  if (loading) return;
+  loading = true;
+
+  try{
+    const apiKey = apikey.value.trim();
+    const date = document.getElementById("date").value;
+
+    if (!apiKey || !date) {
+      alert("Informe API Key e Data.");
+      return;
+    }
+
+    const res = await fetch(BACKEND_LIST,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ apiKey, date })
+    });
+
+    if (!res.ok) throw new Error("Backend indisponível");
+
+    const data = await res.json();
+    competitions.innerHTML = "";
+
+    if (!Array.isArray(data?.competitions)) return;
+
+    data.competitions.forEach(c=>{
+      if (!Array.isArray(c.matches)) return;
+
+      const block = document.createElement("div");
+      block.innerHTML = `<h3>${c.league}</h3>`;
+
+      c.matches.forEach(m=>{
+        if (!Number.isInteger(m.fixtureId)) return;
+
+        const el = document.createElement("div");
+        el.className = "match";
+        el.dataset.fixture = m.fixtureId;
+        el.textContent = `${m.time} ${m.home} x ${m.away}`;
+        el.onclick = () => window.selectMatch(el);
+        block.appendChild(el);
+      });
+
+      competitions.appendChild(block);
+    });
+
+  } catch (e) {
+    alert("Erro ao carregar partidas.");
+  } finally {
+    loading = false;
+  }
+};
+
+/* ======================================================
+   PAGAMENTO CONFIRMADO (CÓDIGO 2)
+====================================================== */
+window.addEventListener("nox-payment-ok", () => {
+  paymentStatus.innerText =
+    "✅ Pagamento confirmado. Selecione a partida.";
+  analyzeBtn.style.display = "block";
+});
+
+/* ======================================================
+   ANÁLISE (CÓDIGO 3)
+====================================================== */
+analyzeBtn.onclick = () => {
+  if (analyzing) return;
+  analyzing = true;
+
+  try{
+    if (
+      typeof window.analyzeMatch !== "function" ||
+      !Number.isInteger(window.selectedFixture) ||
+      !apikey.value.trim()
+    ){
+      alert("Estado inválido para análise.");
+      return;
+    }
+
+    paymentStatus.innerText = "📊 Gerando análise Premium...";
+    window.analyzeMatch();
+
+  } finally {
+    setTimeout(() => analyzing = false, 2000);
+  }
+};
 </script>
 
 <script type="module" src="money/walletv12.js"></script>
 <script type="module" src="statistics/statistics.js"></script>
 
 </body>
-      </html>
+</html>
