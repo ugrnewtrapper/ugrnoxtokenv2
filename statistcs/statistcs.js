@@ -4,11 +4,15 @@ import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
    CONFIGURAÇÃO
 ================================ */
 const CFG = {
-  chainId: 56, // BSC
+  chainId: 56,
   chainHex: "0x38",
-  rpc: "https://bsc-dataseed.binance.org/",
   paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
-  tokenContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8"
+  tokenContract: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+  backend: "https://backendnoxv22.srrimas2017.workers.dev",
+
+  storageKey: "NOX_PREMIUM_ULTRA",
+  schemaVersion: 1,
+  lockTTL: 5 * 60 * 1000
 };
 
 /* ===============================
@@ -25,262 +29,288 @@ const ERC20_ABI = [
 ];
 
 /* ===============================
-   BACKEND PREMIUM
-================================ */
-const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev";
-
-/* ===============================
-   UI ELEMENTS
-================================ */
-const payBtn = document.getElementById("payBtn");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const statusBox = document.getElementById("paymentStatus");
-const resultBox = document.getElementById("results") || document.getElementById("result");
-
-/* ===============================
    HELPERS
 ================================ */
-const setStatus = (html) => {
-  if (statusBox) statusBox.innerHTML = html;
+const now = () => Date.now();
+const $ = id => document.getElementById(id);
+const safe = (v, d = "—") =>
+  v === undefined || v === null || Number.isNaN(v) ? d : v;
+
+const isValidFixture = id =>
+  Number.isInteger(id) && id > 0;
+
+const microtask = fn =>
+  typeof queueMicrotask === "function"
+    ? queueMicrotask(fn)
+    : setTimeout(fn, 0);
+
+/* ===============================
+   STORAGE VERSIONADO
+================================ */
+const keyOf = (w, c) => `${CFG.storageKey}:${w || "x"}:${c || "x"}`;
+
+const loadState = (w, c) => {
+  try {
+    const s = JSON.parse(localStorage.getItem(keyOf(w, c))) || {};
+    if (s.schemaVersion !== CFG.schemaVersion) return {};
+    return s;
+  } catch {
+    return {};
+  }
+};
+
+const saveState = (w, c, s) => {
+  try {
+    localStorage.setItem(
+      keyOf(w, c),
+      JSON.stringify({ ...s, schemaVersion: CFG.schemaVersion })
+    );
+  } catch {}
+};
+
+const clearState = (w, c) => {
+  try { localStorage.removeItem(keyOf(w, c)); } catch {}
+};
+
+/* ===============================
+   UI
+================================ */
+const payBtn = $("payBtn");
+const analyzeBtn = $("analyzeBtn");
+const statusBox = $("paymentStatus");
+const resultBox = $("results") || $("result");
+
+const setStatus = h => {
+  try { statusBox && (statusBox.innerHTML = h); } catch {}
 };
 
 const lockAnalyze = () => {
-  if (!analyzeBtn) return;
-  analyzeBtn.disabled = true;
-  analyzeBtn.style.display = "none";
+  try { analyzeBtn && (analyzeBtn.disabled = true, analyzeBtn.style.display = "none"); } catch {}
 };
 
 const unlockAnalyze = () => {
-  if (!analyzeBtn) return;
-  analyzeBtn.disabled = false;
-  analyzeBtn.style.display = "block";
-};
-
-const startLoading = (element, baseText = "📊 Gerando análise") => {
-  let dots = 0;
-  const interval = setInterval(() => {
-    if (!element) return clearInterval(interval);
-    element.innerHTML = `${baseText}${".".repeat(dots % 4)}`;
-    dots++;
-  }, 500);
-  return interval;
+  try { analyzeBtn && (analyzeBtn.disabled = false, analyzeBtn.style.display = "block"); } catch {}
 };
 
 /* ===============================
-   STATE
+   GLOBAL
 ================================ */
 let provider;
 let signer;
 let wallet;
+let chainId;
 let busy = false;
-let analysisInProgress = false;
+let analysisLock = false;
+let watchdog = null;
 
 window.selectedFixture = null;
-let analysisConsumed = false;
 
 /* ===============================
    INIT
 ================================ */
-lockAnalyze();
-
 if (!window.ethereum) {
-  setStatus("❌ Carteira Web3 não encontrada.<br>Abra no navegador da sua carteira.");
-  if (payBtn) payBtn.disabled = true;
+  setStatus("❌ Carteira Web3 não encontrada.");
+  payBtn && (payBtn.disabled = true);
   throw new Error("No wallet");
 }
 
 provider = new ethers.BrowserProvider(window.ethereum);
 
 /* ===============================
-   CONEXÃO + PAGAMENTO
+   RESTORE ROBUSTO
 ================================ */
-if (payBtn) {
-  payBtn.onclick = async () => {
-    if (busy) return;
-    busy = true;
-    lockAnalyze();
+(async () => {
+  try {
+    let acc = await provider.listAccounts();
+    if (!acc.length) acc = await provider.send("eth_requestAccounts", []);
+    wallet = acc[0]?.address || acc[0];
+    chainId = Number((await provider.getNetwork()).chainId);
 
-    try {
-      const accounts = await provider.send("eth_requestAccounts", []);
-      wallet = accounts?.[0];
-      if (!wallet) throw new Error("Wallet não encontrada");
-
-      signer = await provider.getSigner();
-
-      // Rede
-      let network = await provider.getNetwork();
-      if (Number(network.chainId) !== CFG.chainId) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: CFG.chainHex }]
-          });
-          network = await provider.getNetwork();
-          if (Number(network.chainId) !== CFG.chainId) {
-            throw new Error("Rede incorreta");
-          }
-        } catch {
-          setStatus("❌ Conecte à rede BSC.");
-          busy = false;
-          return;
-        }
-      }
-
-      // Contratos
-      const token = new ethers.Contract(CFG.tokenContract, ERC20_ABI, signer);
-      const payment = new ethers.Contract(CFG.paymentContract, PAYMENT_ABI, signer);
-
-      const price = await payment.pricePerAnalysis();
-      const allowance = await token.allowance(wallet, CFG.paymentContract);
-
-      if (allowance < price) {
-        setStatus("✍️ Aguardando aprovação do token...");
-        const txApprove = await token.approve(CFG.paymentContract, price);
-        await txApprove.wait();
-      }
-
-      setStatus("💳 Confirmando pagamento...");
-      const txPay = await payment.payForAnalysis();
-      await txPay.wait();
-
-      setStatus("✅ Pagamento confirmado.<br>1 análise Premium liberada.");
+    const state = loadState(wallet, chainId);
+    if (state?.paid && !state?.used && now() - state.timestamp < CFG.lockTTL) {
+      setStatus("✅ Pagamento confirmado.<br>Análise Premium disponível.");
       unlockAnalyze();
-
-      window.dispatchEvent(new Event("nox-payment-ok"));
-
-    } catch (err) {
-      console.error(err);
-      setStatus("❌ Operação cancelada ou erro na transação.");
-    } finally {
-      busy = false;
     }
-  };
-}
+  } catch {}
+})();
 
-/* =============================
-   SELECIONAR PARTIDA
-============================= */
-function selectMatch(el) {
-  document.querySelectorAll(".match").forEach(m => m.classList.remove("selected"));
-  el.classList.add("selected");
-  window.selectedFixture = Number(el.dataset.fixture);
+/* ===============================
+   RESET
+================================ */
+const resetAll = () => {
+  if (wallet && chainId) clearState(wallet, chainId);
+  wallet = undefined;
+  chainId = undefined;
+  analysisLock = false;
+  unlockAnalyze();
+  setStatus("🔄 Carteira ou rede alterada.");
+};
 
-  if (resultBox) {
-    resultBox.innerHTML = `
-      <h3>📌 Partida selecionada</h3>
-      <p>${el.innerText}</p>
-    `;
-  }
-}
+window.ethereum.on("accountsChanged", resetAll);
+window.ethereum.on("chainChanged", resetAll);
 
-/* =============================
-   ANALISAR PARTIDA (PREMIUM)
-============================= */
-async function analyzeMatch(force = false) {
-  if (!force && analysisConsumed) {
-    alert("⚠️ Esta análise já foi consumida.");
-    return;
-  }
+/* ===============================
+   PAGAMENTO
+================================ */
+payBtn && (payBtn.onclick = async () => {
+  if (busy) return;
+  busy = true;
+  lockAnalyze();
 
-  if (analysisInProgress) {
-    alert("⏳ Análise já em andamento. Aguarde...");
-    return;
-  }
-
-  if (!window.selectedFixture) {
-    alert("⚠️ Selecione uma partida");
-    if (resultBox) resultBox.innerHTML = "⚠️ Selecione uma partida para continuar.";
-    return;
-  }
-
-  const apiKey = document.getElementById("apikey")?.value
-              || document.getElementById("apiKey")?.value;
-
-  if (!apiKey) {
-    alert("⚠️ Informe sua API Key");
-    return;
-  }
-
-  if (!resultBox) return;
-
-  analysisInProgress = true;
-  let loadingInterval = startLoading(resultBox);
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
+  let wSnap, cSnap;
 
   try {
-    const res = await fetch(BACKEND_ANALYZE, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey, fixtureId: Number(window.selectedFixture) }),
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
-    clearInterval(loadingInterval);
+    const acc = await provider.send("eth_requestAccounts", []);
+    wallet = acc[0];
+    signer = await provider.getSigner();
+    chainId = Number((await provider.getNetwork()).chainId);
 
-    const data = await res.json();
-
-    if (data.error) {
-      resultBox.innerHTML = "❌ " + data.error;
-      return;
+    if (chainId !== CFG.chainId) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: CFG.chainHex }]
+      });
+      chainId = CFG.chainId;
     }
 
-    analysisConsumed = true;
+    wSnap = wallet;
+    cSnap = chainId;
 
-    resultBox.innerHTML = `
-      <h3>${data.teams.home} x ${data.teams.away}</h3>
-      <ul>
-        <li>⚽ Artilheiro:
-          <strong>${data.players?.topGoals?.player || "—"} (${data.players?.topGoals?.value || "—"})</strong>
-        </li>
-        <li>🎯 Assistências:
-          <strong>${data.players?.topAssists?.player || "—"} (${data.players?.topAssists?.value || "—"})</strong>
-        </li>
-        <li>🥅 Chutes:
-          <strong>${data.players?.topShots?.player || "—"} (${data.players?.topShots?.value || "—"})</strong>
-        </li>
-        <li>🟨 Moda de cartões:
-          <strong>${data.discipline?.cardsMode || "—"}</strong>
-        </li>
-        <li>🚩 Moda de escanteios:
-          <strong>${data.discipline?.cornersMode || "—"}</strong>
-        </li>
-      </ul>
-    `;
+    const token = new ethers.Contract(CFG.tokenContract, ERC20_ABI, signer);
+    const payment = new ethers.Contract(CFG.paymentContract, PAYMENT_ABI, signer);
 
-  } catch (err) {
-    console.error(err);
-    clearInterval(loadingInterval);
-    resultBox.innerHTML = "❌ Erro ao buscar análise ou timeout do backend.";
+    const price = await payment.pricePerAnalysis();
+    const allowance = await token.allowance(wallet, CFG.paymentContract);
+
+    if (allowance < price) {
+      setStatus("✍️ Aguardando aprovação...");
+      await (await token.approve(CFG.paymentContract, price)).wait();
+    }
+
+    setStatus("💳 Confirmando pagamento...");
+    const receipt = await (await payment.payForAnalysis()).wait();
+
+    saveState(wSnap, cSnap, {
+      paid: true,
+      used: false,
+      txHash: receipt.hash,
+      timestamp: now()
+    });
+
+    setStatus("✅ Pagamento confirmado.<br>1 análise Premium liberada.");
+    unlockAnalyze();
+
+  } catch (e) {
+    console.error(e);
+    clearState(wSnap, cSnap);
+    setStatus("❌ Falha no pagamento.");
   } finally {
-    clearInterval(loadingInterval);
-    analysisInProgress = false;
+    busy = false;
   }
-}
-
-/* =============================
-   EVENTO DE PAGAMENTO (1x)
-============================= */
-window.addEventListener("nox-payment-ok", () => {
-  analysisConsumed = false; // libera 1 análise
-  if (resultBox) resultBox.innerHTML = "📊 Gerando análise Premium...";
-  analyzeMatch(true);
 });
 
-/* =============================
-   BINDS PREMIUM
-============================= */
-if (analyzeBtn) {
-  analyzeBtn.addEventListener("click", () => {
-    alert("⚠️ Efetue o pagamento Premium para liberar a análise.");
-  });
-}
+/* ===============================
+   SELEÇÃO
+================================ */
+window.selectMatch = el => {
+  document.querySelectorAll(".match").forEach(m =>
+    m.classList.remove("selected")
+  );
+  el.classList.add("selected");
+  const id = Number(el.dataset.fixture);
+  window.selectedFixture = isValidFixture(id) ? id : null;
+};
 
-/* =============================
-   EXPOSIÇÃO GLOBAL
-============================= */
-window.selectMatch = selectMatch;
-window.analyzeMatch = analyzeMatch;
-window.lockAnalyze = lockAnalyze;
-window.unlockAnalyze = unlockAnalyze;
+/* ===============================
+   ANÁLISE PREMIUM
+================================ */
+window.analyzeMatch = () => {
+  microtask(async () => {
+    if (analysisLock) return;
+    analysisLock = true;
+
+    clearTimeout(watchdog);
+    watchdog = setTimeout(() => (analysisLock = false), 20000);
+
+    let wSnap = wallet;
+    let cSnap = chainId;
+
+    try {
+      const state = loadState(wSnap, cSnap);
+      if (!state?.paid || state?.used) {
+        alert("⚠️ Análise Premium indisponível.");
+        return;
+      }
+
+      if (now() - state.timestamp > CFG.lockTTL) {
+        clearState(wSnap, cSnap);
+        setStatus("⏱️ Análise expirada.");
+        unlockAnalyze();
+        return;
+      }
+
+      if (!isValidFixture(window.selectedFixture)) {
+        alert("⚠️ Selecione uma partida válida.");
+        return;
+      }
+
+      const apiKey = $("apikey")?.value || $("apiKey")?.value;
+      if (!apiKey) {
+        alert("⚠️ Informe sua API Key.");
+        return;
+      }
+
+      lockAnalyze();
+      resultBox && (resultBox.innerHTML = "📊 Gerando análise Premium...");
+
+      let timeout;
+      const controller = typeof AbortController !== "undefined"
+        ? new AbortController()
+        : null;
+
+      timeout = setTimeout(() => controller?.abort(), 12000);
+
+      const res = await fetch(CFG.backend, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey,
+          fixtureId: window.selectedFixture
+        }),
+        signal: controller?.signal
+      }).finally(() => clearTimeout(timeout));
+
+      const data = await res.json();
+
+      if (data.status === "failed" || !data?.teams) {
+        throw new Error("Resposta inválida");
+      }
+
+      if (data.status === "completed") {
+        saveState(wSnap, cSnap, { ...state, used: true });
+        setStatus("⏳ Análise Premium utilizada.");
+      } else {
+        setStatus("⚠️ Análise parcial — tente novamente.");
+      }
+
+      resultBox && (resultBox.innerHTML = `
+        <h3>${safe(data.teams.home)} x ${safe(data.teams.away)}</h3>
+        <ul>
+          <li>⚽ Artilheiro: <strong>${safe(data.players?.topGoals?.player)} (${safe(data.players?.topGoals?.value)})</strong></li>
+          <li>🎯 Assistências: <strong>${safe(data.players?.topAssists?.player)} (${safe(data.players?.topAssists?.value)})</strong></li>
+          <li>🥅 Chutes: <strong>${safe(data.players?.topShots?.player)} (${safe(data.players?.topShots?.value)})</strong></li>
+          <li>🟨 Moda cartões: <strong>${safe(data.statistics?.cardsMode)}</strong></li>
+          <li>🚩 Moda escanteios: <strong>${safe(data.statistics?.cornersMode)}</strong></li>
+        </ul>
+      `);
+
+    } catch (e) {
+      console.error(e);
+      resultBox && (resultBox.innerHTML = "❌ Erro ao gerar análise.");
+      unlockAnalyze();
+    } finally {
+      clearTimeout(watchdog);
+      analysisLock = false;
+    }
+  });
+};
