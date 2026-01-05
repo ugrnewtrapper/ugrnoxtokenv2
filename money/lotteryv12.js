@@ -59,19 +59,18 @@ loadPublicData();
 WALLET FLOW (ON CLICK)
 ============================= */
 btn.onclick = async () => {
+  btn.disabled = true;
   try {
-    if (!window.ethereum) {
-      setStatus("❌ Carteira Web3 não encontrada.");
-      return;
-    }
+    if (!window.ethereum) throw new Error("Carteira Web3 não encontrada.");
 
-    btn.disabled = true;
     setStatus("🔐 Conectando carteira...");
-
     const provider = new ethers.BrowserProvider(window.ethereum);
+
+    // Solicita contas
     await provider.send("eth_requestAccounts", []);
     let signer = await provider.getSigner();
 
+    // Confere rede
     const network = await provider.getNetwork();
     if (Number(network.chainId) !== CFG.chainId) {
       setStatus("🔄 Mudando para a rede BSC...");
@@ -82,6 +81,7 @@ btn.onclick = async () => {
       signer = await provider.getSigner();
     }
 
+    // Conecta contrato
     const scratch = new ethers.Contract(
       CFG.contract,
       [
@@ -92,16 +92,19 @@ btn.onclick = async () => {
       signer
     );
 
-    if (await scratch.paused()) {
+    // Confere se ciclo pausado
+    const isPaused = await scratch.paused().catch(() => true);
+    if (isPaused) {
       setStatus("⛔ Ciclo pausado.");
-      btn.disabled = false;
       return;
     }
 
+    // Executa compra
     setStatus("⏳ Processando raspadinha...");
     const tx = await scratch.buyScratch();
     const receipt = await tx.wait();
 
+    // Processa logs de eventos
     let ganhou = false;
     let premio = "0";
 
@@ -110,22 +113,24 @@ btn.onclick = async () => {
         const parsed = scratch.interface.parseLog(log);
         if (parsed?.name === "CycleCompleted") {
           ganhou = true;
-          premio = ethers.formatEther(parsed.args[2] || 0);
-          break; // apenas o primeiro evento relevante
+          premio = ethers.formatEther(parsed.args?.[2] || 0);
+          break;
         }
       } catch (err) {
         console.warn("Log não reconhecido:", err);
       }
     }
 
+    // Atualiza status final
     if (ganhou) {
       setStatus(`🎉 <strong>VOCÊ GANHOU!</strong><br>🏆 ${premio} UGR`);
     } else {
       setStatus("😢 Não foi dessa vez. Tente novamente.");
     }
+
   } catch (err) {
     console.error("Erro na compra da raspadinha:", err);
-    setStatus("❌ Operação cancelada ou erro.");
+    setStatus(`❌ ${err.message || "Operação cancelada ou erro."}`);
   } finally {
     btn.disabled = false;
   }
