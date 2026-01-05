@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Raspadinha Nox • UGRNOXTOKEN</title>
 
   <style>
@@ -15,11 +15,15 @@
       --overlay:rgba(0,0,0,.75);
       --glow:rgba(13,110,175,.5);
       --success:#00ff9c;
-      --error:#ff5555;
       --highlight:#00c9ff;
     }
 
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial,Helvetica,sans-serif}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:"Segoe UI",Arial,Helvetica,sans-serif;
+    }
 
     body{
       min-height:100vh;
@@ -34,6 +38,7 @@
       padding:48px 24px;
       text-align:center;
       position:relative;
+      animation:fadeIn 1.2s ease;
     }
 
     #backBtn{
@@ -49,15 +54,20 @@
       width:160px;
       margin:0 auto 30px;
       filter:drop-shadow(0 0 20px var(--glow));
+      animation:float 4s ease-in-out infinite;
     }
 
     h1{
       font-size:2.8rem;
       color:var(--primary);
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
-    h2{font-size:1.5rem;margin-bottom:36px;opacity:.9}
+    h2{
+      font-size:1.5rem;
+      opacity:.9;
+      margin-bottom:36px;
+    }
 
     .box{
       background:linear-gradient(180deg,#0f2a38,#0b1c26);
@@ -66,20 +76,53 @@
       margin-bottom:48px;
       text-align:left;
       border:1px solid rgba(0,201,255,.15);
+      box-shadow:0 18px 50px rgba(0,0,0,.8);
     }
 
-    .highlight{color:var(--highlight);font-weight:bold}
+    .box p{
+      line-height:1.8;
+      margin-bottom:18px;
+    }
 
-    .scratch-wrapper{display:flex;flex-direction:column;align-items:center;gap:18px}
+    .highlight{
+      color:var(--highlight);
+      font-weight:bold;
+    }
 
+    /* === NOVO BLOCO PREÇO / PRÊMIO === */
     .scratch-info{
       display:flex;
-      gap:32px;
-      font-size:1.05rem;
-      margin-bottom:16px;
+      flex-direction:column;
+      gap:14px;
+      margin-bottom:22px;
+      width:100%;
+      max-width:320px;
     }
 
-    .scratch-info span{font-weight:bold;color:var(--highlight)}
+    .info-card{
+      background:linear-gradient(145deg,#0e2a3d,#081b26);
+      border-radius:18px;
+      padding:16px 20px;
+      border:1px solid rgba(0,201,255,.25);
+      box-shadow:0 10px 28px rgba(0,201,255,.25);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:1.05rem;
+    }
+
+    .info-card span{
+      color:var(--highlight);
+      font-weight:bold;
+      font-size:1.15rem;
+    }
+
+    .scratch-wrapper{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:22px;
+    }
 
     .scratch-card{
       width:300px;
@@ -88,6 +131,7 @@
       border-radius:22px;
       position:relative;
       overflow:hidden;
+      box-shadow:0 16px 50px rgba(0,201,255,.45);
     }
 
     .scratch-prize{
@@ -101,104 +145,113 @@
       gap:14px;
       padding:24px;
       border-radius:20px;
+      z-index:1;
+      color:var(--success);
+      font-weight:bold;
     }
 
-    /* Overlay corrigido */
+    #uiPrice,#uiPrize{
+      display:none;
+    }
+
     .scratch-overlay{
       position:absolute;
       inset:0;
       background:var(--overlay);
-      z-index:5;
       display:flex;
       align-items:center;
       justify-content:center;
+      color:#fff;
       font-weight:bold;
       font-size:1.2rem;
       cursor:pointer;
+      z-index:2;
+      transition:opacity .5s;
     }
 
-    .scratch-overlay.hidden{
-      display:none;
+    .scratch-overlay.revealed{
+      opacity:0;
+      pointer-events:none;
     }
-
-    #uiPrice,#uiPrize{display:none}
 
     .btn{
       padding:14px 36px;
       background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       color:#fff;
       font-weight:bold;
-      border-radius:32px;
       border:none;
+      border-radius:32px;
       cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,201,255,.45);
     }
 
-    #paymentStatus{
-      margin-top:14px;
-      min-height:28px;
+    footer{
+      margin-top:60px;
+      font-size:.95rem;
+      opacity:.75;
     }
 
-    footer{margin-top:60px;opacity:.75}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes float{50%{transform:translateY(-12px)}}
   </style>
 </head>
 
 <body>
-
 <main>
+
   <a href="index.html" id="backBtn">⬅ Voltar</a>
 
-  <img src="/images/logo2.png" class="logo" alt="UGRNOXTOKEN Logo" />
+  <img src="/images/logo2.png" class="logo">
 
   <h1>Raspadinha Nox</h1>
   <h2>Versão 3.0 ULTRA</h2>
 
   <div class="box">
-    <p>A <span class="highlight">Raspadinha Nox</span> é totalmente descentralizada.</p>
-    <p>Contrato inteligente público e imutável na BNB Chain.</p>
-    <p>Premiação automática sem interferência humana.</p>
+    <p>A <span class="highlight">Raspadinha Nox</span> é um sistema descentralizado executado por <strong>contrato inteligente na BNB Chain</strong>.</p>
+    <p>Contrato público, auditável e imutável. <strong>Nenhuma interferência humana</strong>.</p>
+    <p>O valor é acumulado on-chain até atingir o prêmio, que é liberado automaticamente.</p>
   </div>
 
   <h2>Raspadinha On-Chain</h2>
 
   <div class="scratch-wrapper">
+
+    <!-- NOVO LAYOUT PREÇO / PRÊMIO -->
     <div class="scratch-info">
-      <span>Preço: <span id="priceLabel">--</span> UGR</span>
-      <span>Prêmio: <span id="prizeLabel">--</span> UGR</span>
+      <div class="info-card">
+        <div>💰 Preço</div>
+        <span>10 UGR NOX</span>
+      </div>
+
+      <div class="info-card">
+        <div>🏆 Prêmio</div>
+        <span>100 UGR NOX</span>
+      </div>
     </div>
 
     <div class="scratch-card">
-      <div class="scratch-overlay" id="scratchOverlay">
+      <div class="scratch-overlay" onclick="this.classList.add('revealed')">
         Raspar
       </div>
 
       <div class="scratch-prize">
         <div id="scratchResult">Raspe para descobrir</div>
-
         <span id="uiPrice">--</span>
         <span id="uiPrize">--</span>
 
-        <button id="payBtn" class="btn">
-          COMPRAR RASPADINHA
-        </button>
-
+        <button id="payBtn" class="btn">COMPRAR RASPADINHA</button>
         <div id="paymentStatus"></div>
       </div>
     </div>
+
   </div>
 
   <footer>
     Raspadinha Nox • Versão 3.0 ULTRA • BNB Chain
   </footer>
+
 </main>
 
 <script type="module" src="money/lotteryv12.js"></script>
-
-<script>
-  // Remove overlay corretamente (Trust-safe)
-  document.getElementById("scratchOverlay").onclick = function () {
-    this.classList.add("hidden");
-  };
-</script>
-
 </body>
 </html>
