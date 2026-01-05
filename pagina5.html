@@ -2,69 +2,144 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NOX Premium • Análises</title>
+<title>NOX Premium • Análises Avançadas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *,*::before,*::after{box-sizing:border-box}
+:root{
+--primary:#0f766e;
+--primary-soft:#14b8a6;
+--dark:#020617;
+--panel:#020f1a;
+--soft:#9fb3c8;
+--text:#e6f1f5;
+}
 body{
 margin:0;
-font-family:Arial,Helvetica,sans-serif;
-background:#020617;
-color:#e6f1f5;
-padding:20px 10px 40px;
+font-family:"Segoe UI",Arial,sans-serif;
+background:
+radial-gradient(600px at top, rgba(20,184,166,.18), transparent 60%),
+linear-gradient(180deg, #020617, #01030f);
+color:var(--text);
+min-height:100vh;
+padding:20px 10px 50px;
 }
 .container{
 max-width:520px;
 margin:auto;
-background:#020f1a;
-border-radius:20px;
-padding:22px;
-box-shadow:0 25px 60px rgba(0,0,0,.6);
+background:linear-gradient(180deg, rgba(2,15,26,.96), rgba(2,6,23,.99));
+border-radius:22px;
+padding:24px 22px;
+box-shadow:0 30px 80px rgba(0,0,0,.75),
+inset 0 0 0 1px rgba(20,184,166,.25);
+}
+.nav-back a{
+color:var(--primary-soft);
+font-size:14px;
+text-decoration:none;
+font-weight:600;
+}
+.logo{
+max-width:110px;
+margin:10px auto 14px;
+display:block;
+filter:drop-shadow(0 0 14px rgba(20,184,166,.45));
+}
+h1{text-align:center;font-size:23px;margin:4px 0}
+.version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:18px}
+.info{
+font-size:13.5px;
+background:rgba(20,184,166,.10);
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(20,184,166,.35);
+margin-bottom:16px;
+}
+label{font-size:13px;color:var(--soft);display:block;margin-top:14px}
+input{
+width:100%;
+height:44px;
+padding:0 12px;
+border-radius:12px;
+background:rgba(2,6,23,.95);
+color:#fff;
+border:1px solid rgba(255,255,255,.12);
 }
 button{
 width:100%;
 height:46px;
-margin-top:10px;
-border-radius:14px;
+border-radius:16px;
 font-weight:700;
+margin-top:12px;
 cursor:pointer;
+border:none;
 }
 button.secondary{
 background:transparent;
-border:1px solid #14b8a6;
-color:#14b8a6;
+border:1px solid rgba(20,184,166,.55);
+color:var(--primary-soft);
+}
+.results{margin-top:18px}
+.competition{margin-bottom:16px}
+.competition h3{
+color:var(--primary-soft);
+font-size:14px;
+margin-bottom:6px;
 }
 .match{
 padding:8px 10px;
 border-radius:10px;
 cursor:pointer;
 font-size:13.5px;
+transition:.12s;
 }
+.match:hover{background:rgba(20,184,166,.12)}
 .match.selected{
-background:#14b8a6;
+background:rgba(20,184,166,.45);
 color:#001312;
-font-weight:700;
+font-weight:600;
 }
 .status{
-margin-top:14px;
+margin-top:16px;
+background:rgba(255,180,0,.08);
+border:1px solid rgba(255,180,0,.35);
 padding:12px;
 border-radius:14px;
-background:#03131f;
-border:1px solid #0ea5a5;
 font-size:13px;
 text-align:center;
 }
+.balloons{
+margin-top:18px;
+display:grid;
+gap:10px;
+}
+.balloon{
+background:rgba(20,184,166,.10);
+border:1px solid rgba(20,184,166,.35);
+border-radius:16px;
+padding:12px;
+font-size:13px;
+min-height:42px;
+}
+.balloon strong{color:var(--primary-soft)}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<h2>NOX Premium</h2>
+<div class="nav-back"><a href="index.html">← Voltar</a></div>
 
-<div id="paymentStatus" class="status">
-🔒 Acesso Premium bloqueado.
+<img src="images/logo2.png" class="logo"
+onerror="this.src='https://via.placeholder.com/110x60?text=NOX+Logo'">
+
+<h1>NOX Premium</h1>
+<div class="version">Versão 4.0 • TURBO</div>
+
+<div class="info">
+🔐 Utilize no navegador da sua carteira.<br>
+💡 Cada pagamento libera <strong>1 análise Premium</strong>.
 </div>
 
 <label>API Key</label>
@@ -75,123 +150,97 @@ text-align:center;
 
 <button id="loadBtn" class="secondary">📅 Carregar Partidas</button>
 
-<div id="competitions"></div>
+<div id="competitions" class="results"></div>
 
-<button id="payBtn" class="secondary">💳 Efetuar Pagamento</button>
+<button id="payBtn" class="secondary">💳 Efetuar Pagamento Premium</button>
 <button id="analyzeBtn" style="display:none">📊 Analisar Partida</button>
 
-<div id="results"></div>
+<div class="status" id="paymentStatus">
+🔒 Acesso Premium bloqueado. Efetue o pagamento.
+</div>
+
+<div id="results" class="balloons">
+<div class="balloon" id="res-goals"></div>
+<div class="balloon" id="res-assists"></div>
+<div class="balloon" id="res-shots"></div>
+<div class="balloon" id="res-corners"></div>
+<div class="balloon" id="res-cards"></div>
+</div>
 
 </div>
 
 <script>
-/* ======================================================
-   HARDENING PASSIVO (SEM QUEBRA)
-====================================================== */
-(() => {
-  const warn = () => console.warn("⚠️ Ambiente monitorado.");
-  document.addEventListener("keydown", e => {
-    if (e.key === "F12") warn();
-  });
-  const c = console.clear;
-  console.clear = () => { warn(); c.call(console); };
-})();
+const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
+let loading=false;
 
-/* ======================================================
-   ESTADO
-====================================================== */
-const BACKEND_LIST = "https://backendnoxv2.srrimas2017.workers.dev";
-let loading = false;
-let analyzing = false;
-
-/* ======================================================
-   PARTIDAS
-====================================================== */
-loadBtn.onclick = async () => {
-  if (loading) return;
-  loading = true;
-
-  try{
-    const apiKey = apikey.value.trim();
-    const date = document.getElementById("date").value;
-
-    if (!apiKey || !date) {
-      alert("Informe API Key e Data.");
-      return;
-    }
-
-    const res = await fetch(BACKEND_LIST,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ apiKey, date })
-    });
-
-    if (!res.ok) throw new Error("Backend indisponível");
-
-    const data = await res.json();
-    competitions.innerHTML = "";
-
-    if (!Array.isArray(data?.competitions)) return;
-
-    data.competitions.forEach(c=>{
-      if (!Array.isArray(c.matches)) return;
-
-      const block = document.createElement("div");
-      block.innerHTML = `<h3>${c.league}</h3>`;
-
-      c.matches.forEach(m=>{
-        if (!Number.isInteger(m.fixtureId)) return;
-
-        const el = document.createElement("div");
-        el.className = "match";
-        el.dataset.fixture = m.fixtureId;
-        el.textContent = `${m.time} ${m.home} x ${m.away}`;
-        el.onclick = () => window.selectMatch(el);
-        block.appendChild(el);
-      });
-
-      competitions.appendChild(block);
-    });
-
-  } catch (e) {
-    alert("Erro ao carregar partidas.");
-  } finally {
-    loading = false;
-  }
-};
-
-/* ======================================================
-   PAGAMENTO CONFIRMADO (CÓDIGO 2)
-====================================================== */
-window.addEventListener("nox-payment-ok", () => {
-  paymentStatus.innerText =
-    "✅ Pagamento confirmado. Selecione a partida.";
-  analyzeBtn.style.display = "block";
+/* HARDENING PASSIVO */
+document.addEventListener("keydown",e=>{
+if(e.key==="F12") console.warn("⚠️ Ambiente monitorado");
 });
 
-/* ======================================================
-   ANÁLISE (CÓDIGO 3)
-====================================================== */
-analyzeBtn.onclick = () => {
-  if (analyzing) return;
-  analyzing = true;
+/* CARREGAR PARTIDAS */
+loadBtn.onclick=async()=>{
+if(loading) return;
+loading=true;
 
-  try{
-    if (
-      typeof window.analyzeMatch !== "function" ||
-      !Number.isInteger(window.selectedFixture) ||
-      !apikey.value.trim()
-    ){
-      alert("Estado inválido para análise.");
-      return;
-    }
+const apiKey=apikey.value.trim();
+const date=document.getElementById("date").value;
 
-    paymentStatus.innerText = "📊 Gerando análise Premium...";
-    window.analyzeMatch();
+if(!apiKey||!date){
+alert("Informe API Key e Data");
+loading=false;
+return;
+}
 
-  } finally {
-    setTimeout(() => analyzing = false, 2000);
-  }
+competitions.innerHTML="⏳ Carregando partidas...";
+
+try{
+const res=await fetch(BACKEND_LIST,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({apiKey,date})
+});
+if(!res.ok) throw new Error();
+
+const data=await res.json();
+if(!Array.isArray(data?.competitions)) throw new Error();
+
+competitions.innerHTML="";
+data.competitions.forEach(c=>{
+const box=document.createElement("div");
+box.className="competition";
+box.innerHTML=`<h3>🏆 ${c.league}</h3>`;
+c.matches.forEach(m=>{
+const el=document.createElement("div");
+el.className="match";
+el.dataset.fixture=m.fixtureId;
+el.textContent=`${m.time} ${m.home} x ${m.away}`;
+el.onclick=()=>window.selectMatch(el);
+box.appendChild(el);
+});
+competitions.appendChild(box);
+});
+}catch{
+competitions.innerHTML="❌ Falha ao carregar partidas.";
+}finally{
+loading=false;
+}
+};
+
+/* PAGAMENTO CONFIRMADO */
+window.addEventListener("nox-payment-ok",()=>{
+paymentStatus.innerText="✅ Pagamento confirmado. Selecione a partida.";
+analyzeBtn.style.display="block";
+});
+
+/* ANALISAR */
+analyzeBtn.onclick=()=>{
+if(!window.selectedFixture){
+alert("Selecione uma partida");
+return;
+}
+paymentStatus.innerText="📊 Gerando análise Premium...";
+if(typeof analyzeMatch==="function") analyzeMatch();
 };
 </script>
 
