@@ -38,10 +38,12 @@ const setStatus = (html) => statusBox.innerHTML = html;
 
 const lockAnalyze = () => {
   analyzeBtn.disabled = true;
+  analyzeBtn.style.display = "none"; // mantém escondido enquanto não pago
 };
 
 const unlockAnalyze = () => {
   analyzeBtn.disabled = false;
+  analyzeBtn.style.display = "block"; // mostra o botão após pagamento
 };
 
 /* ===============================
@@ -118,6 +120,9 @@ payBtn.onclick = async () => {
     setStatus("✅ Pagamento confirmado.<br>1 análise Premium liberada.");
     unlockAnalyze();
 
+    // 🔔 dispara evento global para front escutar
+    window.dispatchEvent(new Event("nox-payment-ok"));
+
   } catch (err) {
     console.error(err);
     setStatus("❌ Operação cancelada ou erro na transação.");
@@ -125,3 +130,10 @@ payBtn.onclick = async () => {
     busy = false;
   }
 };
+
+/* ===============================
+   EVENTOS GLOBAIS (OPCIONAL)
+================================ */
+// Permite integrar com front que escuta "nox-payment-ok"
+window.lockAnalyze = lockAnalyze;
+window.unlockAnalyze = unlockAnalyze;
