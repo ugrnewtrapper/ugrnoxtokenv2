@@ -27,22 +27,30 @@ LOAD PRICE / PRIZE (NO WALLET)
 async function loadPublicData() {
   try {
     const res = await fetch(CFG.backend);
+    if (!res.ok) throw new Error(`Backend retornou ${res.status}`);
     const data = await res.json();
 
-    uiPrice.textContent = Number(data.scratchPrice).toLocaleString("pt-BR", {
+    uiPrice.textContent = Number(data.scratchPrice || 0).toLocaleString("pt-BR", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 4
     });
 
-    uiPrize.textContent = Number(data.prizeAmount).toLocaleString("pt-BR", {
+    uiPrize.textContent = Number(data.prizeAmount || 0).toLocaleString("pt-BR", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 4
     });
+
+    // Desabilita compra se ciclo pausado
+    if (data.paused) {
+      setStatus("⛔ Ciclo pausado pelo contrato.");
+      btn.disabled = true;
+    }
 
   } catch (e) {
-    console.error(e);
+    console.error("Erro ao carregar dados públicos:", e);
     uiPrice.textContent = "--";
     uiPrize.textContent = "--";
+    setStatus("❌ Não foi possível carregar informações da raspadinha.");
   }
 }
 
@@ -67,6 +75,7 @@ btn.onclick = async () => {
 
     const network = await provider.getNetwork();
     if (Number(network.chainId) !== CFG.chainId) {
+      setStatus("🔄 Mudando para a rede BSC...");
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: CFG.chainHex }]
@@ -100,11 +109,14 @@ btn.onclick = async () => {
     for (const log of receipt.logs) {
       try {
         const parsed = scratch.interface.parseLog(log);
-        if (parsed.name === "CycleCompleted") {
+        if (parsed && parsed.name === "CycleCompleted") {
           ganhou = true;
-          premio = ethers.formatEther(parsed.args[2]);
+          premio = ethers.formatEther(parsed.args[2] || 0);
+          break; // apenas o primeiro evento relevante
         }
-      } catch {}
+      } catch (err) {
+        console.warn("Log não reconhecido:", err);
+      }
     }
 
     if (ganhou) {
@@ -114,7 +126,7 @@ btn.onclick = async () => {
     }
 
   } catch (err) {
-    console.error(err);
+    console.error("Erro na compra da raspadinha:", err);
     setStatus("❌ Operação cancelada ou erro.");
   } finally {
     btn.disabled = false;
