@@ -2,15 +2,25 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NOX Football Analytics | Análise Estatística Profissional de Futebol ⚽</title>
+<title>NOX Football Analytics | Análise Estatística Profissional de Futebol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+  --bg-main: #0f1216;
+  --bg-card: #151a21;
+  --primary: #1f6feb;
+  --primary-dark: #164fb3;
+  --text-main: #e6e6e6;
+  --text-muted: #a0a7b4;
+  --border-soft: rgba(255,255,255,0.08);
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #0a2cff, #0d6efd);
-  color: #fff;
+  background: var(--bg-main);
+  color: var(--text-main);
   text-align: center;
 }
 
@@ -20,6 +30,21 @@ body {
   padding: 20px;
 }
 
+.top-back {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.top-back a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.top-back a:hover {
+  color: var(--primary-dark);
+}
+
 .logo {
   max-width: 180px;
   animation: pulse 2s infinite;
@@ -27,41 +52,52 @@ body {
 
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
 
-h1 { margin-top: 10px; }
-p { opacity: 0.9; }
+h1 {
+  margin-top: 12px;
+  color: var(--text-main);
+}
+
+p {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
 
 input, button {
   padding: 12px;
   margin: 8px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--border-soft);
   font-size: 16px;
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
-input { width: 260px; }
+input {
+  width: 260px;
+}
 
 button {
-  background: #00d4ff;
-  color: #003;
+  background: var(--primary);
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
+  transition: background 0.2s, transform 0.2s;
 }
 
 button:hover {
-  background: #00ffff;
-  transform: scale(1.05);
+  background: var(--primary-dark);
+  transform: scale(1.04);
 }
 
 .section {
   margin-top: 25px;
-  background: rgba(255,255,255,0.1);
-  padding: 15px;
-  border-radius: 12px;
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
 }
 
 .competition {
@@ -71,33 +107,39 @@ button:hover {
 
 .competition h3 {
   cursor: pointer;
-  color: #00ffff;
+  color: var(--primary);
+  margin-bottom: 6px;
 }
 
 .match {
   margin-left: 15px;
   cursor: pointer;
-  padding: 5px;
+  padding: 6px;
+  border-radius: 6px;
 }
 
 .match:hover {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
 }
 
 .selected {
-  background: rgba(0,255,255,0.3);
+  background: rgba(31,111,235,0.25);
 }
 
 .footer {
   margin-top: 40px;
   font-size: 14px;
-  opacity: 0.8;
+  color: var(--text-muted);
 }
 
 a {
-  color: #00ffff;
+  color: var(--primary);
   text-decoration: none;
   font-weight: bold;
+}
+
+a:hover {
+  color: var(--primary-dark);
 }
 </style>
 </head>
@@ -105,50 +147,52 @@ a {
 <body>
 <div class="container">
 
+<div class="top-back">
+  <a href="index.html">← Voltar</a>
+</div>
+
 <img src="images/logo2.png" class="logo" alt="NOX Logo">
 
-<h1>NOX Football Analytics | Análise Estatística Profissional de Futebol ⚽📊</h1>
+<h1>NOX Football Analytics</h1>
 
 <p>
-Plataforma profissional de <strong>análise estatística de futebol</strong>, baseada em dados reais.<br>
+Plataforma profissional de análise estatística de futebol baseada em dados reais.
 Os cálculos utilizam médias históricas, confrontos diretos (H2H) e indicadores probabilísticos,
-extraídos em tempo real da <strong>API-Football</strong>.
+extraídos em tempo real da API-Football.
 </p>
 
-<p style="font-size:14px; opacity:0.8; margin-top:8px;">
-Cada partida é uma batalha estratégica. Dados reduzem o risco, mas nunca eliminam a incerteza.
-Use a informação com responsabilidade.
+<p style="font-size:14px; margin-top:8px;">
+Cada partida envolve variáveis imprevisíveis. Os dados auxiliam a tomada de decisão,
+mas não eliminam riscos. Utilize as informações com responsabilidade.
 </p>
 
 <div class="section">
-  <input type="text" id="apiKey" placeholder="🔑 Sua API Key">
+  <input type="text" id="apiKey" placeholder="Sua API Key">
   <input type="date" id="date">
   <br>
-  <button onclick="loadCompetitions()">📅 Carregar Competições</button>
+  <button onclick="loadCompetitions()">Carregar Competições</button>
 </div>
 
 <div id="competitions" class="section"></div>
 
 <div class="section">
-  <button onclick="analyzeMatch()">📊 Analisar Partida</button>
+  <button onclick="analyzeMatch()">Analisar Partida</button>
 </div>
 
 <div id="result" class="section"></div>
 
 <div class="section">
-  <button onclick="location.href='index.html'">🏠 Página Inicial</button><br><br>
-
   <a href="https://www.api-football.com/" target="_blank">
-    ➡️ Criar API Football
+    Criar conta na API-Football
   </a>
   <br><br>
-
   <a href="images/TUTO.pdf" target="_blank">
-    📘 Guia Rápido da API Football
+    Guia rápido de utilização da API
   </a>
 </div>
 
-<div class="footer">Versão 1.6 • PRO 🚀</div>
+<div class="footer">Versão 3.0 ULTRA</div>
+
 </div>
 
 <script>
@@ -160,12 +204,12 @@ async function loadCompetitions() {
   const date = document.getElementById("date").value;
 
   if (!apiKey || !date) {
-    alert("⚠️ Informe API Key e data");
+    alert("Informe a API Key e a data.");
     return;
   }
 
   const box = document.getElementById("competitions");
-  box.innerHTML = "⏳ Carregando competições...";
+  box.innerHTML = "Carregando competições...";
 
   const res = await fetch(BACKEND, {
     method: "POST",
@@ -176,7 +220,7 @@ async function loadCompetitions() {
   const data = await res.json();
 
   if (!Array.isArray(data.competitions) || !data.competitions.length) {
-    box.innerHTML = "❌ Nenhuma competição encontrada";
+    box.innerHTML = "Nenhuma competição encontrada.";
     return;
   }
 
@@ -184,7 +228,7 @@ async function loadCompetitions() {
   data.competitions.forEach((comp, idx) => {
     html += `
       <div class="competition">
-        <h3 onclick="toggleComp(${idx}, event)">🏆 ${comp.league} (${comp.country})</h3>
+        <h3 onclick="toggleComp(${idx}, event)">${comp.league} (${comp.country})</h3>
         <div class="matches" id="comp-${idx}">
     `;
     comp.matches.forEach(m => {
@@ -192,7 +236,7 @@ async function loadCompetitions() {
         <div class="match"
              data-fixture="${m.fixtureId}"
              onclick="selectMatch(event, this)">
-          ⏰ ${m.time} - ${m.home} x ${m.away}
+          ${m.time} - ${m.home} x ${m.away}
         </div>
       `;
     });
@@ -218,7 +262,8 @@ function selectMatch(event, el) {
   el.classList.add("selected");
   selectedFixture = el.dataset.fixture;
 
-  document.getElementById("result").innerHTML = `<h3>📌 Partida selecionada:</h3><p>${el.innerText}</p>`;
+  document.getElementById("result").innerHTML =
+    `<h3>Partida selecionada</h3><p>${el.innerText}</p>`;
 
   document.querySelectorAll(".matches").forEach(m => {
     m.style.display = "none";
@@ -229,7 +274,7 @@ function selectMatch(event, el) {
 
 async function analyzeMatch() {
   if (!selectedFixture) {
-    alert("⚠️ Selecione uma partida");
+    alert("Selecione uma partida.");
     return;
   }
 
@@ -237,12 +282,12 @@ async function analyzeMatch() {
   const date = document.getElementById("date").value;
 
   if (!apiKey || !date) {
-    alert("⚠️ Informe API Key e data");
+    alert("Informe a API Key e a data.");
     return;
   }
 
   const result = document.getElementById("result");
-  result.innerHTML = "📊 Analisando...";
+  result.innerHTML = "Analisando dados estatísticos...";
 
   const res = await fetch(BACKEND, {
     method: "POST",
@@ -257,7 +302,7 @@ async function analyzeMatch() {
   const data = await res.json();
 
   if (data.error) {
-    result.innerHTML = "❌ " + data.error;
+    result.innerHTML = data.error;
     return;
   }
 
