@@ -9,68 +9,173 @@
 *,
 *::before,
 *::after{ box-sizing:border-box; }
+
 :root{
---neon:#00ff9c;
+--primary:#0f766e;          /* azul petróleo */
+--primary-soft:#14b8a6;
 --dark:#020617;
---soft:#94a3b8;
+--panel:#020f1a;
+--soft:#9fb3c8;
+--text:#e6f1f5;
 }
+
 body{
 margin:0;
 font-family:"Segoe UI",Arial,sans-serif;
 background:
-radial-gradient(600px at top, rgba(0,255,156,.15), transparent 60%),
+radial-gradient(600px at top, rgba(20,184,166,.18), transparent 60%),
 linear-gradient(180deg, #020617, #01030f);
-color:#fff;
+color:var(--text);
 min-height:100vh;
 padding:20px 10px 50px;
 }
+
 .container{
 width:100%;
-max-width:500px;
+max-width:520px;
 margin:0 auto;
-background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
+background:linear-gradient(180deg, rgba(2,15,26,.96), rgba(2,6,23,.99));
 border-radius:22px;
 padding:24px 22px;
-box-shadow:0 24px 70px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,255,156,.18);
-position:relative;
+box-shadow:0 30px 80px rgba(0,0,0,.75),
+inset 0 0 0 1px rgba(20,184,166,.25);
 }
-.nav-back{margin-bottom:10px}
-.nav-back a{color:var(--neon);font-size:13px;text-decoration:none}
-.logo{max-width:110px;margin:6px auto 12px;display:block;filter:drop-shadow(0 0 10px rgba(0,255,156,.35));}
-h1{text-align:center;font-size:22px;margin:4px 0}
-.version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:16px}
-.info{font-size:13.5px;background:rgba(0,255,156,.08);padding:14px;border-radius:14px;border:1px solid rgba(0,255,156,.25);margin-bottom:16px;}
+
+/* topo */
+.nav-back{
+margin-bottom:12px;
+}
+.nav-back a{
+color:var(--primary-soft);
+font-size:14px;
+text-decoration:none;
+display:inline-flex;
+align-items:center;
+gap:6px;
+font-weight:600;
+}
+.nav-back a:hover{ opacity:.85; }
+
+.logo{
+max-width:110px;
+margin:8px auto 14px;
+display:block;
+filter:drop-shadow(0 0 14px rgba(20,184,166,.45));
+}
+
+h1{text-align:center;font-size:23px;margin:4px 0}
+.version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:18px}
+
+.info{
+font-size:13.5px;
+background:rgba(20,184,166,.10);
+padding:14px;
+border-radius:14px;
+border:1px solid rgba(20,184,166,.35);
+margin-bottom:16px;
+}
+
 .form-group{margin-top:14px}
 label{font-size:13px;color:var(--soft);display:block;margin-bottom:6px}
-input{width:100%;height:44px;padding:0 12px;border-radius:12px;background:rgba(2,6,23,.9);color:#fff;border:1px solid rgba(255,255,255,.08);}
-button{width:100%;height:46px;border-radius:16px;border:none;font-weight:700;margin-top:12px;position:relative;z-index:2;transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;}
-button:active{transform:scale(.97);box-shadow:0 0 0 2px rgba(0,255,156,.35) inset;opacity:.85;}
-button.secondary{background:transparent;border:1px solid rgba(0,255,156,.5);color:var(--neon);}
-.results{margin-top:16px}
-.competition{margin-bottom:12px}
-.competition h3{color:var(--neon);font-size:14px;margin-bottom:6px;}
-.match{padding:7px 9px;border-radius:9px;cursor:pointer;font-size:13.5px;}
-.match.selected{background:rgba(0,255,156,.35);color:#00150c;}
-.status{margin-top:16px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.35);padding:12px;border-radius:12px;font-size:13px;text-align:center;}
-.balloons{margin-top:18px;display:grid;gap:10px;}
-.balloon{background:rgba(0,255,156,.08);border:1px solid rgba(0,255,156,.25);border-radius:14px;padding:12px;font-size:13px;}
-.balloon strong{color:var(--neon)}
+
+input{
+width:100%;
+height:44px;
+padding:0 12px;
+border-radius:12px;
+background:rgba(2,6,23,.95);
+color:#fff;
+border:1px solid rgba(255,255,255,.12);
+}
+
+button{
+width:100%;
+height:46px;
+border-radius:16px;
+border:none;
+font-weight:700;
+margin-top:12px;
+transition:.15s;
+cursor:pointer;
+}
+
+button:active{
+transform:scale(.97);
+box-shadow:0 0 0 2px rgba(20,184,166,.45) inset;
+opacity:.85;
+}
+
+button.secondary{
+background:transparent;
+border:1px solid rgba(20,184,166,.55);
+color:var(--primary-soft);
+}
+
+.results{margin-top:18px}
+
+.competition{margin-bottom:14px}
+.competition h3{
+color:var(--primary-soft);
+font-size:14px;
+margin-bottom:6px;
+}
+
+.match{
+padding:8px 10px;
+border-radius:10px;
+cursor:pointer;
+font-size:13.5px;
+transition:.12s;
+}
+.match:hover{background:rgba(20,184,166,.12)}
+.match.selected{
+background:rgba(20,184,166,.45);
+color:#001312;
+font-weight:600;
+}
+
+.status{
+margin-top:16px;
+background:rgba(255,180,0,.08);
+border:1px solid rgba(255,180,0,.35);
+padding:12px;
+border-radius:14px;
+font-size:13px;
+text-align:center;
+}
+
+.balloons{
+margin-top:18px;
+display:grid;
+gap:10px;
+}
+
+.balloon{
+background:rgba(20,184,166,.10);
+border:1px solid rgba(20,184,166,.35);
+border-radius:16px;
+padding:12px;
+font-size:13px;
+}
+.balloon strong{color:var(--primary-soft)}
 </style>
 </head>
 
 <body>
 
 <div class="container">
+
   <div class="nav-back">
-    <a href="index.html">← Voltar para início</a>
+    <a href="index.html">← Voltar</a>
   </div>
 
   <img src="images/logo2.png" class="logo">
+
   <h1>NOX Premium</h1>
-  <div class="version">Página 5 • v1.3</div>
+  <div class="version">Versão 3.0 • ULTRA</div>
 
   <div class="info">
-    🔐 Use no navegador da sua carteira.<br>
+    🔐 Utilize no navegador da sua carteira.<br>
     💡 Cada pagamento libera <strong>1 análise Premium</strong>.
   </div>
 
@@ -88,7 +193,10 @@ button.secondary{background:transparent;border:1px solid rgba(0,255,156,.5);colo
 
   <div id="competitions" class="results"></div>
 
-  <button id="payBtn" type="button" class="secondary">💳 Efetuar Pagamento Premium</button>
+  <button id="payBtn" type="button" class="secondary">
+    💳 Efetuar Pagamento Premium
+  </button>
+
   <button id="analyzeBtn" type="button" style="display:none"></button>
 
   <div class="status" id="paymentStatus">
@@ -102,83 +210,58 @@ button.secondary{background:transparent;border:1px solid rgba(0,255,156,.5);colo
     <div class="balloon" id="res-corners"></div>
     <div class="balloon" id="res-cards"></div>
   </div>
+
 </div>
 
 <script>
 const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
-let selectedFixture=null;
 
-// =============================
-// CARREGAR COMPETIÇÕES E PARTIDAS
-// =============================
+/* =============================
+   CARREGAR COMPETIÇÕES
+============================= */
 async function loadCompetitions(){
-  const res = await fetch(BACKEND_LIST, {
+  const apiKey=document.getElementById("apikey").value;
+  const date=document.getElementById("date").value;
+
+  if(!apiKey || !date) return alert("Informe API Key e Data");
+
+  const res=await fetch(BACKEND_LIST,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ apiKey: document.getElementById("apikey").value, date: document.getElementById("date").value })
+    body:JSON.stringify({ apiKey, date })
   });
-  const data = await res.json();
+
+  const data=await res.json();
   let html="";
 
   data.competitions.forEach(c=>{
-    html += `<div class="competition"><h3>🏆 ${c.league}</h3>`;
+    html+=`<div class="competition">
+      <h3>🏆 ${c.league}</h3>`;
     c.matches.forEach(m=>{
-      html += `<div class="match" onclick="window.selectMatch(event,this)" data-fixture="${m.fixtureId}">
+      html+=`<div class="match"
+        onclick="window.selectMatch(this,event)"
+        data-fixture="${m.fixtureId}">
         ${m.time} ${m.home} x ${m.away}
       </div>`;
     });
-    html += `</div>`;
+    html+=`</div>`;
   });
 
-  document.getElementById("competitions").innerHTML = html;
+  document.getElementById("competitions").innerHTML=html;
 }
 
-// =============================
-// SELEÇÃO DE PARTIDA
-// =============================
-function selectMatch(event, el){
-  event.stopPropagation();
-  document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
-  el.classList.add("selected");
-  selectedFixture = el.dataset.fixture;
-
-  const result = document.getElementById("results");
-  if(result){
-    result.innerHTML = `<h3>📌 Partida selecionada</h3><p>${el.innerText}</p>`;
-  }
-}
-
-// =============================
-// EVENTO DE PAGAMENTO
-// =============================
+/* =============================
+   EVENTO DE PAGAMENTO
+============================= */
 (() => {
-  const status = document.getElementById("paymentStatus");
+  const status=document.getElementById("paymentStatus");
   window.addEventListener("nox-payment-ok", async ()=>{
-    if(!selectedFixture) return;
-
-    status.innerText = "⏳ Pagamento confirmado • Gerando análise...";
-
-    if(typeof analyzeMatch === "function"){
+    status.innerText="⏳ Pagamento confirmado • Gerando análise...";
+    if(typeof analyzeMatch==="function"){
       await analyzeMatch();
-      status.innerText = "✅ Análise Premium concluída";
+      status.innerText="✅ Análise Premium concluída";
     }
   });
-})();
-
-// =============================
-// BLOQUEIO / DESBLOQUEIO DE ANÁLISE
-// =============================
-(function(){
-  const wait=setInterval(()=>{
-    if(typeof window.unlockAnalyze==="function"){
-      clearInterval(wait);
-      const original=window.unlockAnalyze;
-      window.unlockAnalyze=function(){
-        original.apply(this,arguments);
-        window.dispatchEvent(new Event("nox-payment-ok"));
-      };
-    }
-  },100);
 })();
 </script>
 
@@ -186,4 +269,4 @@ function selectMatch(event, el){
 <script src="statistics/statistics.js"></script>
 
 </body>
-</html>
+  </html>
