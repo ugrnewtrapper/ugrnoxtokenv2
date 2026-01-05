@@ -46,9 +46,18 @@ async function analyzeMatch(force = false) {
   }
 
   if (!window.selectedFixture) {
-    alert("⚠️ Selecione uma partida");
-    return;
+  alert("⚠️ Selecione uma partida");
+
+  const result =
+    document.getElementById("results") ||
+    document.getElementById("result");
+
+  if (result) {
+    result.innerHTML = "⚠️ Selecione uma partida para continuar.";
   }
+
+  return;
+}
 
   const apiKey = document.getElementById("apikey")?.value
               || document.getElementById("apiKey")?.value;
