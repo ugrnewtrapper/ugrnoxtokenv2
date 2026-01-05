@@ -117,7 +117,9 @@ btn.onclick = async () => {
        EXECUÇÃO
     ============================= */
     setStatus("⏳ Processando raspadinha...");
-    const tx = await scratch.buyScratch();
+    const tx = await scratch.buyScratch({
+  gasLimit: 300000
+});
     const receipt = await tx.wait();
 
     /* =============================
