@@ -11,7 +11,7 @@
 *::after{ box-sizing:border-box; }
 
 :root{
---primary:#0f766e;          /* azul petróleo */
+--primary:#0f766e;
 --primary-soft:#14b8a6;
 --dark:#020617;
 --panel:#020f1a;
@@ -41,7 +41,6 @@ box-shadow:0 30px 80px rgba(0,0,0,.75),
 inset 0 0 0 1px rgba(20,184,166,.25);
 }
 
-/* topo */
 .nav-back{
 margin-bottom:12px;
 }
@@ -169,7 +168,7 @@ font-size:13px;
     <a href="index.html">← Voltar</a>
   </div>
 
-  <img src="images/logo2.png" class="logo">
+  <img src="images/logo2.png" class="logo" onerror="this.src='https://via.placeholder.com/110x60?text=NOX+Logo'">
 
   <h1>NOX Premium</h1>
   <div class="version">Versão 3.0 • ULTRA</div>
@@ -181,7 +180,7 @@ font-size:13px;
 
   <div class="form-group">
     <label>API Key</label>
-    <input id="apikey">
+    <input id="apikey" placeholder="Digite sua API Key">
   </div>
 
   <div class="form-group">
@@ -197,7 +196,9 @@ font-size:13px;
     💳 Efetuar Pagamento Premium
   </button>
 
-  <button id="analyzeBtn" type="button" style="display:none"></button>
+  <button id="analyzeBtn" type="button" style="display:none">
+    📊 Analisar Partida
+  </button>
 
   <div class="status" id="paymentStatus">
     🔒 Acesso Premium bloqueado. Efetue o pagamento.
@@ -255,23 +256,26 @@ async function loadCompetitions(){
 ============================= */
 (() => {
   const status=document.getElementById("paymentStatus");
-  window.addEventListener("nox-payment-ok", async ()=>{
-  status.innerText="⏳ Pagamento confirmado • Gerando análise...";
+  const analyzeBtn=document.getElementById("analyzeBtn");
 
-  if(typeof analyzeMatch==="function"){
-    const ok = await analyzeMatch();
-    if(ok === false){
-      status.innerText="⚠️ Selecione uma partida antes de pagar.";
-      return;
+  window.addEventListener("nox-payment-ok", async ()=>{
+    status.innerText="⏳ Pagamento confirmado • Gerando análise...";
+    if(analyzeBtn) analyzeBtn.style.display="block";
+
+    if(typeof analyzeMatch==="function"){
+      const ok = await analyzeMatch();
+      if(ok === false){
+        status.innerText="⚠️ Selecione uma partida antes de pagar.";
+        return;
+      }
+      status.innerText="✅ Análise Premium concluída";
     }
-    status.innerText="✅ Análise Premium concluída";
-  }
-});
+  });
 })();
 </script>
 
 <script type="module" src="money/walletv12.js"></script>
-<script src="statistics/statistics.js"></script>
+<script type="module" src="statistics/statistics.js"></script>
 
 </body>
-  </html>
+      </html>
