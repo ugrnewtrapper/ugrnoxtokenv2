@@ -8,9 +8,7 @@
 <style>
 *,
 *::before,
-*::after{
-  box-sizing:border-box;
-}
+*::after{ box-sizing:border-box; }
 :root{
 --neon:#00ff9c;
 --dark:#020617;
@@ -33,99 +31,29 @@ margin:0 auto;
 background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98));
 border-radius:22px;
 padding:24px 22px;
-box-shadow:
-0 24px 70px rgba(0,0,0,.7),
-inset 0 0 0 1px rgba(0,255,156,.18);
+box-shadow:0 24px 70px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,255,156,.18);
 position:relative;
 }
 .nav-back{margin-bottom:10px}
 .nav-back a{color:var(--neon);font-size:13px;text-decoration:none}
-.logo{
-max-width:110px;
-margin:6px auto 12px;
-display:block;
-filter:drop-shadow(0 0 10px rgba(0,255,156,.35));
-}
+.logo{max-width:110px;margin:6px auto 12px;display:block;filter:drop-shadow(0 0 10px rgba(0,255,156,.35));}
 h1{text-align:center;font-size:22px;margin:4px 0}
 .version{text-align:center;font-size:12px;color:var(--soft);margin-bottom:16px}
-.info{
-font-size:13.5px;
-background:rgba(0,255,156,.08);
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(0,255,156,.25);
-margin-bottom:16px;
-}
+.info{font-size:13.5px;background:rgba(0,255,156,.08);padding:14px;border-radius:14px;border:1px solid rgba(0,255,156,.25);margin-bottom:16px;}
 .form-group{margin-top:14px}
 label{font-size:13px;color:var(--soft);display:block;margin-bottom:6px}
-input{
-width:100%;
-height:44px;
-padding:0 12px;
-border-radius:12px;
-background:rgba(2,6,23,.9);
-color:#fff;
-border:1px solid rgba(255,255,255,.08);
-}
-button{
-width:100%;
-height:46px;
-border-radius:16px;
-border:none;
-font-weight:700;
-margin-top:12px;
-position:relative;
-z-index:2;
-transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-}
-button:active{
-transform:scale(.97);
-box-shadow:0 0 0 2px rgba(0,255,156,.35) inset;
-opacity:.85;
-}
-button.secondary{
-background:transparent;
-border:1px solid rgba(0,255,156,.5);
-color:var(--neon);
-}
+input{width:100%;height:44px;padding:0 12px;border-radius:12px;background:rgba(2,6,23,.9);color:#fff;border:1px solid rgba(255,255,255,.08);}
+button{width:100%;height:46px;border-radius:16px;border:none;font-weight:700;margin-top:12px;position:relative;z-index:2;transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;}
+button:active{transform:scale(.97);box-shadow:0 0 0 2px rgba(0,255,156,.35) inset;opacity:.85;}
+button.secondary{background:transparent;border:1px solid rgba(0,255,156,.5);color:var(--neon);}
 .results{margin-top:16px}
 .competition{margin-bottom:12px}
-.competition h3{
-color:var(--neon);
-font-size:14px;
-margin-bottom:6px;
-}
-.match{
-padding:7px 9px;
-border-radius:9px;
-cursor:pointer;
-font-size:13.5px;
-}
-.match.selected{
-background:rgba(0,255,156,.35);
-color:#00150c;
-}
-.status{
-margin-top:16px;
-background:rgba(255,0,0,.08);
-border:1px solid rgba(255,0,0,.35);
-padding:12px;
-border-radius:12px;
-font-size:13px;
-text-align:center;
-}
-.balloons{
-margin-top:18px;
-display:grid;
-gap:10px;
-}
-.balloon{
-background:rgba(0,255,156,.08);
-border:1px solid rgba(0,255,156,.25);
-border-radius:14px;
-padding:12px;
-font-size:13px;
-}
+.competition h3{color:var(--neon);font-size:14px;margin-bottom:6px;}
+.match{padding:7px 9px;border-radius:9px;cursor:pointer;font-size:13.5px;}
+.match.selected{background:rgba(0,255,156,.35);color:#00150c;}
+.status{margin-top:16px;background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.35);padding:12px;border-radius:12px;font-size:13px;text-align:center;}
+.balloons{margin-top:18px;display:grid;gap:10px;}
+.balloon{background:rgba(0,255,156,.08);border:1px solid rgba(0,255,156,.25);border-radius:14px;padding:12px;font-size:13px;}
 .balloon strong{color:var(--neon)}
 </style>
 </head>
@@ -133,108 +61,113 @@ font-size:13px;
 <body>
 
 <div class="container">
-<div class="nav-back">
-<a href="index.html">← Voltar para início</a>
-</div>
+  <div class="nav-back">
+    <a href="index.html">← Voltar para início</a>
+  </div>
 
-<img src="images/logo2.png" class="logo">
-<h1>NOX Premium</h1>
-<div class="version">Página 5 • v1.3</div>
+  <img src="images/logo2.png" class="logo">
+  <h1>NOX Premium</h1>
+  <div class="version">Página 5 • v1.3</div>
 
-<div class="info">
-🔐 Use no navegador da sua carteira.<br>
-💡 Cada pagamento libera <strong>1 análise Premium</strong>.
-</div>
+  <div class="info">
+    🔐 Use no navegador da sua carteira.<br>
+    💡 Cada pagamento libera <strong>1 análise Premium</strong>.
+  </div>
 
-<div class="form-group">
-<label>API Key</label>
-<input id="apikey">
-</div>
+  <div class="form-group">
+    <label>API Key</label>
+    <input id="apikey">
+  </div>
 
-<div class="form-group">
-<label>Data</label>
-<input id="date" type="date">
-</div>
+  <div class="form-group">
+    <label>Data</label>
+    <input id="date" type="date">
+  </div>
 
-<button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
+  <button class="secondary" onclick="loadCompetitions()">📅 Carregar Partidas</button>
 
-<div id="competitions" class="results"></div>
+  <div id="competitions" class="results"></div>
 
-<button id="payBtn" type="button" class="secondary">💳 Efetuar Pagamento Premium</button>
+  <button id="payBtn" type="button" class="secondary">💳 Efetuar Pagamento Premium</button>
+  <button id="analyzeBtn" type="button" style="display:none"></button>
 
-<button id="analyzeBtn" type="button" style="display:none"></button>
+  <div class="status" id="paymentStatus">
+    🔒 Acesso Premium bloqueado. Efetue o pagamento.
+  </div>
 
-<div class="status" id="paymentStatus">
-🔒 Acesso Premium bloqueado. Efetue o pagamento.
-</div>
-
-<div id="results" class="balloons">
-<div class="balloon" id="res-goals"></div>
-<div class="balloon" id="res-assists"></div>
-<div class="balloon" id="res-shots"></div>
-<div class="balloon" id="res-corners"></div>
-<div class="balloon" id="res-cards"></div>
-</div>
+  <div id="results" class="balloons">
+    <div class="balloon" id="res-goals"></div>
+    <div class="balloon" id="res-assists"></div>
+    <div class="balloon" id="res-shots"></div>
+    <div class="balloon" id="res-corners"></div>
+    <div class="balloon" id="res-cards"></div>
+  </div>
 </div>
 
 <script>
 const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
 let selectedFixture=null;
 
+// =============================
+// CARREGAR COMPETIÇÕES E PARTIDAS
+// =============================
 async function loadCompetitions(){
-const res=await fetch(BACKEND_LIST,{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ apiKey:apikey.value, date:date.value })
-});
-const data=await res.json();
-let html="";
+  const res = await fetch(BACKEND_LIST, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ apiKey: document.getElementById("apikey").value, date: document.getElementById("date").value })
+  });
+  const data = await res.json();
+  let html="";
 
-data.competitions.forEach(c=>{
-html+=`<div class="competition"><h3>🏆 ${c.league}</h3>`;
-c.matches.forEach(m=>{
-html+=`<div class="match" onclick="selectMatch(this)" data-fixture="${m.fixtureId}">
-${m.time} ${m.home} x ${m.away}
-</div>`;
-});
-html+=`</div>`;
-});
+  data.competitions.forEach(c=>{
+    html += `<div class="competition"><h3>🏆 ${c.league}</h3>`;
+    c.matches.forEach(m=>{
+      html += `<div class="match" onclick="window.selectMatch(event,this)" data-fixture="${m.fixtureId}">
+        ${m.time} ${m.home} x ${m.away}
+      </div>`;
+    });
+    html += `</div>`;
+  });
 
-competitions.innerHTML=html;
+  document.getElementById("competitions").innerHTML = html;
 }
 
-function selectMatch(el){
-document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
-el.classList.add("selected");
-selectedFixture=el.dataset.fixture;
+// =============================
+// SELEÇÃO DE PARTIDA
+// =============================
+function selectMatch(event, el){
+  event.stopPropagation();
+  document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
+  el.classList.add("selected");
+  selectedFixture = el.dataset.fixture;
+
+  const result = document.getElementById("results");
+  if(result){
+    result.innerHTML = `<h3>📌 Partida selecionada</h3><p>${el.innerText}</p>`;
+  }
 }
-</script>
 
-<script type="module" src="money/walletv12.js"></script>
-<script src="statistics/statistics.js"></script>
-
-<script>
+// =============================
+// EVENTO DE PAGAMENTO
+// =============================
 (() => {
-const status=document.getElementById("paymentStatus");
+  const status = document.getElementById("paymentStatus");
+  window.addEventListener("nox-payment-ok", async ()=>{
+    if(!selectedFixture) return;
 
-window.addEventListener("nox-payment-ok",()=>{
-if(!selectedFixture) return;
+    status.innerText = "⏳ Pagamento confirmado • Gerando análise...";
 
-status.innerText="⏳ Pagamento confirmado • Gerando análise...";
-
-if(typeof analyzeMatch==="function"){
-analyzeMatch();
-status.innerText="✅ Análise Premium concluída";
-}
-});
+    if(typeof analyzeMatch === "function"){
+      await analyzeMatch();
+      status.innerText = "✅ Análise Premium concluída";
+    }
+  });
 })();
-</script>
 
-<!-- =============================
-     ADIÇÃO ÚNICA E ISOLADA
-     (SEM ALTERAR NADA)
-============================= -->
-<script>
+// =============================
+// BLOQUEIO / DESBLOQUEIO DE ANÁLISE
+// =============================
 (function(){
   const wait=setInterval(()=>{
     if(typeof window.unlockAnalyze==="function"){
@@ -248,6 +181,9 @@ status.innerText="✅ Análise Premium concluída";
   },100);
 })();
 </script>
+
+<script type="module" src="money/walletv12.js"></script>
+<script src="statistics/statistics.js"></script>
 
 </body>
 </html>
