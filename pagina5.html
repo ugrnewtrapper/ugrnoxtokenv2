@@ -256,12 +256,17 @@ async function loadCompetitions(){
 (() => {
   const status=document.getElementById("paymentStatus");
   window.addEventListener("nox-payment-ok", async ()=>{
-    status.innerText="⏳ Pagamento confirmado • Gerando análise...";
-    if(typeof analyzeMatch==="function"){
-      await analyzeMatch();
-      status.innerText="✅ Análise Premium concluída";
+  status.innerText="⏳ Pagamento confirmado • Gerando análise...";
+
+  if(typeof analyzeMatch==="function"){
+    const ok = await analyzeMatch();
+    if(ok === false){
+      status.innerText="⚠️ Selecione uma partida antes de pagar.";
+      return;
     }
-  });
+    status.innerText="✅ Análise Premium concluída";
+  }
+});
 })();
 </script>
 
