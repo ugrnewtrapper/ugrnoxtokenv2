@@ -3,13 +3,17 @@
 ============================= */
 const BACKEND_ANALYZE = "https://backendnoxv22.srrimas2017.workers.dev";
 
-let selectedFixture = null;
+/* =============================
+   STATE GLOBAL CONTROLADO
+============================= */
+window.selectedFixture = null;
+let analysisConsumed = false; // garante 1 pagamento = 1 análise
 
 /* =============================
    SELECIONAR PARTIDA
    (CHAMADO PELO HTML)
 ============================= */
-function selectMatch(el, event) {
+function selectMatch(event, el) {
   if (event) event.stopPropagation();
 
   document.querySelectorAll(".match").forEach(m =>
@@ -17,7 +21,7 @@ function selectMatch(el, event) {
   );
 
   el.classList.add("selected");
-  selectedFixture = el.dataset.fixture;
+  window.selectedFixture = el.dataset.fixture;
 
   const result = document.getElementById("results") 
               || document.getElementById("result");
@@ -34,8 +38,15 @@ function selectMatch(el, event) {
    ANALISAR PARTIDA
    (PREMIUM)
 ============================= */
-async function analyzeMatch() {
-  if (!selectedFixture) {
+async function analyzeMatch(force = false) {
+
+  // 🔒 garante que só rode após pagamento
+  if (!force && analysisConsumed) {
+    alert("⚠️ Esta análise já foi consumida.");
+    return;
+  }
+
+  if (!window.selectedFixture) {
     alert("⚠️ Selecione uma partida");
     return;
   }
@@ -61,7 +72,7 @@ async function analyzeMatch() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         apiKey,
-        fixtureId: Number(selectedFixture)
+        fixtureId: Number(window.selectedFixture)
       })
     });
 
@@ -71,6 +82,9 @@ async function analyzeMatch() {
       result.innerHTML = "❌ " + data.error;
       return;
     }
+
+    // ✅ consome a análise
+    analysisConsumed = true;
 
     result.innerHTML = `
       <h3>${data.teams.home} x ${data.teams.away}</h3>
@@ -106,10 +120,22 @@ async function analyzeMatch() {
 }
 
 /* =============================
+   EVENTO DE PAGAMENTO (1x)
+============================= */
+window.addEventListener("nox-payment-ok", () => {
+  analysisConsumed = false; // libera exatamente 1 análise
+  analyzeMatch(true);       // força execução apenas via pagamento
+});
+
+/* =============================
    BINDS PREMIUM
 ============================= */
 const analyzeBtn = document.getElementById("analyzeBtn");
-if (analyzeBtn) analyzeBtn.addEventListener("click", analyzeMatch);
+if (analyzeBtn) {
+  analyzeBtn.addEventListener("click", () => {
+    alert("⚠️ Efetue o pagamento Premium para liberar a análise.");
+  });
+}
 
 /* =============================
    EXPOSIÇÃO GLOBAL
