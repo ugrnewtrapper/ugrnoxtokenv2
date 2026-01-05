@@ -1,169 +1,156 @@
-<!DOCTYPE html>  
-<html lang="pt-BR">  
-<head>    
-  <meta charset="UTF-8">    
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-  <title>UGRNOXTOKEN ⚽</title>    
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UGRNOXTOKEN • Plataforma Oficial</title>
 
-  <style>    
-    :root {    
-      --red: #ff1a1a;    
-      --red-dark: #b00400;    
-      --bg: #0e0e0e;    
-      --text: #ffffff;    
-      --glow: rgba(255, 26, 26, 0.45);
-    }    
+  <style>
+    :root {
+      --bg-main: #0f1216;
+      --bg-card: #151a21;
+      --primary: #1f6feb;
+      --primary-dark: #164fb3;
+      --text-main: #e6e6e6;
+      --text-muted: #a0a7b4;
+      --border-soft: rgba(255,255,255,0.08);
+    }
 
-    * {    
-      margin: 0;    
-      padding: 0;    
-      box-sizing: border-box;    
-      font-family: Arial, Helvetica, sans-serif;    
-    }    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
 
-    body {    
-      min-height: 100vh;    
-      background: radial-gradient(circle at top, #1a1a1a, var(--bg));    
-      color: var(--text);    
-      display: flex;    
-      align-items: center;    
-      justify-content: center;    
-      overflow-y: auto; /* CORREÇÃO DO TRAVAMENTO */
-    }    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0c0f14, var(--bg-main));
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+    }
 
-    main {    
-      max-width: 900px;    
-      padding: 40px 24px;    
-      text-align: center;    
-      animation: fadeIn 1.2s ease;    
-      min-height: 100vh; /* GARANTE SCROLL */
-    }    
+    main {
+      max-width: 900px;
+      width: 100%;
+      padding: 48px 24px;
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+    }
 
-    .logo {    
-      width: 160px;    
-      margin-bottom: 24px;    
-      animation: float 3s ease-in-out infinite, glow 2.8s ease-in-out infinite;    
-      filter: drop-shadow(0 0 12px var(--glow));
-    }    
+    .logo {
+      width: 150px;
+      margin-bottom: 28px;
+    }
 
-    h1 {    
-      font-size: 2.6rem;    
-      color: var(--red);    
-      margin-bottom: 12px;    
-      text-shadow: 0 0 10px rgba(255, 26, 26, 0.35);
-      animation: slideDown 1s ease;
-    }    
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
 
-    h2 {    
-      font-size: 1.4rem;    
-      font-weight: normal;    
-      margin-bottom: 28px;    
-      opacity: 0.9;    
-      animation: slideDown 1.2s ease;
-    }    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
 
-    p {    
-      font-size: 1.06rem;    
-      line-height: 1.8;    
-      margin-bottom: 36px;    
-      opacity: 0.96;    
-      animation: fadeUp 1.4s ease;
-    }    
+    p {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text-main);
+      max-width: 760px;
+      margin: 0 auto 40px;
+    }
 
-    .btn {    
-      display: inline-block;    
-      padding: 14px 30px;    
-      background: linear-gradient(135deg, var(--red), var(--red-dark));    
-      color: #000;    
-      text-decoration: none;    
-      font-weight: bold;    
-      border-radius: 30px;    
-      box-shadow: 0 8px 24px rgba(255, 26, 26, 0.45);    
-      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;    
-      margin: 6px;    
-      animation: fadeUp 1.6s ease;
-    }    
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 48px;
+    }
 
-    .btn:hover {    
-      transform: translateY(-4px) scale(1.05);    
-      box-shadow: 0 16px 36px rgba(255, 26, 26, 0.7);    
-      filter: brightness(1.15);
-    }    
+    .btn {
+      padding: 14px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      min-width: 210px;
+    }
 
-    footer {    
-      margin-top: 50px;    
-      font-size: 0.9rem;    
-      opacity: 0.7;    
-      animation: fadeIn 2s ease;
-    }    
+    .btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      transform: translateY(-2px);
+    }
 
-    @keyframes fadeIn {    
-      from {    
-        opacity: 0;    
-        transform: translateY(20px);    
-      }    
-      to {    
-        opacity: 1;    
-        transform: translateY(0);    
-      }    
-    }    
+    footer {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-soft);
+      padding-top: 24px;
+    }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(26px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-18px); }
-      to { opacity: 1; transform: translateY(0); }
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.1rem; }
+      .btn { min-width: 100%; }
     }
-
-    @keyframes float {    
-      0%, 100% {    
-        transform: translateY(0);    
-      }    
-      50% {    
-        transform: translateY(-10px);    
-      }    
-    }
-
-    @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 10px var(--glow)); }
-      50% { filter: drop-shadow(0 0 18px var(--glow)); }
-    }
-  </style>  
-</head>  
+  </style>
+</head>
 
 <body>
-  <main>    
-    <!-- Logo -->    
-    <img src="images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo">  
+  <main>
 
-    <!-- Conteúdo -->    
-    <h1>UGRNOXTOKEN ⚽🔥</h1>    
-    <h2>O token que conecta futebol, tecnologia e inteligência analítica</h2>    
+    <!-- Logo -->
+    <img src="images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo">
 
-    <p>    
-      A <strong>UGRNOXTOKEN</strong> foi criada para quem vive o futebol de forma estratégica e moderna ⚽.    
-      Nosso ecossistema integra tecnologia, dados e inovação para entregar    
-      <strong>análises esportivas profissionais</strong> com rapidez e precisão.    
-      <br><br>    
-      Além do potencial de valorização 📈, a plataforma oferece soluções exclusivas como    
-      <strong>análises avançadas, ferramentas inteligentes e produtos premium</strong>,    
-      pensados para usuários que exigem desempenho, confiabilidade e visão estratégica 🧠.    
-    </p>    
+    <!-- Conteúdo -->
+    <h1>UGRNOXTOKEN</h1>
+    <h2>Tecnologia, dados e inteligência aplicados ao futebol</h2>
 
-    <!-- Botões -->    
-    <a href="pagina2.html" class="btn">Conhecer Token UGR 🚀</a>
-    <a href="pagina3.html" class="btn">Análises Futebol Free 📊</a>
-    <a href="pagina4.html" class="btn">Surebet Profissional 🔥</a>
-    <a href="pagina5.html" class="btn">Análises Futebol Pro 💎</a>
-    <a href="pagina6.html" class="btn">Loteria Oficial Nox 🎟️</a>
+    <p>
+      A <strong>UGRNOXTOKEN</strong> é uma plataforma desenvolvida para quem analisa futebol
+      de forma estratégica, profissional e orientada por dados.
+      <br><br>
+      Nosso ecossistema integra tecnologia moderna, processamento estatístico e inteligência analítica
+      para oferecer <strong>análises esportivas precisas</strong>, com foco em desempenho,
+      leitura de cenário e tomada de decisão.
+      <br><br>
+      Além do ativo digital, a plataforma disponibiliza ferramentas avançadas,
+      análises especializadas e produtos exclusivos,
+      desenvolvidos para usuários que valorizam consistência, clareza e visão de longo prazo.
+    </p>
 
-    <!-- Rodapé -->    
-    <footer>    
-      <p>Versão 2.0 • TURBO • PRO</p>    
-    </footer>    
-  </main>    
-</body>    
+    <!-- Navegação -->
+    <div class="buttons">
+      <a href="pagina2.html" class="btn">Comprar Token UGR</a>
+<a href="pagina3.html" class="btn">Análises Gratuitas</a>
+<a href="pagina4.html" class="btn">Calculadora SureBet</a>
+<a href="pagina5.html" class="btn">Análises Premium</a>
+<a href="pagina6.html" class="btn">Raspadinha Oficial</a>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+      <p>UGRNOXTOKEN • Versão 3.0 ULTRA</p>
+    </footer>
+
+  </main>
+</body>
 </html>
