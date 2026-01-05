@@ -1,301 +1,178 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Raspadinha Nox • UGRNOXTOKEN</title>
 
   <style>
     :root{
-      --primary: #0d6eaf;        /* azul mais vibrante */
-      --primary-dark: #084c61;
-      --bg: #0b0f12;            
-      --text: #e0e0e0;           
-      --card: #132f44;           
-      --overlay: rgba(0,0,0,0.75);
-      --glow: rgba(13,110,175,0.5);
-      --success: #00ff9c;
-      --error: #ff5555;
-      --highlight: #00c9ff;     
+      --primary:#0d6eaf;
+      --primary-dark:#084c61;
+      --bg:#0b0f12;
+      --text:#e0e0e0;
+      --card:#132f44;
+      --overlay:rgba(0,0,0,.75);
+      --glow:rgba(13,110,175,.5);
+      --success:#00ff9c;
+      --error:#ff5555;
+      --highlight:#00c9ff;
     }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial,Helvetica,sans-serif}
 
     body{
       min-height:100vh;
-      background: radial-gradient(circle at top, #101820, var(--bg));
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      overflow-y: auto;
+      background:radial-gradient(circle at top,#101820,var(--bg));
+      color:var(--text);
+      display:flex;
+      justify-content:center;
     }
 
     main{
-      max-width: 900px;
-      padding: 48px 24px;
-      text-align: center;
-      animation: fadeIn 1.2s ease;
-      position: relative;
+      max-width:900px;
+      padding:48px 24px;
+      text-align:center;
+      position:relative;
     }
 
-    /* Botão topo voltar */
-    #backBtn {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      background: none;
-      border: none;
-      color: var(--highlight);
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: color .3s;
-    }
-    #backBtn:hover{
-      color: var(--success);
+    #backBtn{
+      position:absolute;
+      top:24px;
+      left:24px;
+      color:var(--highlight);
+      font-weight:bold;
+      text-decoration:none;
     }
 
     .logo{
-      width: 160px;
-      margin: 0 auto 30px;
-      animation: float 4s ease-in-out infinite;
-      filter: drop-shadow(0 0 20px var(--glow));
+      width:160px;
+      margin:0 auto 30px;
+      filter:drop-shadow(0 0 20px var(--glow));
     }
 
     h1{
-      font-size: 2.8rem;
-      color: var(--primary);
-      margin-bottom: 12px;
-      text-shadow: 0 0 16px var(--glow);
+      font-size:2.8rem;
+      color:var(--primary);
+      margin-bottom:12px;
     }
 
-    h2{
-      font-size: 1.5rem;
-      font-weight: 400;
-      opacity: 0.9;
-      margin-bottom: 36px;
-    }
+    h2{font-size:1.5rem;margin-bottom:36px;opacity:.9}
 
     .box{
-      background: linear-gradient(180deg,#0f2a38,#0b1c26);
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.8);
-      margin-bottom: 48px;
-      text-align: left;
-      animation: fadeUp 1.3s ease;
-      border: 1px solid rgba(0,201,255,0.15);
+      background:linear-gradient(180deg,#0f2a38,#0b1c26);
+      border-radius:24px;
+      padding:40px;
+      margin-bottom:48px;
+      text-align:left;
+      border:1px solid rgba(0,201,255,.15);
     }
 
-    .box p{
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 18px;
-      opacity: .95;
-    }
+    .highlight{color:var(--highlight);font-weight:bold}
 
-    .highlight{
-      color: var(--highlight);
-      font-weight: bold;
-    }
+    .scratch-wrapper{display:flex;flex-direction:column;align-items:center;gap:18px}
 
-    .scratch-wrapper{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      margin: 40px 0;
-      animation: fadeUp 1.4s ease;
-    }
-
-    /* Melhor organização preço/prêmio */
     .scratch-info{
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      font-size: 1.05rem;
-      opacity: .9;
-      margin-bottom: 16px;
+      display:flex;
+      gap:32px;
+      font-size:1.05rem;
+      margin-bottom:16px;
     }
-    .scratch-info span{
-      font-weight: bold;
-      color: var(--highlight);
-    }
+
+    .scratch-info span{font-weight:bold;color:var(--highlight)}
 
     .scratch-card{
-      width: 300px;
-      height: 300px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 22px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 16px 50px rgba(0,201,255,0.45);
-      transition: transform .3s ease;
-    }
-
-    .scratch-card:hover{
-      transform: scale(1.02);
+      width:300px;
+      height:300px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      border-radius:22px;
+      position:relative;
+      overflow:hidden;
     }
 
     .scratch-prize{
-      position: absolute;
-      inset: 0;
-      background: var(--card);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--success);
-      z-index: 1;
-      text-align: center;
-      padding: 24px;
-      flex-direction: column;
-      gap: 14px;
-      line-height: 1.45;
-      min-height: 180px;
-      border-radius: 20px;
+      position:absolute;
+      inset:0;
+      background:var(--card);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      padding:24px;
+      border-radius:20px;
     }
 
-    #uiPrice, #uiPrize{
-      display: none;
-    }
-
+    /* Overlay corrigido */
     .scratch-overlay{
-      position: absolute;
-      inset: 0;
-      background: var(--overlay);
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: opacity .5s ease;
-      text-shadow: 0 0 6px #000;
+      position:absolute;
+      inset:0;
+      background:var(--overlay);
+      z-index:5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;
+      font-size:1.2rem;
+      cursor:pointer;
     }
 
-    .scratch-overlay.revealed{
-      opacity: 0;
-      pointer-events: none;
+    .scratch-overlay.hidden{
+      display:none;
     }
+
+    #uiPrice,#uiPrize{display:none}
 
     .btn{
-      display: inline-block;
-      padding: 14px 36px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: #fff;
-      font-weight: bold;
-      border-radius: 32px;
-      box-shadow: 0 10px 30px rgba(0,201,255,0.45);
-      transition: transform .25s, box-shadow .25s;
-      margin: 14px 10px 0;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn:hover{
-      transform: translateY(-4px) scale(1.06);
-      box-shadow: 0 18px 46px rgba(0,201,255,0.7);
+      padding:14px 36px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      font-weight:bold;
+      border-radius:32px;
+      border:none;
+      cursor:pointer;
     }
 
     #paymentStatus{
-      margin-top: 14px;
-      font-size: 1rem;
-      min-height: 28px;
-      opacity: .95;
+      margin-top:14px;
+      min-height:28px;
     }
 
-    footer{
-      margin-top: 60px;
-      font-size: .95rem;
-      opacity: .75;
-      text-align: center;
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0}
-      to{opacity:1}
-    }
-
-    @keyframes fadeUp{
-      from{opacity:0;transform:translateY(28px)}
-      to{opacity:1;transform:translateY(0)}
-    }
-
-    @keyframes float{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-12px)}
-    }
+    footer{margin-top:60px;opacity:.75}
   </style>
 </head>
 
 <body>
 
 <main>
-  <!-- Botão topo voltar -->
   <a href="index.html" id="backBtn">⬅ Voltar</a>
 
-  <img src="/images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo">
+  <img src="/images/logo2.png" class="logo" alt="UGRNOXTOKEN Logo" />
 
   <h1>Raspadinha Nox</h1>
   <h2>Versão 3.0 ULTRA</h2>
 
   <div class="box">
-    <p>
-      A <span class="highlight">Raspadinha Nox</span> é um sistema de raspadinhas
-      totalmente descentralizado, executado por meio de um
-      <strong>contrato inteligente aberto na BNB Chain</strong>.
-    </p>
-
-    <p>
-      O código do contrato é público, auditável e imutável após o deploy.
-      <strong>Não existe qualquer interferência humana</strong>,
-      controle administrativo ou possibilidade de alteração das regras.
-    </p>
-
-    <p>
-      À medida que as raspadinhas são adquiridas,
-      o valor é acumulado diretamente no contrato.
-      Quando o <strong>valor de premiação pré-definido</strong> é alcançado,
-      o próprio contrato executa automaticamente
-      a liberação do prêmio para a próxima carteira vencedora.
-    </p>
-
-    <p>
-      🔒 <strong>100% executado por contrato</strong><br>
-      🔒 <strong>Regras imutáveis</strong><br>
-      🔒 <strong>Resultados impossíveis de manipular</strong><br>
-      🔒 <strong>Nenhuma ação do dono</strong>
-    </p>
+    <p>A <span class="highlight">Raspadinha Nox</span> é totalmente descentralizada.</p>
+    <p>Contrato inteligente público e imutável na BNB Chain.</p>
+    <p>Premiação automática sem interferência humana.</p>
   </div>
 
   <h2>Raspadinha On-Chain</h2>
 
   <div class="scratch-wrapper">
     <div class="scratch-info">
-      <span>Preço: 10 UGR NOX</span>
-      <span>Prêmio: 100 UGR NOX</span>
+      <span>Preço: <span id="priceLabel">--</span> UGR</span>
+      <span>Prêmio: <span id="prizeLabel">--</span> UGR</span>
     </div>
 
     <div class="scratch-card">
-      <div class="scratch-overlay" onclick="this.classList.add('revealed')">
+      <div class="scratch-overlay" id="scratchOverlay">
         Raspar
       </div>
 
       <div class="scratch-prize">
-        <div id="scratchResult">
-          Raspe para descobrir
-        </div>
+        <div id="scratchResult">Raspe para descobrir</div>
 
         <span id="uiPrice">--</span>
         <span id="uiPrize">--</span>
@@ -310,11 +187,18 @@
   </div>
 
   <footer>
-    <p>Raspadinha Nox • Versão 3.0 ULTRA • BNB Chain</p>
+    Raspadinha Nox • Versão 3.0 ULTRA • BNB Chain
   </footer>
 </main>
 
 <script type="module" src="money/lotteryv12.js"></script>
+
+<script>
+  // Remove overlay corretamente (Trust-safe)
+  document.getElementById("scratchOverlay").onclick = function () {
+    this.classList.add("hidden");
+  };
+</script>
 
 </body>
 </html>
