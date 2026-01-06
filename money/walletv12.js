@@ -94,9 +94,6 @@ async function approveToken() {
   await waitForConfirmation(txHash);
 }
 
-  await waitForConfirmation(txHash);
-}
-
 /* =========================================================
  * 3️⃣ PAGAR ANÁLISE (CONTRATO)
  * =======================================================*/
