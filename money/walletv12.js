@@ -14,7 +14,7 @@
  * Compatível com:
  * - Navegador
  * - MetaMask
- * * - Backend Cloudflare Workers (backendv12)
+ * - Backend Cloudflare Workers (backendv12)
  * =========================================================
  */
 
