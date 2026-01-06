@@ -4,8 +4,19 @@
 
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 const TOKEN_ADDRESS    = "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8";
-// pricePerAnalysis() selector
+// pricePerAnalysis()
 const PRICE_SELECTOR = "0x6f2a1c8c";
+
+async function getPriceFromContract() {
+  const result = await ethereum.request({
+    method: "eth_call",
+    params: [{
+      to: CONTRACT_ADDRESS,
+      data: PRICE_SELECTOR
+    }, "latest"]
+  });
+  return BigInt(result);
+}
 const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
 const BSC_CHAIN_ID_HEX = "0x38";
 const FETCH_TIMEOUT = 8000;
