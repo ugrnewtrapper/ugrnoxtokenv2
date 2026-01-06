@@ -25,12 +25,6 @@
 // Endereço do contrato na BSC
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 
-
-
-
-// Valor do pagamento em BNB (18 decimais)
-const PAYMENT_AMOUNT_BNB = "0.01";
-
 // Backend Cloudflare Worker
 const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
 
@@ -85,11 +79,11 @@ async function payForAnalysis() {
 
   // Monta transação (BNB nativo)
   const tx = {
-    from: userWallet,
-    to: CONTRACT_ADDRESS,
-    value: bnbToHex(PAYMENT_AMOUNT_BNB),
-    data: "0x" // chamada simples (fallback payable)
-  };
+  from: userWallet,
+  to: CONTRACT_ADDRESS,
+  value: "0x0", // NUNCA ENVIA BNB
+  data: "0x"
+};
 
   // Envia transação
   const txHash = await ethereum.request({
@@ -144,15 +138,6 @@ async function unlockAnalysis({ fixtureId }) {
   }
 }
 
-/* =========================================================
- * FUNÇÃO AUXILIAR — CONVERSÃO SEGURA BNB → WEI
- * =======================================================*/
-function bnbToHex(value) {
-  // Converte string decimal para wei sem perda de precisão
-  const [intPart, decPart = ""] = value.split(".");
-  const wei = BigInt(intPart + decPart.padEnd(18, "0"));
-  return "0x" + wei.toString(16);
-}
 
 /* =========================================================
  * FUNÇÃO AUXILIAR — AGUARDA CONFIRMAÇÃO
