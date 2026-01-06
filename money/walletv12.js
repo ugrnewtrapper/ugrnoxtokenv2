@@ -132,10 +132,11 @@ async function unlockAnalysis({ fixtureId }) {
       },
       signal: controller.signal,
       body: JSON.stringify({
-        fixtureId,
-        wallet: userWallet,
-        txHash: lastTxHash
-      })
+  fixtureId,
+-  wallet: userWallet,
++  user: userWallet,
+  txHash: lastTxHash
+})
     });
 
     return await response.json();
