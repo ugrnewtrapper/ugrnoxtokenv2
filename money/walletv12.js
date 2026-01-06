@@ -3,8 +3,8 @@
  * =======================================================*/
 
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
-const TOKEN_ADDRESS    = "0xSEU_TOKEN_BEP20_AQUI";
-const PRICE_PER_ANALYSIS = "1000000000000000000"; // 1 token (18 decimais)
+const TOKEN_ADDRESS    = "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8";
+const PRICE_PER_ANALYSIS = "10000000000000000000"; // 1 token (18 decimais)
 
 const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
 const BSC_CHAIN_ID_HEX = "0x38";
