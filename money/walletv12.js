@@ -5,8 +5,7 @@
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 const TOKEN_ADDRESS    = "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8";
 // pricePerAnalysis()
-const PRICE_SELECTOR = "0x6f2a1c8c";
-
+const PRICE_SELECTOR = "0x2e7d9d84";
 async function getPriceFromContract() {
   const result = await ethereum.request({
     method: "eth_call",
