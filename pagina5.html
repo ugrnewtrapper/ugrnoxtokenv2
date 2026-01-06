@@ -1,57 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Teste Wallet v12</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Teste walletv12</title>
 </head>
 <body>
 
-  <h2>Teste walletv12.js</h2>
+<button id="btn">Testar walletv12</button>
+<pre id="log"></pre>
 
-  <!-- Inputs mínimos -->
-  <div>
-    <label>fixtureId (teste):</label><br>
-    <input id="fixtureId" type="text" value="123456" />
-  </div>
+<script type="module">
+  import { payAndAnalyze } from "./money/walletv12.js";
 
-  <br>
+  const logEl = document.getElementById("log");
+  const log = (msg) => logEl.textContent += msg + "\n";
 
-  <div>
-    <label>apiKey (teste):</label><br>
-    <input id="apiKey" type="text" value="TEST_API_KEY" />
-  </div>
+  log("HTML carregado");
 
-  <br>
+  if (!window.ethereum) {
+    log("MetaMask NÃO detectada");
+  } else {
+    log("MetaMask detectada");
+  }
 
-  <button id="payBtn">Pagar e Analisar</button>
+  document.getElementById("btn").onclick = async () => {
+    log("Botão clicado");
 
-  <pre id="output"></pre>
+    try {
+      const result = await payAndAnalyze(
+        "TEST_FIXTURE",
+        "TEST_API_KEY"
+      );
 
-  <!-- Script -->
-  <script type="module">
-    import { payAndAnalyze } from "./walletv12.js";
-
-    const btn = document.getElementById("payBtn");
-    const out = document.getElementById("output");
-
-    btn.onclick = async () => {
-      out.textContent = "Iniciando...\n";
-
-      try {
-        const fixtureId = document.getElementById("fixtureId").value;
-        const apiKey = document.getElementById("apiKey").value;
-
-        const result = await payAndAnalyze(fixtureId, apiKey);
-
-        out.textContent += "SUCESSO:\n";
-        out.textContent += JSON.stringify(result, null, 2);
-      } catch (err) {
-        out.textContent += "ERRO:\n";
-        out.textContent += err.message;
-      }
-    };
-  </script>
+      log("SUCESSO:");
+      log(JSON.stringify(result, null, 2));
+    } catch (err) {
+      log("ERRO:");
+      log(err.message);
+    }
+  };
+</script>
 
 </body>
 </html>
