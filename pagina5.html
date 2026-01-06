@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>NOX PREMIUM</title>
 
-  <!-- Blindagem básica real -->
+  <!-- Blindagem essencial -->
   <meta http-equiv="Content-Security-Policy"
         content="
           default-src 'self';
@@ -14,17 +14,17 @@
           connect-src *;
           frame-ancestors 'none';
         ">
-  <meta name="referrer" content="no-referrer">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     :root {
-      --bg-main: #0c1c24;
-      --bg-card: #132b36;
-      --primary: #1e90aa;
-      --primary-dark: #156d82;
-      --text-main: #e7f4f8;
-      --text-muted: #9fbcc7;
+      --bg-main: #0c1b22;
+      --bg-card: #122a33;
+      --primary: #1c8fb0;
+      --primary-dark: #146e87;
+      --text-main: #e6f3f7;
+      --text-muted: #9db8c3;
       --border-soft: rgba(255,255,255,0.08);
     }
 
@@ -35,12 +35,12 @@
 
     body {
       margin: 0;
-      background: linear-gradient(180deg, #081318, var(--bg-main));
+      background: linear-gradient(180deg, #081216, var(--bg-main));
       color: var(--text-main);
       min-height: 100vh;
     }
 
-    /* Botão voltar */
+    /* Botão Voltar */
     .back-btn {
       position: absolute;
       top: 18px;
@@ -58,7 +58,7 @@
       opacity: 1;
     }
 
-    /* Centralização */
+    /* Container central */
     .container {
       max-width: 960px;
       margin: 0 auto;
@@ -68,19 +68,20 @@
 
     .logo {
       width: 120px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     h1 {
-      margin: 10px 0 6px;
+      margin: 8px 0 4px;
       font-size: 34px;
       letter-spacing: 1px;
     }
 
     h2 {
       margin: 0 0 22px;
-      font-size: 18px;
-      font-weight: 400;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1px;
       color: var(--text-muted);
     }
 
@@ -89,11 +90,6 @@
       line-height: 1.6;
       color: var(--text-muted);
       margin-bottom: 30px;
-    }
-
-    .info a {
-      color: #58bcd9;
-      text-decoration: none;
     }
 
     /* Inputs */
@@ -119,7 +115,7 @@
     /* Botões */
     .btn {
       margin-top: 20px;
-      padding: 14px 30px;
+      padding: 14px 32px;
       border-radius: 20px;
       border: none;
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -128,6 +124,11 @@
       font-weight: 600;
       letter-spacing: 0.6px;
       cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
     }
 
     .btn:disabled {
@@ -201,37 +202,33 @@
 
 <body>
 
-  <!-- Botão Voltar -->
+  <!-- Voltar -->
   <a href="index.html" class="back-btn">
     ← Voltar
   </a>
 
   <div class="container">
 
-    <img src="images/logo2.png" alt="NOX Logo" class="logo">
+    <img src="images/logo2.png" alt="NOX Logo" class="logo" />
 
     <h1>NOX PREMIUM</h1>
-    <h2>versão 5.0 FUTURE</h2>
+    <h2>VERSÃO • 5.0 FUTURE</h2>
 
     <div class="info">
       UTILIZAR NO NAVEGADOR DE CARTEIRAS METAMASK / TRUST WALLET OU SIMILARES<br>
       CADA PAGAMENTO LIBERA UMA ANÁLISE AUTOMÁTICA.
-      <br><br>
-      Documentação oficial para copiar códigos:
-      <br>
-      <a href="https://www.api-football.com/documentation-v3#section/Sample-Scripts/NodeJs" target="_blank">
-        API-Football – Sample Scripts NodeJS
-      </a>
     </div>
 
     <!-- API KEY -->
     <div class="input-box">
-      <input type="password" id="apiKeyInput" placeholder="INSERIR API KEY API-FOOTBALL" autocomplete="off">
+      <input type="password" id="apiKeyInput"
+             placeholder="INSERIR API KEY API-FOOTBALL"
+             autocomplete="off" />
     </div>
 
     <!-- DATA -->
     <div class="input-box">
-      <input type="date" id="matchDate">
+      <input type="date" id="matchDate" />
     </div>
 
     <!-- CARREGAR COMPETIÇÕES -->
@@ -240,7 +237,7 @@
     </button>
 
     <div class="competitions" id="competitionsContainer">
-      <!-- statistics.js preenche -->
+      <!-- statistics.js renderiza -->
     </div>
 
     <div class="selected-match" id="selectedMatch"></div>
@@ -300,8 +297,8 @@
           await window.runAnalysis();
 
           statusMsg.textContent = 'Análise concluída com sucesso.';
-        } catch (e) {
-          statusMsg.textContent = 'Erro no processo. Verifique a carteira ou a API Key.';
+        } catch (err) {
+          statusMsg.textContent = 'Erro no processo. Verifique carteira ou API Key.';
           analyzeBtn.disabled = false;
         }
       });
