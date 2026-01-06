@@ -2,75 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Completo walletv12</title>
+  <title>Teste Pagamento walletv12</title>
 </head>
 <body>
 
-<h2>Teste Completo (Pagamento + Backend)</h2>
+<h2>Teste SOMENTE Pagamento + /analysis</h2>
 <button id="btn">Comprar Análise</button>
 <pre id="log"></pre>
 
 <script type="module">
 import { payAndAnalyze } from "./money/walletv12.js";
 
-const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
-const WORKER_BASE = "https://backendv12.srrimas2017.workers.dev";
+const API_KEY = "SUA_API_KEY_AQUI";
 
-const logEl = document.getElementById("log");
-const log = (msg) => logEl.textContent += msg + "\n";
+// fixtureId arbitrário só para teste do fluxo
+const FIXTURE_ID_TESTE = 123456;
+
+const log = (msg) => {
+  document.getElementById("log").textContent += msg + "\n";
+};
 
 document.getElementById("btn").onclick = async () => {
   try {
-    log("🔍 Buscando fixtures...");
-
-    const date = new Date().toISOString().slice(0, 10);
-
-    const res = await fetch(`${WORKER_BASE}/competitions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: API_KEY,
-        date,
-        wallet: "test"
-      })
-    });
-
-    const payload = await res.json();
-    log("📦 Resposta /competitions:");
-    log(JSON.stringify(payload, null, 2));
-
-    if (!res.ok) {
-      throw new Error(payload.error || "Erro desconhecido no backend");
-    }
-
-    if (!payload.data) {
-      throw new Error("Backend respondeu sem data");
-    }
-
-    const fixtures = [];
-
-    Object.values(payload.data).forEach(leagues =>
-      Object.values(leagues).forEach(arr =>
-        arr.forEach(f => fixtures.push(f.fixtureId))
-      )
-    );
-
-    if (!fixtures.length) {
-      throw new Error("Nenhum fixture encontrado");
-    }
-
-    const fixtureId = fixtures[Math.floor(Math.random() * fixtures.length)];
-
-    log(`🎯 Fixture escolhido: ${fixtureId}`);
     log("💳 Iniciando pagamento on-chain...");
+    log(`🎯 FixtureId teste: ${FIXTURE_ID_TESTE}`);
 
-    // ⚠️ ASSINATURA CORRETA DO walletv12.js
     const result = await payAndAnalyze(
-      fixtureId,
+      FIXTURE_ID_TESTE,
       API_KEY
     );
 
-    log("✅ PAGAMENTO + ANÁLISE CONCLUÍDOS");
+    log("✅ PAGAMENTO CONCLUÍDO");
     log(JSON.stringify(result, null, 2));
 
   } catch (err) {
