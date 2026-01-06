@@ -1,60 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Wallet v12 – Web3</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Inclui o walletv12.js -->
-  <script src="./money/walletv12.js"></script>
+  <meta charset="UTF-8" />
+  <title>NOX Premium Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #020617;
+      border-radius: 12px;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 30px rgba(0,0,0,.6);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input {
+      background: #020617;
+      color: #fff;
+      border: 1px solid #334155;
+    }
+
+    button {
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      background: #475569;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    pre {
+      background: #020617;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Teste Wallet v12 – Web3</h2>
 
-  <label>
-    Fixture ID:
-    <input id="fixtureId" value="123456">
-  </label>
+  <div class="box">
+    <h1>NOX Premium Analytics</h1>
 
-  <br><br>
+    <input
+      id="fixtureId"
+      placeholder="Fixture ID"
+      type="number"
+    />
 
-  <button onclick="connect()">1️⃣ Conectar Carteira</button>
-  <button onclick="pay()">2️⃣ Pagar Análise</button>
-  <button onclick="unlock()">3️⃣ Liberar Análise</button>
+    <input
+      id="apiKey"
+      placeholder="API-Football API Key"
+      type="text"
+    />
 
-  <pre id="log"></pre>
+    <button id="payBtn">
+      Pagar e Gerar Análise
+    </button>
 
-  <script>
-    function log(msg) {
-      document.getElementById("log").textContent += msg + "\n";
-    }
+    <div class="status" id="status"></div>
 
-    async function connect() {
+    <pre id="result" style="display:none;"></pre>
+  </div>
+
+  <!-- =============================
+       SCRIPT
+       ============================= -->
+  <script type="module">
+    import { payAndAnalyze } from "./money/walletv12.js";
+
+    const btn = document.getElementById("payBtn");
+    const statusBox = document.getElementById("status");
+    const resultBox = document.getElementById("result");
+
+    const fixtureInput = document.getElementById("fixtureId");
+    const apiKeyInput = document.getElementById("apiKey");
+
+    const setStatus = (msg) => statusBox.innerHTML = msg;
+
+    btn.onclick = async () => {
+      resultBox.style.display = "none";
+      btn.disabled = true;
+
       try {
-        const wallet = await window.walletv12.connectWallet();
-        log("✅ Carteira conectada: " + wallet);
-      } catch (e) {
-        log("❌ Erro conectar: " + e.message);
-      }
-    }
+        const fixtureId = fixtureInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
 
-    async function pay() {
-      try {
-        const res = await window.walletv12.payForAnalysis();
-        log("✅ Pagamento OK: " + res.txHash);
-      } catch (e) {
-        log("❌ Erro pagamento: " + e.message);
-      }
-    }
+        if (!fixtureId || !apiKey) {
+          throw new Error("Preencha o Fixture ID e a API Key");
+        }
 
-    async function unlock() {
-      try {
-        const fixtureId = document.getElementById("fixtureId").value;
-        const res = await window.walletv12.unlockAnalysis({ fixtureId });
-        log("✅ Liberado: " + JSON.stringify(res));
+        setStatus("🔐 Conectando carteira e processando pagamento...");
+
+        const data = await payAndAnalyze(fixtureId, apiKey);
+
+        setStatus("✅ Análise liberada com sucesso");
+        resultBox.style.display = "block";
+        resultBox.textContent = JSON.stringify(data.analysis, null, 2);
+
       } catch (e) {
-        log("❌ Erro unlock: " + e.message);
+        console.error(e);
+        setStatus(`❌ ${e.message || "Erro desconhecido"}`);
+      } finally {
+        btn.disabled = false;
       }
-    }
+    };
   </script>
+
 </body>
 </html>
