@@ -74,10 +74,12 @@ async function connectWallet() {
  * 2️⃣ APPROVE TOKEN
  * =======================================================*/
 async function approveToken() {
+  const price = await getPriceFromContract();
+
   const data =
     APPROVE_SELECTOR +
     CONTRACT_ADDRESS.slice(2).padStart(64, "0") +
-    BigInt(PRICE_PER_ANALYSIS).toString(16).padStart(64, "0");
+    price.toString(16).padStart(64, "0");
 
   const txHash = await ethereum.request({
     method: "eth_sendTransaction",
@@ -88,6 +90,9 @@ async function approveToken() {
       value: "0x0"
     }]
   });
+
+  await waitForConfirmation(txHash);
+}
 
   await waitForConfirmation(txHash);
 }
