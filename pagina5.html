@@ -4,75 +4,60 @@
   <meta charset="UTF-8">
   <title>Teste de Compra – Wallet v12</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- IMPORTANTE: carregar o JS do walletv12 -->
-  <script src="./money/walletv12.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    button { margin: 5px; padding: 10px; }
-    #log { background: #f4f4f4; padding: 10px; border-radius: 5px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
-  </style>
 </head>
 <body>
 
-  <h2>Teste de Compra – Wallet v12</h2>
+<h2>Teste de Compra – Wallet v12</h2>
 
-  <label>
-    Fixture ID:
-    <input id="fixtureId" value="123456">
-  </label>
+<label>
+  Fixture ID:
+  <input id="fixtureId" value="123456">
+</label>
 
-  <br><br>
+<br><br>
 
-  <button id="btnConnect">1️⃣ Conectar Carteira</button>
-  <button id="btnPay">2️⃣ Pagar Análise</button>
-  <button id="btnUnlock">3️⃣ Liberar Análise</button>
+<button onclick="connect()">1️⃣ Conectar Carteira</button>
+<button onclick="pay()">2️⃣ Pagar Análise</button>
+<button onclick="unlock()">3️⃣ Liberar Análise</button>
 
-  <h3>Logs:</h3>
-  <pre id="log"></pre>
+<pre id="log"></pre>
 
-  <script>
-    const logEl = document.getElementById("log");
-    function log(msg) {
-      const time = new Date().toLocaleTimeString();
-      logEl.textContent += `[${time}] ${msg}\n`;
-      logEl.scrollTop = logEl.scrollHeight;
+<script type="module">
+  // Importa a walletv12.js
+  import './walletv12.js';
+
+  function log(msg) {
+    document.getElementById("log").textContent += msg + "\n";
+  }
+
+  async function connect() {
+    try {
+      const wallet = await window.walletv12.connectWallet();
+      log("✅ Carteira conectada: " + wallet);
+    } catch (e) {
+      log("❌ Erro conectar: " + e.message);
     }
+  }
 
-    async function connect() {
-      try {
-        const wallet = await window.walletv12.connectWallet();
-        log("✅ Carteira conectada: " + wallet);
-      } catch (e) {
-        log("❌ Erro conectar: " + e.message);
-      }
+  async function pay() {
+    try {
+      const res = await window.walletv12.payForAnalysis();
+      log("✅ Pagamento OK: " + res.txHash);
+    } catch (e) {
+      log("❌ Erro pagamento: " + e.message);
     }
+  }
 
-    async function pay() {
-      try {
-        log("⏳ Iniciando pagamento...");
-        const res = await window.walletv12.payForAnalysis();
-        log("✅ Pagamento OK: " + res.txHash);
-      } catch (e) {
-        log("❌ Erro pagamento: " + e.message);
-      }
+  async function unlock() {
+    try {
+      const fixtureId = document.getElementById("fixtureId").value;
+      const res = await window.walletv12.unlockAnalysis({ fixtureId });
+      log("✅ Liberado: " + JSON.stringify(res));
+    } catch (e) {
+      log("❌ Erro unlock: " + e.message);
     }
-
-    async function unlock() {
-      try {
-        const fixtureId = document.getElementById("fixtureId").value;
-        log("⏳ Liberando análise...");
-        const res = await window.walletv12.unlockAnalysis({ fixtureId });
-        log("✅ Liberado: " + JSON.stringify(res));
-      } catch (e) {
-        log("❌ Erro unlock: " + e.message);
-      }
-    }
-
-    // Bind buttons
-    document.getElementById("btnConnect").onclick = connect;
-    document.getElementById("btnPay").onclick = pay;
-    document.getElementById("btnUnlock").onclick = unlock;
-  </script>
+  }
+</script>
 
 </body>
-  </html>
+</html>
