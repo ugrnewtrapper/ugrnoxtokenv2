@@ -37,6 +37,11 @@ document.getElementById("btn").onclick = async () => {
     });
 
     const competitions = await competitionsRes.json();
+
+    if (!competitions.data) {
+      throw new Error("Resposta inválida do backend");
+    }
+
     const allFixtures = [];
 
     Object.values(competitions.data).forEach(leagues =>
@@ -55,11 +60,11 @@ document.getElementById("btn").onclick = async () => {
     log(`🎯 Fixture escolhido: ${fixtureId}`);
     log("💳 Iniciando pagamento on-chain...");
 
-    const result = await payAndAnalyze({
-      apiKey: API_KEY,
+    // ✅ CHAMADA CORRETA DO walletv12.js
+    const result = await payAndAnalyze(
       fixtureId,
-      backendUrl: `${WORKER_BASE}/analysis`
-    });
+      API_KEY
+    );
 
     log("✅ PAGAMENTO + ANÁLISE CONCLUÍDOS");
     log(JSON.stringify(result, null, 2));
