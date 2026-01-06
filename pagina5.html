@@ -2,122 +2,74 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Pagamento Wallet v12</title>
-  <style>
-    body { font-family: monospace; }
-    .ok { color: green; }
-    .err { color: red; }
-    .step { color: blue; }
-  </style>
+  <title>Teste Completo walletv12</title>
 </head>
 <body>
 
-<h3>Teste de Pagamento (Somente On-chain)</h3>
-
-<button id="btnPay">Pagar agora</button>
-
+<h2>Teste Completo (Pagamento + Backend)</h2>
+<button id="btn">Comprar Análise</button>
 <pre id="log"></pre>
 
 <script type="module">
-  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
+import { payAndAnalyze } from "./money/walletv12.js";
 
-  const logEl = document.getElementById("log");
-  const log = (m) => logEl.textContent += m + "\n";
+const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
+const WORKER_BASE = "https://backendv12.srrimas2017.workers.dev";
 
-  const CFG = {
-    chainId: 56,
-    chainHex: "0x38",
+const log = (msg) => {
+  document.getElementById("log").textContent += msg + "\n";
+};
 
-    tokenAddress: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
-    paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
+document.getElementById("btn").onclick = async () => {
+  try {
+    log("🔍 Buscando fixtures...");
 
-    tokenABI: [
-      "function approve(address,uint256) returns (bool)",
-      "function balanceOf(address) view returns (uint256)",
-      "function allowance(address,address) view returns (uint256)"
-    ],
+    const date = new Date().toISOString().slice(0, 10);
 
-    paymentABI: [
-      "function payForAnalysis()",
-      "function pricePerAnalysis() view returns (uint256)",
-      "event AnalysisPaid(address indexed user, uint256 amount)"
-    ]
-  };
+    const competitionsRes = await fetch(`${WORKER_BASE}/competitions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: API_KEY,
+        date,
+        wallet: "test"
+      })
+    });
 
-  document.getElementById("btnPay").onclick = async () => {
-    try {
-      log("🔗 Conectando carteira...");
+    const competitions = await competitionsRes.json();
+    const allFixtures = [];
 
-      if (!window.ethereum) {
-        throw new Error("MetaMask não encontrada");
-      }
+    Object.values(competitions.data).forEach(leagues =>
+      Object.values(leagues).forEach(arr =>
+        arr.forEach(f => allFixtures.push(f.fixtureId))
+      )
+    );
 
-      const provider = new ethers.BrowserProvider(window.ethereum, "any");
-      await provider.send("eth_requestAccounts", []);
-      let signer = await provider.getSigner();
-      const wallet = await signer.getAddress();
-
-      log("👛 Wallet: " + wallet);
-
-      const net = await provider.getNetwork();
-      if (Number(net.chainId) !== CFG.chainId) {
-        log("🔁 Trocando para BSC...");
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: CFG.chainHex }]
-        });
-        signer = await provider.getSigner();
-      }
-
-      log("📦 Conectando contratos...");
-
-      const token = new ethers.Contract(
-        CFG.tokenAddress,
-        CFG.tokenABI,
-        signer
-      );
-
-      const payment = new ethers.Contract(
-        CFG.paymentContract,
-        CFG.paymentABI,
-        signer
-      );
-
-      const price = await payment.pricePerAnalysis();
-      const balance = await token.balanceOf(wallet);
-
-      log("💰 Preço: " + price.toString());
-      log("💰 Saldo: " + balance.toString());
-
-      if (balance < price) {
-        throw new Error("Saldo insuficiente");
-      }
-
-      const allowance = await token.allowance(wallet, CFG.paymentContract);
-
-      if (allowance < price) {
-        log("📝 Aprovando token...");
-        const txApprove = await token.approve(CFG.paymentContract, price);
-        await txApprove.wait();
-        log("✔ Approve confirmado");
-      } else {
-        log("✔ Approve já existente");
-      }
-
-      log("💸 Executando pagamento...");
-      const txPay = await payment.payForAnalysis();
-      log("⏳ Tx enviada: " + txPay.hash);
-
-      const receipt = await txPay.wait();
-
-      log("✅ PAGAMENTO CONCLUÍDO");
-      log("📜 Tx Hash: " + receipt.hash);
-
-    } catch (e) {
-      log("❌ ERRO:");
-      log(e.message || e);
+    if (!allFixtures.length) {
+      throw new Error("Nenhum fixture encontrado");
     }
-  };
+
+    const fixtureId =
+      allFixtures[Math.floor(Math.random() * allFixtures.length)];
+
+    log(`🎯 Fixture escolhido: ${fixtureId}`);
+    log("💳 Iniciando pagamento on-chain...");
+
+    const result = await payAndAnalyze({
+      apiKey: API_KEY,
+      fixtureId,
+      backendUrl: `${WORKER_BASE}/analysis`
+    });
+
+    log("✅ PAGAMENTO + ANÁLISE CONCLUÍDOS");
+    log(JSON.stringify(result, null, 2));
+
+  } catch (err) {
+    log("❌ ERRO:");
+    log(err.message || err);
+    console.error(err);
+  }
+};
 </script>
 
 </body>
