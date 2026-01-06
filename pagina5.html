@@ -2,28 +2,25 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste API-Football + Wallet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teste Real — Wallet + Analysis</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
+      background: #0f0f0f;
+      color: #eaeaea;
       padding: 20px;
     }
 
-    h1 { margin-bottom: 10px; }
-
     button {
-      width: 100%;
-      padding: 14px;
+      padding: 12px 16px;
       margin: 8px 0;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
     }
 
     button:disabled {
@@ -31,136 +28,87 @@
       cursor: not-allowed;
     }
 
-    .primary { background: #2563eb; color: #fff; }
-    .success { background: #16a34a; color: #fff; }
-    .warning { background: #ca8a04; color: #000; }
-    .info    { background: #0ea5e9; color: #000; }
-
     pre {
-      background: #020617;
+      background: #111;
       padding: 12px;
       border-radius: 6px;
-      overflow-x: auto;
-      font-size: 13px;
-    }
-
-    .box {
-      background: #020617;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 10px;
+      max-height: 350px;
+      overflow: auto;
+      font-size: 12px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Teste API-Football + Wallet</h1>
+<h2>💳 Teste REAL — Pagamento + Liberação de Análise</h2>
 
-<button id="btnWallet" class="primary">🔌 Conectar Wallet</button>
-<button id="btnSearch" class="info" disabled>🔍 Buscar Jogo Aleatório</button>
-<button id="btnPay" class="warning" disabled>💳 Comprar Análise</button>
-<button id="btnAnalyze" class="success" disabled>📊 Ver Análise</button>
+<button id="btnPay">Pagar e Liberar Análise</button>
 
-<div class="box">
-  <strong>Status:</strong>
-  <pre id="status">Aguardando...</pre>
-</div>
-
-<div class="box">
-  <strong>Resposta:</strong>
-  <pre id="output"></pre>
-</div>
+<pre id="log"></pre>
 
 <script type="module">
-  import { connectWallet, payForAnalysis } from "/money/walletv12.js";
+import { payAndAnalyze } from "./money/walletv12.js";
 
-  const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
-  const BACKEND = "https://backendv12.srrimas2017.workers.dev";
+/* =============================
+   CONFIGURAÇÕES
+============================= */
+const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
+const BACKEND_ANALYSIS = "https://backendv12.srrimas2017.workers.dev/analysis";
 
-  let wallet = null;
-  let fixtureId = null;
-  let txHash = null;
+/*
+  FixtureIds válidos de teste.
+  (Pode trocar depois por reais)
+*/
+const FIXTURES_TESTE = [
+  215662,
+  215663,
+  215664,
+  215665,
+  215666
+];
 
-  const status = (msg) =>
-    document.getElementById("status").textContent = msg;
+/* =============================
+   UI
+============================= */
+const logEl = document.getElementById("log");
+const log = (msg) => {
+  logEl.textContent += msg + "\n";
+  logEl.scrollTop = logEl.scrollHeight;
+};
 
-  const output = (data) =>
-    document.getElementById("output").textContent =
-      JSON.stringify(data, null, 2);
+/* =============================
+   EVENTO PRINCIPAL
+============================= */
+document.getElementById("btnPay").onclick = async () => {
+  logEl.textContent = "";
 
-  // 1️⃣ WALLET
-  document.getElementById("btnWallet").onclick = async () => {
-    status("🔌 Conectando wallet...");
-    try {
-      wallet = await connectWallet();
-      status(`👛 Wallet conectada:\n${wallet}`);
-      document.getElementById("btnSearch").disabled = false;
-    } catch (e) {
-      status("❌ Erro ao conectar wallet");
-    }
-  };
+  try {
+    const fixtureId =
+      FIXTURES_TESTE[Math.floor(Math.random() * FIXTURES_TESTE.length)];
 
-  // 2️⃣ PESQUISA ALEATÓRIA
-  document.getElementById("btnSearch").onclick = async () => {
-    status("🔍 Buscando fixtures do dia...");
-    document.getElementById("btnSearch").disabled = true;
+    log("🎯 Fixture sorteado:");
+    log(String(fixtureId));
 
-    const date = new Date().toISOString().split("T")[0];
+    log("💳 Iniciando pagamento REAL on-chain...");
+    log("⛓️ MetaMask será solicitada");
 
-    const res = await fetch(`${BACKEND}/competitions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey: API_KEY, date })
+    const result = await payAndAnalyze({
+      apiKey: API_KEY,
+      fixtureId,
+      backendUrl: BACKEND_ANALYSIS
     });
 
-    const json = await res.json();
-    output(json);
+    log("✅ PAGAMENTO CONFIRMADO");
+    log("📊 ANÁLISE LIBERADA:");
+    log(JSON.stringify(result, null, 2));
 
-    // pega fixture aleatório
-    const leagues = Object.values(json.data || {});
-    const randomLeague = leagues[Math.floor(Math.random() * leagues.length)];
-    const randomFixture = randomLeague.fixtures[0];
-
-    fixtureId = randomFixture.fixtureId;
-
-    status(`🎯 Fixture selecionado: ${fixtureId}`);
-    document.getElementById("btnPay").disabled = false;
-  };
-
-  // 3️⃣ PAGAMENTO
-  document.getElementById("btnPay").onclick = async () => {
-    status("💳 Iniciando pagamento...");
-    document.getElementById("btnPay").disabled = true;
-
-    try {
-      txHash = await payForAnalysis(fixtureId);
-      status(`✅ Pagamento confirmado\nTX: ${txHash}`);
-      document.getElementById("btnAnalyze").disabled = false;
-    } catch (e) {
-      status("❌ Falha no pagamento");
-    }
-  };
-
-  // 4️⃣ ANÁLISE
-  document.getElementById("btnAnalyze").onclick = async () => {
-    status("📊 Buscando análise...");
-
-    const res = await fetch(`${BACKEND}/analysis`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: API_KEY,
-        fixtureId,
-        wallet,
-        txHash
-      })
-    });
-
-    const json = await res.json();
-    output(json);
-    status("✅ Análise concluída");
-  };
+  } catch (err) {
+    log("❌ ERRO NO FLUXO:");
+    log(err?.message || err);
+    console.error(err);
+  }
+};
 </script>
 
 </body>
