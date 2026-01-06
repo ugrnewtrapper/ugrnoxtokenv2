@@ -145,7 +145,7 @@
       const apiKey = validateApiKey();
 
       const response = await fetch(
-        'https://backendnoxv22.srrimas2017.workers.dev/',
+        'https://backendnoxv22.srrimas2017.workers.dev/worker2',
         {
           method: 'POST',
           headers: {
