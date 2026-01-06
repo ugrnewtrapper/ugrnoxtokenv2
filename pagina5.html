@@ -2,94 +2,32 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Real — Wallet + Analysis</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #eaeaea;
-      padding: 20px;
-    }
-
-    button {
-      padding: 12px 16px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #2563eb;
-      color: white;
-      font-weight: bold;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    pre {
-      background: #111;
-      padding: 12px;
-      border-radius: 6px;
-      max-height: 350px;
-      overflow: auto;
-      font-size: 12px;
-    }
-  </style>
+  <title>Teste REAL – walletv12</title>
 </head>
-
 <body>
 
-<h2>💳 Teste REAL — Pagamento + Liberação de Análise</h2>
-
-<button id="btnPay">Pagar e Liberar Análise</button>
-
+<h2>💳 Teste REAL — Pagamento + Análise</h2>
+<button id="btn">Pagar e Liberar Análise</button>
 <pre id="log"></pre>
 
 <script type="module">
 import { payAndAnalyze } from "./money/walletv12.js";
 
-/* =============================
-   CONFIGURAÇÕES
-============================= */
 const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
 const BACKEND_ANALYSIS = "https://backendv12.srrimas2017.workers.dev/analysis";
 
-/*
-  FixtureIds válidos de teste.
-  (Pode trocar depois por reais)
-*/
-const FIXTURES_TESTE = [
-  215662,
-  215663,
-  215664,
-  215665,
-  215666
-];
-
-/* =============================
-   UI
-============================= */
 const logEl = document.getElementById("log");
-const log = (msg) => {
-  logEl.textContent += msg + "\n";
-  logEl.scrollTop = logEl.scrollHeight;
-};
+const log = (m) => logEl.textContent += m + "\n";
 
-/* =============================
-   EVENTO PRINCIPAL
-============================= */
-document.getElementById("btnPay").onclick = async () => {
+document.getElementById("btn").onclick = async () => {
   logEl.textContent = "";
 
   try {
-    const fixtureId =
-      FIXTURES_TESTE[Math.floor(Math.random() * FIXTURES_TESTE.length)];
+    // 🔹 Fixture FIXO para teste real (sem depender de /competitions)
+    const fixtureId = 215663;
 
-    log("🎯 Fixture sorteado:");
+    log("🎯 Fixture de teste:");
     log(String(fixtureId));
-
     log("💳 Iniciando pagamento REAL on-chain...");
     log("⛓️ MetaMask será solicitada");
 
@@ -99,13 +37,12 @@ document.getElementById("btnPay").onclick = async () => {
       backendUrl: BACKEND_ANALYSIS
     });
 
-    log("✅ PAGAMENTO CONFIRMADO");
-    log("📊 ANÁLISE LIBERADA:");
+    log("✅ FLUXO COMPLETO FINALIZADO");
     log(JSON.stringify(result, null, 2));
 
   } catch (err) {
     log("❌ ERRO NO FLUXO:");
-    log(err?.message || err);
+    log(err.message || err);
     console.error(err);
   }
 };
