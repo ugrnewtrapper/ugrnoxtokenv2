@@ -2,51 +2,104 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste REAL – walletv12</title>
+  <title>Teste – Análise Estatística</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    button {
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      overflow: auto;
+      max-height: 400px;
+      margin-top: 15px;
+      border-radius: 4px;
+    }
+
+    .error {
+      color: #f87171;
+    }
+  </style>
 </head>
 <body>
 
-<h2>💳 Teste REAL — Pagamento + Análise</h2>
-<button id="btn">Pagar e Liberar Análise</button>
-<pre id="log"></pre>
+  <h1>Teste de Análise (Pagamento + Estatísticas)</h1>
 
-<script type="module">
-import { payAndAnalyze } from "./money/walletv12.js";
+  <label>API Key (API-Football)</label><br />
+  <input id="apiKey" placeholder="Sua API Key" />
 
-const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
-const BACKEND_ANALYSIS = "https://backendv12.srrimas2017.workers.dev/analysis";
+  <label>Fixture ID</label><br />
+  <input id="fixtureId" placeholder="Ex: 123456" />
 
-const logEl = document.getElementById("log");
-const log = (m) => logEl.textContent += m + "\n";
+  <button id="btn">Pagar e Analisar</button>
 
-document.getElementById("btn").onclick = async () => {
-  logEl.textContent = "";
+  <pre id="output">Aguardando...</pre>
 
-  try {
-    // 🔹 Fixture FIXO para teste real (sem depender de /competitions)
-    const fixtureId = 215663;
+  <script type="module">
+    import { payAndAnalyze } from "./money/walletv12.js";
+    import Statistics from "./statistics/statistics.js";
 
-    log("🎯 Fixture de teste:");
-    log(String(fixtureId));
-    log("💳 Iniciando pagamento REAL on-chain...");
-    log("⛓️ MetaMask será solicitada");
+    const btn = document.getElementById("btn");
+    const output = document.getElementById("output");
 
-    const result = await payAndAnalyze({
-      apiKey: API_KEY,
-      fixtureId,
-      backendUrl: BACKEND_ANALYSIS
-    });
+    btn.onclick = async () => {
+      output.textContent = "Processando...";
 
-    log("✅ FLUXO COMPLETO FINALIZADO");
-    log(JSON.stringify(result, null, 2));
+      const apiKey = document.getElementById("apiKey").value.trim();
+      const fixtureId = document.getElementById("fixtureId").value.trim();
 
-  } catch (err) {
-    log("❌ ERRO NO FLUXO:");
-    log(err.message || err);
-    console.error(err);
-  }
-};
-</script>
+      if (!apiKey || !fixtureId) {
+        output.innerHTML = '<span class="error">API Key e Fixture ID são obrigatórios</span>';
+        return;
+      }
+
+      try {
+        // 1️⃣ Pagamento + backend
+        const backendResult = await payAndAnalyze(fixtureId, apiKey);
+
+        // 2️⃣ Consumo via statistics.js
+        const stats = Statistics.getTeam
+          ? Statistics.getTeam(
+              Statistics.normalize
+                ? Statistics.normalize(backendResult)
+                : backendResult,
+              null
+            )
+          : null;
+
+        // 3️⃣ Mostrar tudo
+        output.textContent = JSON.stringify(backendResult, null, 2);
+
+      } catch (err) {
+        output.innerHTML = `<span class="error">${err.message}</span>`;
+      }
+    };
+  </script>
 
 </body>
 </html>
