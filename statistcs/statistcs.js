@@ -75,10 +75,9 @@
           {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': apiKey
-            },
-            body: JSON.stringify({ date })
+  'Content-Type': 'application/json'
+},
+body: JSON.stringify({ apiKey, date })
           }
         );
 
