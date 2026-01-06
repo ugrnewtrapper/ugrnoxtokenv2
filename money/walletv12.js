@@ -4,7 +4,7 @@ import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
 CONFIG
 ============================= */
 const CFG = {
-  backend: "https://backendnoxv22.srrimas2017.workers.dev",
+  backend: "https://backendv12.srrimas2017.workers.dev/",
   chainId: 56,
   chainHex: "0x38",
 
