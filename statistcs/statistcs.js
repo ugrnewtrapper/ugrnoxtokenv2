@@ -71,15 +71,16 @@
         const date = validateDate();
 
         const response = await fetch(
-          'https://backendnoxv22.srrimas2017.workers.dev/worker2',
-          {
-            method: 'POST',
-            headers: {
-  'Content-Type': 'application/json'
-},
-body: JSON.stringify({ apiKey, date })
-          }
-        );
+  'https://backendnoxv22.srrimas2017.workers.dev/worker2',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey    // <--- chave adicionada
+    },
+    body: JSON.stringify({ date })
+  }
+);
 
         if (!response.ok) {
           throw new Error('Erro ao buscar competições.');
