@@ -40,7 +40,7 @@ const CONTRACT_ABI = [
 const PAYMENT_AMOUNT_BNB = "0.01";
 
 // Backend Cloudflare Worker
-const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev/";
+const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
 
 // ChainId da BSC
 const BSC_CHAIN_ID_HEX = "0x38";
