@@ -165,23 +165,30 @@ Acesso Premium bloqueado. Efetue o pagamento.
 
 <script>
 const BACKEND_LIST="https://backendnoxv2.srrimas2017.workers.dev";
+const BACKEND_PREMIUM="https://backendnoxv22.srrimas2017.workers.dev";
+
 let loading=false;
+window.selectedFixture=null;
 
-/* GARANTIA DE ESTADO GLOBAL */
-window.selectedFixture = null;
+/* ===============================
+   SELEÇÃO DE PARTIDA (GARANTIDA)
+================================ */
+window.selectMatch = el => {
+  document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
+  el.classList.add("selected");
 
-/* HARDENING PASSIVO */
-document.addEventListener("keydown",e=>{
-if(e.key==="F12") console.warn("Ambiente monitorado");
-});
+  const id = Number(el.dataset.fixture);
+  window.selectedFixture = Number.isInteger(id) && id > 0 ? id : null;
+};
 
-/* CARREGAR PARTIDAS */
+/* ===============================
+   CARREGAR PARTIDAS
+================================ */
 loadBtn.onclick=async()=>{
 if(loading) return;
 loading=true;
 
-/* RESET ABSOLUTO DE SELEÇÃO */
-window.selectedFixture = null;
+window.selectedFixture=null;
 document.querySelectorAll(".match").forEach(m=>m.classList.remove("selected"));
 
 const apiKey=apikey.value.trim();
@@ -201,10 +208,7 @@ method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({apiKey,date})
 });
-if(!res.ok) throw new Error();
-
 const data=await res.json();
-if(!Array.isArray(data?.competitions)) throw new Error();
 
 competitions.innerHTML="";
 data.competitions.forEach(c=>{
@@ -215,18 +219,11 @@ box.innerHTML=`<h3>${c.league}</h3>`;
 c.matches.forEach(m=>{
 const el=document.createElement("div");
 el.className="match";
-el.dataset.fixture = Number(m.fixtureId);
+el.dataset.fixture=m.fixtureId;
 el.textContent=`${m.time} ${m.home} x ${m.away}`;
-
-el.addEventListener("click",()=>{
-if(typeof window.selectMatch==="function"){
-window.selectMatch(el);
-}
-});
-
+el.onclick=()=>window.selectMatch(el);
 box.appendChild(el);
 });
-
 competitions.appendChild(box);
 });
 }catch{
@@ -236,19 +233,58 @@ loading=false;
 }
 };
 
-/* ANALISAR — SEM DUPLA VALIDAÇÃO */
-analyzeBtn.onclick=()=>{
-if(typeof window.analyzeMatch==="function"){
-window.analyzeMatch();
-}
+/* ===============================
+   ANÁLISE PREMIUM (ORQUESTRADOR)
+================================ */
+window.analyzeMatch = async () => {
+  if(!window.selectedFixture){
+    alert("⚠️ Selecione uma partida.");
+    return;
+  }
+
+  const apiKey = apikey.value.trim();
+  if(!apiKey){
+    alert("⚠️ Informe sua API Key.");
+    return;
+  }
+
+  window.lockAnalyze?.();
+  results.innerHTML="📊 Gerando análise Premium...";
+
+  try{
+    const res = await fetch(BACKEND_PREMIUM,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        apiKey,
+        fixtureId: window.selectedFixture
+      })
+    });
+
+    const data = await res.json();
+    if(!data?.teams) throw new Error();
+
+    results.innerHTML=`
+      <div class="balloon"><strong>${data.teams.home}</strong> x <strong>${data.teams.away}</strong></div>
+      <div class="balloon">🟨 Cartões: <strong>${data.statistics?.cardsMode}</strong></div>
+      <div class="balloon">🚩 Escanteios: <strong>${data.statistics?.cornersMode}</strong></div>
+    `;
+
+    window.dispatchEvent(new Event("nox-analysis-used"));
+
+  }catch{
+    results.innerHTML="❌ Erro ao gerar análise.";
+    window.unlockAnalyze?.();
+  }
 };
+
+/* ===============================
+   BOTÃO
+================================ */
+analyzeBtn.onclick=()=>window.analyzeMatch();
 </script>
 
-<!-- JS PREMIUM (o código que você enviou) -->
 <script type="module" src="money/walletv12.js"></script>
-
-<!-- opcional -->
-<script type="module" src="statistics/statistics.js"></script>
 
 </body>
 </html>
