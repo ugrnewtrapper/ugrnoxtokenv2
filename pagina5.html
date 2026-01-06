@@ -2,311 +2,66 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>NOX PREMIUM</title>
-
-  <!-- Blindagem essencial -->
-  <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self';
-          script-src 'self';
-          style-src 'self' 'unsafe-inline';
-          img-src 'self' data:;
-          connect-src *;
-          frame-ancestors 'none';
-        ">
-  <meta name="referrer" content="no-referrer" />
+  <title>Teste de Compra - Wallet v12</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    :root {
-      --bg-main: #0c1b22;
-      --bg-card: #122a33;
-      --primary: #1c8fb0;
-      --primary-dark: #146e87;
-      --text-main: #e6f3f7;
-      --text-muted: #9db8c3;
-      --border-soft: rgba(255,255,255,0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #081216, var(--bg-main));
-      color: var(--text-main);
-      min-height: 100vh;
-    }
-
-    /* Botão Voltar */
-    .back-btn {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      text-decoration: none;
-      color: var(--text-main);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      opacity: 0.85;
-    }
-
-    .back-btn:hover {
-      opacity: 1;
-    }
-
-    /* Container central */
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 60px 20px 40px;
-      text-align: center;
-    }
-
-    .logo {
-      width: 120px;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 8px 0 4px;
-      font-size: 34px;
-      letter-spacing: 1px;
-    }
-
-    h2 {
-      margin: 0 0 22px;
-      font-size: 16px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-    }
-
-    .info {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-muted);
-      margin-bottom: 30px;
-    }
-
-    /* Inputs */
-    .input-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 14px;
-      margin: 12px auto;
-      max-width: 420px;
-    }
-
-    .input-box input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text-main);
-      font-size: 14px;
-      text-align: center;
-    }
-
-    /* Botões */
-    .btn {
-      margin-top: 20px;
-      padding: 14px 32px;
-      border-radius: 20px;
-      border: none;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.6px;
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-
-    .btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    /* Competições */
-    .competitions {
-      display: none;
-      margin-top: 20px;
-    }
-
-    .competition-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 14px;
-      margin: 10px 0;
-      cursor: pointer;
-    }
-
-    .competition-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .competition-country {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .selected-match {
-      margin-top: 16px;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    /* Status */
-    .status {
-      margin-top: 18px;
-      font-size: 13px;
-      color: var(--text-muted);
-      min-height: 20px;
-    }
-
-    /* Resultados */
-    .results {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    .result-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-soft);
-      border-radius: 22px;
-      padding: 22px;
-      min-height: 300px;
-    }
-
-    .result-card h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      color: var(--primary);
-    }
-  </style>
 </head>
-
 <body>
 
-  <!-- Voltar -->
-  <a href="index.html" class="back-btn">
-    ← Voltar
-  </a>
+  <h2>Teste de Compra – Wallet v12</h2>
 
-  <div class="container">
+  <!-- FixtureId manual para teste -->
+  <label>
+    Fixture ID:
+    <input type="number" id="fixtureId" placeholder="Ex: 123456" />
+  </label>
 
-    <img src="images/logo2.png" alt="NOX Logo" class="logo" />
+  <br><br>
 
-    <h1>NOX PREMIUM</h1>
-    <h2>VERSÃO • 5.0 FUTURE</h2>
+  <!-- Botões -->
+  <button id="btnConnect">1️⃣ Conectar Carteira</button>
+  <button id="btnPay">2️⃣ Pagar Análise</button>
+  <button id="btnUnlock">3️⃣ Liberar Análise</button>
 
-    <div class="info">
-      UTILIZAR NO NAVEGADOR DE CARTEIRAS METAMASK / TRUST WALLET OU SIMILARES<br>
-      CADA PAGAMENTO LIBERA UMA ANÁLISE AUTOMÁTICA.
-    </div>
+  <pre id="log"></pre>
 
-    <!-- API KEY -->
-    <div class="input-box">
-      <input type="password" id="apiKeyInput"
-             placeholder="INSERIR API KEY API-FOOTBALL"
-             autocomplete="off" />
-    </div>
+  <!-- Wallet -->
+  <script src="./walletv12.js"></script>
 
-    <!-- DATA -->
-    <div class="input-box">
-      <input type="date" id="matchDate" />
-    </div>
-
-    <!-- CARREGAR COMPETIÇÕES -->
-    <button class="btn" id="loadCompetitionsBtn">
-      CARREGAR COMPETIÇÕES
-    </button>
-
-    <div class="competitions" id="competitionsContainer">
-      <!-- statistics.js renderiza -->
-    </div>
-
-    <div class="selected-match" id="selectedMatch"></div>
-
-    <!-- ANALISAR -->
-    <button class="btn" id="analyzeBtn" disabled>
-      ANALISAR
-    </button>
-
-    <div class="status" id="statusMsg"></div>
-
-    <!-- RESULTADOS -->
-    <div class="results">
-      <div class="result-card">
-        <h3>Jogadores Destaque</h3>
-        <div id="resultPlayers"></div>
-      </div>
-
-      <div class="result-card">
-        <h3>Moda de Cartões</h3>
-        <div id="resultCards"></div>
-      </div>
-
-      <div class="result-card">
-        <h3>Moda de Escanteios</h3>
-        <div id="resultCorners"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Scripts externos -->
-  <script src="statistics/statistics.js"></script>
-  <script src="walletv12.js"></script>
-
-  <!-- Orquestração padronizada -->
   <script>
-    (function () {
-      'use strict';
+    const log = (msg) => {
+      const el = document.getElementById("log");
+      el.textContent += msg + "\n";
+    };
 
-      const analyzeBtn = document.getElementById('analyzeBtn');
-      const statusMsg = document.getElementById('statusMsg');
-
-      analyzeBtn.addEventListener('click', async () => {
-        try {
-          analyzeBtn.disabled = true;
-
-          statusMsg.textContent = 'Conectando carteira...';
-          await window.connectWallet();
-
-          await delay(15000);
-          statusMsg.textContent = 'Pagamento confirmado. Processando cobrança...';
-          await window.processPayment();
-
-          await delay(15000);
-          statusMsg.textContent = 'Executando análise automática...';
-          await window.runAnalysis();
-
-          statusMsg.textContent = 'Análise concluída com sucesso.';
-        } catch (err) {
-          statusMsg.textContent = 'Erro no processo. Verifique carteira ou API Key.';
-          analyzeBtn.disabled = false;
-        }
-      });
-
-      function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    document.getElementById("btnConnect").onclick = async () => {
+      try {
+        const wallet = await walletv12.connectWallet();
+        log("Carteira conectada: " + wallet);
+      } catch (err) {
+        log("Erro conectar: " + err.message);
       }
-    })();
+    };
+
+    document.getElementById("btnPay").onclick = async () => {
+      try {
+        const res = await walletv12.payForAnalysis();
+        log("Pagamento enviado!");
+        log("TxHash: " + res.txHash);
+      } catch (err) {
+        log("Erro pagamento: " + err.message);
+      }
+    };
+
+    document.getElementById("btnUnlock").onclick = async () => {
+      try {
+        const fixtureId = document.getElementById("fixtureId").value;
+        const res = await walletv12.unlockAnalysis({ fixtureId });
+        log("Resposta backend:");
+        log(JSON.stringify(res, null, 2));
+      } catch (err) {
+        log("Erro unlock: " + err.message);
+      }
+    };
   </script>
 
 </body>
