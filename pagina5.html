@@ -2,73 +2,165 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Backend + Wallet</title>
+  <title>Teste API-Football + Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+
+    h1 { margin-bottom: 10px; }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .primary { background: #2563eb; color: #fff; }
+    .success { background: #16a34a; color: #fff; }
+    .warning { background: #ca8a04; color: #000; }
+    .info    { background: #0ea5e9; color: #000; }
+
+    pre {
+      background: #020617;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+
+    .box {
+      background: #020617;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Teste /competitions (com Wallet)</h2>
-<button id="btn">Conectar Wallet e Testar</button>
-<pre id="log"></pre>
+<h1>⚽ Teste API-Football + Wallet</h1>
+
+<button id="btnWallet" class="primary">🔌 Conectar Wallet</button>
+<button id="btnSearch" class="info" disabled>🔍 Buscar Jogo Aleatório</button>
+<button id="btnPay" class="warning" disabled>💳 Comprar Análise</button>
+<button id="btnAnalyze" class="success" disabled>📊 Ver Análise</button>
+
+<div class="box">
+  <strong>Status:</strong>
+  <pre id="status">Aguardando...</pre>
+</div>
+
+<div class="box">
+  <strong>Resposta:</strong>
+  <pre id="output"></pre>
+</div>
 
 <script type="module">
-import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
+  import { connectWallet, payForAnalysis } from "/money/walletv12.js";
 
-const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
-const BACKEND = "https://backendv12.srrimas2017.workers.dev";
+  const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
+  const BACKEND = "https://backendv12.srrimas2017.workers.dev";
 
-const logEl = document.getElementById("log");
-const log = (msg) => logEl.textContent += msg + "\n";
+  let wallet = null;
+  let fixtureId = null;
+  let txHash = null;
 
-async function getWallet() {
-  if (!window.ethereum) {
-    throw new Error("MetaMask não encontrada");
-  }
+  const status = (msg) =>
+    document.getElementById("status").textContent = msg;
 
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const signer = await provider.getSigner();
-  return await signer.getAddress();
-}
+  const output = (data) =>
+    document.getElementById("output").textContent =
+      JSON.stringify(data, null, 2);
 
-document.getElementById("btn").onclick = async () => {
-  logEl.textContent = "";
+  // 1️⃣ WALLET
+  document.getElementById("btnWallet").onclick = async () => {
+    status("🔌 Conectando wallet...");
+    try {
+      wallet = await connectWallet();
+      status(`👛 Wallet conectada:\n${wallet}`);
+      document.getElementById("btnSearch").disabled = false;
+    } catch (e) {
+      status("❌ Erro ao conectar wallet");
+    }
+  };
 
-  try {
-    log("🔌 Conectando wallet...");
-    const wallet = await getWallet();
-    log(`👛 Wallet: ${wallet}`);
+  // 2️⃣ PESQUISA ALEATÓRIA
+  document.getElementById("btnSearch").onclick = async () => {
+    status("🔍 Buscando fixtures do dia...");
+    document.getElementById("btnSearch").disabled = true;
 
-    const date = new Date().toISOString().slice(0, 10);
-    log(`📅 Date: ${date}`);
-    log("📤 Chamando /competitions...");
+    const date = new Date().toISOString().split("T")[0];
 
     const res = await fetch(`${BACKEND}/competitions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apiKey: API_KEY, date })
+    });
+
+    const json = await res.json();
+    output(json);
+
+    // pega fixture aleatório
+    const leagues = Object.values(json.data || {});
+    const randomLeague = leagues[Math.floor(Math.random() * leagues.length)];
+    const randomFixture = randomLeague.fixtures[0];
+
+    fixtureId = randomFixture.fixtureId;
+
+    status(`🎯 Fixture selecionado: ${fixtureId}`);
+    document.getElementById("btnPay").disabled = false;
+  };
+
+  // 3️⃣ PAGAMENTO
+  document.getElementById("btnPay").onclick = async () => {
+    status("💳 Iniciando pagamento...");
+    document.getElementById("btnPay").disabled = true;
+
+    try {
+      txHash = await payForAnalysis(fixtureId);
+      status(`✅ Pagamento confirmado\nTX: ${txHash}`);
+      document.getElementById("btnAnalyze").disabled = false;
+    } catch (e) {
+      status("❌ Falha no pagamento");
+    }
+  };
+
+  // 4️⃣ ANÁLISE
+  document.getElementById("btnAnalyze").onclick = async () => {
+    status("📊 Buscando análise...");
+
+    const res = await fetch(`${BACKEND}/analysis`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         apiKey: API_KEY,
-        date,
-        wallet
+        fixtureId,
+        wallet,
+        txHash
       })
     });
 
-    const payload = await res.json();
-
-    log("📦 Resposta do backend:");
-    log(JSON.stringify(payload, null, 2));
-
-    if (!res.ok) {
-      throw new Error(payload.error || "Erro no backend");
-    }
-
-    log("✅ /competitions OK");
-
-  } catch (err) {
-    log("❌ ERRO:");
-    log(err.message || err);
-    console.error(err);
-  }
-};
+    const json = await res.json();
+    output(json);
+    status("✅ Análise concluída");
+  };
 </script>
 
 </body>
