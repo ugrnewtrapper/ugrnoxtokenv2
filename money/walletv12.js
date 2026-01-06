@@ -77,7 +77,7 @@ async function payForAnalysis() {
     await connectWallet();
   }
 
-  // Monta transação (BNB nativo)
+  // Executar chamada ao contrato (sem envio de BNB)
   const tx = {
   from: userWallet,
   to: CONTRACT_ADDRESS,
