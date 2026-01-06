@@ -2,38 +2,66 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Pagamento walletv12</title>
+  <title>Teste Backend + Wallet</title>
 </head>
 <body>
 
-<h2>Teste SOMENTE Pagamento + /analysis</h2>
-<button id="btn">Comprar Análise</button>
+<h2>Teste /competitions (com Wallet)</h2>
+<button id="btn">Conectar Wallet e Testar</button>
 <pre id="log"></pre>
 
 <script type="module">
-import { payAndAnalyze } from "./money/walletv12.js";
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
 
 const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
+const BACKEND = "https://backendv12.srrimas2017.workers.dev";
 
-// fixtureId arbitrário só para teste do fluxo
-const FIXTURE_ID_TESTE = 123456;
+const logEl = document.getElementById("log");
+const log = (msg) => logEl.textContent += msg + "\n";
 
-const log = (msg) => {
-  document.getElementById("log").textContent += msg + "\n";
-};
+async function getWallet() {
+  if (!window.ethereum) {
+    throw new Error("MetaMask não encontrada");
+  }
+
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = await provider.getSigner();
+  return await signer.getAddress();
+}
 
 document.getElementById("btn").onclick = async () => {
+  logEl.textContent = "";
+
   try {
-    log("💳 Iniciando pagamento on-chain...");
-    log(`🎯 FixtureId teste: ${FIXTURE_ID_TESTE}`);
+    log("🔌 Conectando wallet...");
+    const wallet = await getWallet();
+    log(`👛 Wallet: ${wallet}`);
 
-    const result = await payAndAnalyze(
-      FIXTURE_ID_TESTE,
-      API_KEY
-    );
+    const date = new Date().toISOString().slice(0, 10);
+    log(`📅 Date: ${date}`);
+    log("📤 Chamando /competitions...");
 
-    log("✅ PAGAMENTO CONCLUÍDO");
-    log(JSON.stringify(result, null, 2));
+    const res = await fetch(`${BACKEND}/competitions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: API_KEY,
+        date,
+        wallet
+      })
+    });
+
+    const payload = await res.json();
+
+    log("📦 Resposta do backend:");
+    log(JSON.stringify(payload, null, 2));
+
+    if (!res.ok) {
+      throw new Error(payload.error || "Erro no backend");
+    }
+
+    log("✅ /competitions OK");
 
   } catch (err) {
     log("❌ ERRO:");
