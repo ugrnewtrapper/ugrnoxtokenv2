@@ -1,42 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste walletv12</title>
+  <meta charset="UTF-8" />
+  <title>Teste Avançado walletv12</title>
+  <style>
+    body { font-family: monospace; }
+    button { margin: 6px 0; }
+    .ok { color: green; }
+    .err { color: red; }
+    .step { color: blue; }
+  </style>
 </head>
 <body>
 
-<button id="btn">Testar walletv12</button>
+<h3>Teste walletv12.js</h3>
+
+<label>fixtureId:</label><br>
+<input id="fixture" value="123456" /><br><br>
+
+<label>apiKey:</label><br>
+<input id="apiKey" value="TEST_API_KEY" /><br><br>
+
+<button id="btnPay">1️⃣ Pagar + Analisar</button>
+<button id="btnOnlyFetch">2️⃣ Apenas backend (sem pagar)</button>
+<button id="btnClear">Limpar log</button>
+
 <pre id="log"></pre>
 
 <script type="module">
   import { payAndAnalyze } from "./money/walletv12.js";
 
   const logEl = document.getElementById("log");
-  const log = (msg) => logEl.textContent += msg + "\n";
+  const log = (msg, cls = "") => {
+    logEl.innerHTML += `%c${msg}\n`;
+    console.log(msg);
+  };
 
-  log("HTML carregado");
+  const step = (m) => log(`▶ ${m}`, "step");
+  const ok = (m) => log(`✔ ${m}`, "ok");
+  const err = (m) => log(`✖ ${m}`, "err");
 
-  if (!window.ethereum) {
-    log("MetaMask NÃO detectada");
-  } else {
-    log("MetaMask detectada");
-  }
+  document.getElementById("btnClear").onclick = () => {
+    logEl.textContent = "";
+  };
 
-  document.getElementById("btn").onclick = async () => {
-    log("Botão clicado");
+  document.getElementById("btnPay").onclick = async () => {
+    const fixtureId = fixture.value;
+    const apiKey = apiKeyInput.value;
+
+    step("Iniciando payAndAnalyze()");
 
     try {
-      const result = await payAndAnalyze(
-        "TEST_FIXTURE",
-        "TEST_API_KEY"
+      const res = await payAndAnalyze(fixtureId, apiKey);
+      ok("Resposta do backend:");
+      log(JSON.stringify(res, null, 2));
+    } catch (e) {
+      err("Erro capturado:");
+      err(e.message || e);
+    }
+  };
+
+  document.getElementById("btnOnlyFetch").onclick = async () => {
+    const fixtureId = fixture.value;
+    const apiKey = apiKeyInput.value;
+
+    step("Teste direto do backend (sem pagamento)");
+
+    try {
+      const res = await fetch(
+        "https://backendv12.srrimas2017.workers.dev/analysis",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey,
+            fixtureId,
+            wallet: "0xTESTE",
+            txHash: "0xTESTE"
+          })
+        }
       );
 
-      log("SUCESSO:");
-      log(JSON.stringify(result, null, 2));
-    } catch (err) {
-      log("ERRO:");
-      log(err.message);
+      const data = await res.json();
+      ok("Resposta backend:");
+      log(JSON.stringify(data, null, 2));
+    } catch (e) {
+      err("Erro no fetch direto:");
+      err(e.message);
     }
   };
 </script>
