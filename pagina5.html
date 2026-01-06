@@ -2,10 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Avançado walletv12</title>
+  <title>Teste Pagamento Wallet v12</title>
   <style>
     body { font-family: monospace; }
-    button { margin: 6px 0; }
     .ok { color: green; }
     .err { color: red; }
     .step { color: blue; }
@@ -13,80 +12,110 @@
 </head>
 <body>
 
-<h3>Teste walletv12.js</h3>
+<h3>Teste de Pagamento (Somente On-chain)</h3>
 
-<label>fixtureId:</label><br>
-<input id="fixture" value="123456" /><br><br>
-
-<label>apiKey:</label><br>
-<input id="apiKey" value="TEST_API_KEY" /><br><br>
-
-<button id="btnPay">1️⃣ Pagar + Analisar</button>
-<button id="btnOnlyFetch">2️⃣ Apenas backend (sem pagar)</button>
-<button id="btnClear">Limpar log</button>
+<button id="btnPay">Pagar agora</button>
 
 <pre id="log"></pre>
 
 <script type="module">
-  import { payAndAnalyze } from "./money/walletv12.js";
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
 
   const logEl = document.getElementById("log");
-  const log = (msg, cls = "") => {
-    logEl.innerHTML += `%c${msg}\n`;
-    console.log(msg);
-  };
+  const log = (m) => logEl.textContent += m + "\n";
 
-  const step = (m) => log(`▶ ${m}`, "step");
-  const ok = (m) => log(`✔ ${m}`, "ok");
-  const err = (m) => log(`✖ ${m}`, "err");
+  const CFG = {
+    chainId: 56,
+    chainHex: "0x38",
 
-  document.getElementById("btnClear").onclick = () => {
-    logEl.textContent = "";
+    tokenAddress: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+    paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
+
+    tokenABI: [
+      "function approve(address,uint256) returns (bool)",
+      "function balanceOf(address) view returns (uint256)",
+      "function allowance(address,address) view returns (uint256)"
+    ],
+
+    paymentABI: [
+      "function payForAnalysis()",
+      "function pricePerAnalysis() view returns (uint256)",
+      "event AnalysisPaid(address indexed user, uint256 amount)"
+    ]
   };
 
   document.getElementById("btnPay").onclick = async () => {
-    const fixtureId = fixture.value;
-    const apiKey = apiKeyInput.value;
-
-    step("Iniciando payAndAnalyze()");
-
     try {
-      const res = await payAndAnalyze(fixtureId, apiKey);
-      ok("Resposta do backend:");
-      log(JSON.stringify(res, null, 2));
-    } catch (e) {
-      err("Erro capturado:");
-      err(e.message || e);
-    }
-  };
+      log("🔗 Conectando carteira...");
 
-  document.getElementById("btnOnlyFetch").onclick = async () => {
-    const fixtureId = fixture.value;
-    const apiKey = apiKeyInput.value;
+      if (!window.ethereum) {
+        throw new Error("MetaMask não encontrada");
+      }
 
-    step("Teste direto do backend (sem pagamento)");
+      const provider = new ethers.BrowserProvider(window.ethereum, "any");
+      await provider.send("eth_requestAccounts", []);
+      let signer = await provider.getSigner();
+      const wallet = await signer.getAddress();
 
-    try {
-      const res = await fetch(
-        "https://backendv12.srrimas2017.workers.dev/analysis",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            apiKey,
-            fixtureId,
-            wallet: "0xTESTE",
-            txHash: "0xTESTE"
-          })
-        }
+      log("👛 Wallet: " + wallet);
+
+      const net = await provider.getNetwork();
+      if (Number(net.chainId) !== CFG.chainId) {
+        log("🔁 Trocando para BSC...");
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: CFG.chainHex }]
+        });
+        signer = await provider.getSigner();
+      }
+
+      log("📦 Conectando contratos...");
+
+      const token = new ethers.Contract(
+        CFG.tokenAddress,
+        CFG.tokenABI,
+        signer
       );
 
-      const data = await res.json();
-      ok("Resposta backend:");
-      log(JSON.stringify(data, null, 2));
+      const payment = new ethers.Contract(
+        CFG.paymentContract,
+        CFG.paymentABI,
+        signer
+      );
+
+      const price = await payment.pricePerAnalysis();
+      const balance = await token.balanceOf(wallet);
+
+      log("💰 Preço: " + price.toString());
+      log("💰 Saldo: " + balance.toString());
+
+      if (balance < price) {
+        throw new Error("Saldo insuficiente");
+      }
+
+      const allowance = await token.allowance(wallet, CFG.paymentContract);
+
+      if (allowance < price) {
+        log("📝 Aprovando token...");
+        const txApprove = await token.approve(CFG.paymentContract, price);
+        await txApprove.wait();
+        log("✔ Approve confirmado");
+      } else {
+        log("✔ Approve já existente");
+      }
+
+      log("💸 Executando pagamento...");
+      const txPay = await payment.payForAnalysis();
+      log("⏳ Tx enviada: " + txPay.hash);
+
+      const receipt = await txPay.wait();
+
+      log("✅ PAGAMENTO CONCLUÍDO");
+      log("📜 Tx Hash: " + receipt.hash);
+
     } catch (e) {
-      err("Erro no fetch direto:");
-      err(e.message);
+      log("❌ ERRO:");
+      log(e.message || e);
     }
   };
 </script>
