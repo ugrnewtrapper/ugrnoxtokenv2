@@ -120,13 +120,13 @@ async function payForAnalysis() {
 /* =========================================================
  * 3️⃣ ENVIAR PROVA AO BACKEND (LIBERAR ANÁLISE)
  * =======================================================*/
-async function unlockAnalysis({ apiKey, fixtureId }) {
+async function unlockAnalysis({ fixtureId }) {
   if (!userWallet || !lastTxHash) {
     throw new Error("Pagamento não encontrado");
   }
 
-  if (!apiKey || !fixtureId) {
-    throw new Error("API Key ou fixtureId ausente");
+  if (!fixtureId) {
+    throw new Error("fixtureId ausente");
   }
 
   const controller = new AbortController();
