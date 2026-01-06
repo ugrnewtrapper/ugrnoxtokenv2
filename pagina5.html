@@ -16,9 +16,8 @@ import { payAndAnalyze } from "./money/walletv12.js";
 const API_KEY = "44154acf83f7568c7b0e75e10676a2dd";
 const WORKER_BASE = "https://backendv12.srrimas2017.workers.dev";
 
-const log = (msg) => {
-  document.getElementById("log").textContent += msg + "\n";
-};
+const logEl = document.getElementById("log");
+const log = (msg) => logEl.textContent += msg + "\n";
 
 document.getElementById("btn").onclick = async () => {
   try {
@@ -26,7 +25,7 @@ document.getElementById("btn").onclick = async () => {
 
     const date = new Date().toISOString().slice(0, 10);
 
-    const competitionsRes = await fetch(`${WORKER_BASE}/competitions`, {
+    const res = await fetch(`${WORKER_BASE}/competitions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -36,31 +35,36 @@ document.getElementById("btn").onclick = async () => {
       })
     });
 
-    const competitions = await competitionsRes.json();
+    const payload = await res.json();
+    log("📦 Resposta /competitions:");
+    log(JSON.stringify(payload, null, 2));
 
-    if (!competitions.data) {
-      throw new Error("Resposta inválida do backend");
+    if (!res.ok) {
+      throw new Error(payload.error || "Erro desconhecido no backend");
     }
 
-    const allFixtures = [];
+    if (!payload.data) {
+      throw new Error("Backend respondeu sem data");
+    }
 
-    Object.values(competitions.data).forEach(leagues =>
+    const fixtures = [];
+
+    Object.values(payload.data).forEach(leagues =>
       Object.values(leagues).forEach(arr =>
-        arr.forEach(f => allFixtures.push(f.fixtureId))
+        arr.forEach(f => fixtures.push(f.fixtureId))
       )
     );
 
-    if (!allFixtures.length) {
+    if (!fixtures.length) {
       throw new Error("Nenhum fixture encontrado");
     }
 
-    const fixtureId =
-      allFixtures[Math.floor(Math.random() * allFixtures.length)];
+    const fixtureId = fixtures[Math.floor(Math.random() * fixtures.length)];
 
     log(`🎯 Fixture escolhido: ${fixtureId}`);
     log("💳 Iniciando pagamento on-chain...");
 
-    // ✅ CHAMADA CORRETA DO walletv12.js
+    // ⚠️ ASSINATURA CORRETA DO walletv12.js
     const result = await payAndAnalyze(
       fixtureId,
       API_KEY
