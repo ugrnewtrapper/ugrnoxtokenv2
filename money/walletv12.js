@@ -140,7 +140,6 @@ async function unlockAnalysis({ apiKey, fixtureId }) {
       },
       signal: controller.signal,
       body: JSON.stringify({
-        apiKey,
         fixtureId,
         wallet: userWallet,
         txHash: lastTxHash
