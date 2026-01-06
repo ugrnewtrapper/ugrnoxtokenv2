@@ -26,15 +26,7 @@
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 
 // ABI mínima (função payable)
-const CONTRACT_ABI = [
-  {
-    "inputs": [],
-    "name": "pay",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  }
-];
+
 
 // Valor do pagamento em BNB (18 decimais)
 const PAYMENT_AMOUNT_BNB = "0.01";
