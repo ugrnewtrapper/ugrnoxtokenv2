@@ -23,7 +23,7 @@
  * =======================================================*/
 
 // Endereço do contrato na BSC
-const CONTRACT_ADDRESS = "0xSEU_CONTRATO_BSC_AQUI";
+const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 
 // ABI mínima (função payable)
 const CONTRACT_ABI = [
