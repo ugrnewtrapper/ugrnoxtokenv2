@@ -1,140 +1,104 @@
-/* =========================================================
- * WALLET v12 – Web3-only
- * Compatível com backend
- * =======================================================*/
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/+esm";
 
-const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
-const TOKEN_ADDRESS    = "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8";
-const PRICE_SELECTOR   = "0x2e7d9d84"; // pricePerAnalysis() do contrato
-const APPROVE_SELECTOR = "0x095ea7b3"; // approve(address,uint256)
-const PAY_SELECTOR     = "0x1f4b4c3b"; // payForAnalysis()
-const BACKEND_URL      = "https://backendv12.srrimas2017.workers.dev";
-const BSC_CHAIN_ID_HEX = "0x38";
+/* =============================
+CONFIG
+============================= */
+const CFG = {
+  backend: "https://backendnoxv22.srrimas2017.workers.dev",
+  chainId: 56,
+  chainHex: "0x38",
 
-let userWallet = null;
-let lastTxHash = null;
+  tokenAddress: "0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8",
+  paymentContract: "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD",
 
-/* =========================================================
- * CHECA SE ESTÁ RODANDO DENTRO DE UMA CARTEIRA WEB3
- * =======================================================*/
-function requireWeb3() {
-  if (!window.ethereum) throw new Error("Carteira Web3 não encontrada");
+  tokenABI: [
+    "function approve(address,uint256) returns (bool)",
+    "function balanceOf(address) view returns (uint256)",
+    "function allowance(address,address) view returns (uint256)",
+    "function decimals() view returns (uint8)"
+  ],
+
+  paymentABI: [
+    "function payForAnalysis()",
+    "function pricePerAnalysis() view returns (uint256)",
+    "event AnalysisPaid(address indexed user, uint256 amount)"
+  ]
+};
+
+/* =============================
+PROVIDER
+============================= */
+function getProvider() {
+  if (!window.ethereum) return null;
+  return new ethers.BrowserProvider(window.ethereum, "any");
 }
 
-/* =========================================================
- * 1️⃣ CONECTAR CARTEIRA
- * =======================================================*/
-async function connectWallet() {
-  requireWeb3();
-  const [account] = await ethereum.request({ method: "eth_requestAccounts" });
+/* =============================
+MAIN FLOW
+============================= */
+export async function payAndAnalyze(fixtureId, apiKey) {
+  const provider = getProvider();
+  if (!provider) throw new Error("Carteira Web3 não encontrada");
 
-  const chainId = await ethereum.request({ method: "eth_chainId" });
-  if (chainId !== BSC_CHAIN_ID_HEX) throw new Error("Conecte-se à BSC");
+  await provider.send("eth_requestAccounts", []);
+  let signer = await provider.getSigner();
+  const wallet = await signer.getAddress();
 
-  userWallet = account;
-  return account;
-}
+  /* ---------- Network check */
+  const net = await provider.getNetwork();
+  if (Number(net.chainId) !== CFG.chainId) {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: CFG.chainHex }]
+    });
+    signer = await provider.getSigner();
+  }
 
-/* =========================================================
- * 2️⃣ PEGAR PREÇO DO CONTRATO
- * =======================================================*/
-async function getPriceFromContract() {
-  requireWeb3();
-  const result = await ethereum.request({
-    method: "eth_call",
-    params: [{ to: CONTRACT_ADDRESS, data: PRICE_SELECTOR }, "latest"]
-  });
-  return BigInt(result);
-}
+  /* ---------- Contracts */
+  const token = new ethers.Contract(
+    CFG.tokenAddress,
+    CFG.tokenABI,
+    signer
+  );
 
-/* =========================================================
- * 3️⃣ APPROVE TOKEN
- * =======================================================*/
-async function approveToken() {
-  requireWeb3();
-  if (!userWallet) await connectWallet();
+  const payment = new ethers.Contract(
+    CFG.paymentContract,
+    CFG.paymentABI,
+    signer
+  );
 
-  const price = await getPriceFromContract();
+  /* ---------- Price */
+  const price = await payment.pricePerAnalysis();
+  const balance = await token.balanceOf(wallet);
+  if (balance < price) throw new Error("Saldo insuficiente");
 
-  const data =
-    APPROVE_SELECTOR +
-    CONTRACT_ADDRESS.slice(2).padStart(64, "0") +
-    price.toString(16).padStart(64, "0");
+  /* ---------- Approve if needed */
+  const allowance = await token.allowance(wallet, CFG.paymentContract);
+  if (allowance < price) {
+    const txApprove = await token.approve(CFG.paymentContract, price);
+    await txApprove.wait();
+  }
 
-  const txHash = await ethereum.request({
-    method: "eth_sendTransaction",
-    params: [{ from: userWallet, to: TOKEN_ADDRESS, data, value: "0x0" }]
-  });
+  /* ---------- Pay */
+  const txPay = await payment.payForAnalysis();
+  const receipt = await txPay.wait();
 
-  lastTxHash = txHash;
-  return waitForConfirmation(txHash);
-}
-
-/* =========================================================
- * 4️⃣ PAGAR ANÁLISE
- * =======================================================*/
-async function payForAnalysis() {
-  requireWeb3();
-  if (!userWallet) await connectWallet();
-
-  // 1️⃣ Approve token
-  await approveToken();
-
-  // 2️⃣ Pagar análise no contrato
-  const txHash = await ethereum.request({
-    method: "eth_sendTransaction",
-    params: [{ from: userWallet, to: CONTRACT_ADDRESS, data: PAY_SELECTOR, value: "0x0" }]
-  });
-
-  lastTxHash = txHash;
-  await waitForConfirmation(txHash);
-
-  return { wallet: userWallet, txHash };
-}
-
-/* =========================================================
- * 5️⃣ BACKEND: LIBERAR ANÁLISE
- * =======================================================*/
-async function unlockAnalysis({ fixtureId }) {
-  if (!fixtureId) throw new Error("fixtureId ausente");
-  if (!userWallet) await connectWallet();
-
-  const res = await fetch(`${BACKEND_URL}/analysis`, {
+  /* ---------- Send to backend */
+  const res = await fetch(`${CFG.backend}/analysis`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      apiKey,
       fixtureId,
-      user: userWallet,
-      txHash: lastTxHash
+      wallet,
+      txHash: receipt.hash
     })
   });
 
-  return res.json();
-}
-
-/* =========================================================
- * 6️⃣ AUX — ESPERA CONFIRMAÇÃO
- * =======================================================*/
-async function waitForConfirmation(txHash) {
-  requireWeb3();
-  let receipt = null;
-  while (!receipt) {
-    receipt = await ethereum.request({
-      method: "eth_getTransactionReceipt",
-      params: [txHash]
-    });
-    await new Promise(r => setTimeout(r, 1500));
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Erro no backend");
   }
-  if (!receipt.status) throw new Error("Transação falhou ou revertida");
-  return receipt;
-}
 
-/* =========================================================
- * EXPORT
- * =======================================================*/
-window.walletv12 = {
-  connectWallet,
-  payForAnalysis,
-  unlockAnalysis,
-  getPriceFromContract
-};
+  return await res.json();
+}
