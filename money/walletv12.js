@@ -25,7 +25,7 @@
 // Endereço do contrato na BSC
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
 
-// ABI mínima (função payable)
+
 
 
 // Valor do pagamento em BNB (18 decimais)
