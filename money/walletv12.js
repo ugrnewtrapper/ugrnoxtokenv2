@@ -1,20 +1,8 @@
 /**
  * =========================================================
- * walletv12.js (CORRIGIDO)
+ * walletv12.js – CORRIGIDO PARA ORCS
  * Rede: BSC (BNB - 18 decimais)
- * =========================================================
- *
- * Responsabilidades:
- * 1. Conectar carteira Web3
- * 2. Garantir que está na rede BSC
- * 3. Executar pagamento em BNB
- * 4. Aguardar confirmação mínima
- * 5. Enviar prova (wallet + txHash) ao backend
- *
- * Compatível com:
- * - Navegador
- * - MetaMask
- * - Backend Cloudflare Workers (worker2.js)
+ * Backend: Cloudflare Workers (worker2.js)
  * =========================================================
  */
 
@@ -25,22 +13,11 @@
 // Endereço do contrato na BSC
 const CONTRACT_ADDRESS = "0xSEU_CONTRATO_BSC_AQUI";
 
-// ABI mínima (função payable)
-const CONTRACT_ABI = [
-  {
-    "inputs": [],
-    "name": "pay",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  }
-];
-
-// Valor do pagamento em BNB (18 decimais)
+// Valor do pagamento em BNB
 const PAYMENT_AMOUNT_BNB = "0.01";
 
-// Backend Cloudflare Worker
-const BACKEND_URL = "https://SEU_WORKER.cloudflare.workers.dev";
+// 🔥 URL REAL DO ORCS (SEM BARRA FINAL)
+const BACKEND_URL = "https://backendnoxv22.srrimas2017.workers.dev";
 
 // ChainId da BSC
 const BSC_CHAIN_ID_HEX = "0x38";
@@ -49,21 +26,19 @@ const BSC_CHAIN_ID_HEX = "0x38";
 const FETCH_TIMEOUT = 8000;
 
 /* =========================================================
- * ESTADO (PERSISTENTE)
+ * ESTADO PERSISTENTE
  * =======================================================*/
-
 let userWallet = sessionStorage.getItem("wallet") || null;
 let lastTxHash = sessionStorage.getItem("txHash") || null;
 
 /* =========================================================
- * 1️⃣ CONECTAR CARTEIRA E VALIDAR REDE
+ * CONECTAR CARTEIRA + VALIDAR BSC
  * =======================================================*/
 async function connectWallet() {
   if (!window.ethereum) {
-    throw new Error("Carteira Web3 não encontrada (MetaMask)");
+    throw new Error("Carteira Web3 não encontrada");
   }
 
-  // Solicita conta
   const accounts = await ethereum.request({
     method: "eth_requestAccounts"
   });
@@ -71,35 +46,32 @@ async function connectWallet() {
   userWallet = accounts[0];
   sessionStorage.setItem("wallet", userWallet);
 
-  // Verifica rede
   const chainId = await ethereum.request({
     method: "eth_chainId"
   });
 
   if (chainId !== BSC_CHAIN_ID_HEX) {
-    throw new Error("Rede incorreta. Conecte-se à Binance Smart Chain (BSC).");
+    throw new Error("Conecte-se à Binance Smart Chain (BSC)");
   }
 
   return userWallet;
 }
 
 /* =========================================================
- * 2️⃣ EXECUTAR PAGAMENTO (BNB)
+ * PAGAMENTO
  * =======================================================*/
 async function payForAnalysis() {
   if (!userWallet) {
     await connectWallet();
   }
 
-  // Monta transação (BNB nativo)
   const tx = {
     from: userWallet,
     to: CONTRACT_ADDRESS,
     value: bnbToHex(PAYMENT_AMOUNT_BNB),
-    data: "0x" // chamada simples (fallback payable)
+    data: "0x"
   };
 
-  // Envia transação
   const txHash = await ethereum.request({
     method: "eth_sendTransaction",
     params: [tx]
@@ -108,25 +80,17 @@ async function payForAnalysis() {
   lastTxHash = txHash;
   sessionStorage.setItem("txHash", txHash);
 
-  // Aguarda confirmação mínima (1 bloco)
   await waitForConfirmation(txHash);
 
-  return {
-    wallet: userWallet,
-    txHash
-  };
+  return { wallet: userWallet, txHash };
 }
 
 /* =========================================================
- * 3️⃣ ENVIAR PROVA AO BACKEND (LIBERAR ANÁLISE)
+ * LIBERAR ANÁLISE (ROTA ORCS)
  * =======================================================*/
 async function unlockAnalysis({ apiKey, fixtureId }) {
-  if (!userWallet || !lastTxHash) {
-    throw new Error("Pagamento não encontrado");
-  }
-
   if (!apiKey || !fixtureId) {
-    throw new Error("API Key ou fixtureId ausente");
+    throw new Error("apiKey ou fixtureId ausente");
   }
 
   const controller = new AbortController();
@@ -135,9 +99,7 @@ async function unlockAnalysis({ apiKey, fixtureId }) {
   try {
     const response = await fetch(`${BACKEND_URL}/analysis`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       signal: controller.signal,
       body: JSON.stringify({
         apiKey,
@@ -154,17 +116,16 @@ async function unlockAnalysis({ apiKey, fixtureId }) {
 }
 
 /* =========================================================
- * FUNÇÃO AUXILIAR — CONVERSÃO SEGURA BNB → WEI
+ * UTIL – BNB → WEI (18 DECIMAIS, SEGURO)
  * =======================================================*/
 function bnbToHex(value) {
-  // Converte string decimal para wei sem perda de precisão
   const [intPart, decPart = ""] = value.split(".");
   const wei = BigInt(intPart + decPart.padEnd(18, "0"));
   return "0x" + wei.toString(16);
 }
 
 /* =========================================================
- * FUNÇÃO AUXILIAR — AGUARDA CONFIRMAÇÃO
+ * UTIL – CONFIRMAÇÃO ON-CHAIN
  * =======================================================*/
 async function waitForConfirmation(txHash) {
   let receipt = null;
@@ -174,20 +135,16 @@ async function waitForConfirmation(txHash) {
       method: "eth_getTransactionReceipt",
       params: [txHash]
     });
-
-    // Aguarda 1.5s entre tentativas
     await new Promise(r => setTimeout(r, 1500));
   }
 
   if (!receipt.status) {
     throw new Error("Transação falhou");
   }
-
-  return receipt;
 }
 
 /* =========================================================
- * EXPORT GLOBAL (HTML / OUTROS JS)
+ * EXPORT GLOBAL
  * =======================================================*/
 window.walletv12 = {
   connectWallet,
