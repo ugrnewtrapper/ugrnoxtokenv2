@@ -2,145 +2,53 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>NOX Premium Analytics</title>
+  <title>Teste Wallet v12</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .box {
-      background: #020617;
-      border-radius: 12px;
-      padding: 24px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 0 30px rgba(0,0,0,.6);
-    }
-
-    h1 {
-      font-size: 20px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-
-    input {
-      background: #020617;
-      color: #fff;
-      border: 1px solid #334155;
-    }
-
-    button {
-      background: #2563eb;
-      color: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:disabled {
-      background: #475569;
-      cursor: not-allowed;
-    }
-
-    .status {
-      margin-top: 14px;
-      font-size: 13px;
-      min-height: 18px;
-    }
-
-    pre {
-      background: #020617;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      overflow-x: auto;
-      font-size: 12px;
-    }
-  </style>
 </head>
 <body>
 
-  <div class="box">
-    <h1>NOX Premium Analytics</h1>
+  <h2>Teste walletv12.js</h2>
 
-    <input
-      id="fixtureId"
-      placeholder="Fixture ID"
-      type="number"
-    />
-
-    <input
-      id="apiKey"
-      placeholder="API-Football API Key"
-      type="text"
-    />
-
-    <button id="payBtn">
-      Pagar e Gerar Análise
-    </button>
-
-    <div class="status" id="status"></div>
-
-    <pre id="result" style="display:none;"></pre>
+  <!-- Inputs mínimos -->
+  <div>
+    <label>fixtureId (teste):</label><br>
+    <input id="fixtureId" type="text" value="123456" />
   </div>
 
-  <!-- =============================
-       SCRIPT
-       ============================= -->
+  <br>
+
+  <div>
+    <label>apiKey (teste):</label><br>
+    <input id="apiKey" type="text" value="TEST_API_KEY" />
+  </div>
+
+  <br>
+
+  <button id="payBtn">Pagar e Analisar</button>
+
+  <pre id="output"></pre>
+
+  <!-- Script -->
   <script type="module">
-    import { payAndAnalyze } from "./money/walletv12.js";
+    import { payAndAnalyze } from "./walletv12.js";
 
     const btn = document.getElementById("payBtn");
-    const statusBox = document.getElementById("status");
-    const resultBox = document.getElementById("result");
-
-    const fixtureInput = document.getElementById("fixtureId");
-    const apiKeyInput = document.getElementById("apiKey");
-
-    const setStatus = (msg) => statusBox.innerHTML = msg;
+    const out = document.getElementById("output");
 
     btn.onclick = async () => {
-      resultBox.style.display = "none";
-      btn.disabled = true;
+      out.textContent = "Iniciando...\n";
 
       try {
-        const fixtureId = fixtureInput.value.trim();
-        const apiKey = apiKeyInput.value.trim();
+        const fixtureId = document.getElementById("fixtureId").value;
+        const apiKey = document.getElementById("apiKey").value;
 
-        if (!fixtureId || !apiKey) {
-          throw new Error("Preencha o Fixture ID e a API Key");
-        }
+        const result = await payAndAnalyze(fixtureId, apiKey);
 
-        setStatus("🔐 Conectando carteira e processando pagamento...");
-
-        const data = await payAndAnalyze(fixtureId, apiKey);
-
-        setStatus("✅ Análise liberada com sucesso");
-        resultBox.style.display = "block";
-        resultBox.textContent = JSON.stringify(data.analysis, null, 2);
-
-      } catch (e) {
-        console.error(e);
-        setStatus(`❌ ${e.message || "Erro desconhecido"}`);
-      } finally {
-        btn.disabled = false;
+        out.textContent += "SUCESSO:\n";
+        out.textContent += JSON.stringify(result, null, 2);
+      } catch (err) {
+        out.textContent += "ERRO:\n";
+        out.textContent += err.message;
       }
     };
   </script>
