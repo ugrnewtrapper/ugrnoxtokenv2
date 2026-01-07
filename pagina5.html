@@ -38,16 +38,19 @@
     }
 
     .back-btn {
-  position: fixed;
+  position: fixed !important;
   top: 24px;
   left: 24px;
+  transform: none !important;
+
   background: none;
   border: none;
   color: var(--secondary);
   font-size: 14px;
   cursor: pointer;
   letter-spacing: 1px;
-  z-index: 1000;
+
+  z-index: 9999;
 }
 
     .logo {
@@ -172,7 +175,8 @@
       color: var(--text-soft);
     }
   </style></head>
-<body><button class="back-btn" onclick="history.back()">VOLTAR</button>
+<body>
+  <button class="back-btn" onclick="history.back()">VOLTAR</button>
 
 <div class="container">
   <img src="images/logo2.png" class="logo" alt="NOX" />  <h1>NOX PREMIUM</h1>
