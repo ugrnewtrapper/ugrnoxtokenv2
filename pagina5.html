@@ -191,6 +191,7 @@
     <input id="date" type="date" />
   </div>  <div class="field">
     <button class="primary" onclick="loadCompetitions()">CARREGAR COMPETIÇÕES</button>
+    <div id="selectedMatch" class="status" style="display:none;"></div>
   </div>  <div id="competitions" class="panel"></div>  <div class="field">
     <button class="primary" onclick="analyze()">ANALISAR</button>
   </div>  <div id="status" class="status"></div>  <div class="results">
@@ -274,6 +275,8 @@ if (!res.ok) {
   `;
   selected.style.display = "block";
 
+  // 🔥 MINIMIZA DE VERDADE
+  panel.innerHTML = "";
   panel.style.display = "none";
 };
           c.appendChild(div);
