@@ -264,9 +264,18 @@ if (!res.ok) {
           div.className = "match";
           div.textContent = `${m.teams.home.name} x ${m.teams.away.name} — ${new Date(m.date).toLocaleTimeString()}`;
           div.onclick = () => {
-            selectedFixture = m.fixtureId;
-            panel.style.display = "none";
-          };
+  selectedFixture = m.fixtureId;
+
+  const selected = document.getElementById("selectedMatch");
+  selected.innerHTML = `
+    Partida selecionada:<br>
+    <strong>${m.teams.home.name} x ${m.teams.away.name}</strong><br>
+    ${country} • ${league} — ${new Date(m.date).toLocaleTimeString()}
+  `;
+  selected.style.display = "block";
+
+  panel.style.display = "none";
+};
           c.appendChild(div);
         });
 
