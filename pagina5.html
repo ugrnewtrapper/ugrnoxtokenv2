@@ -220,13 +220,34 @@
     const date = document.getElementById("date").value;
     if (!apiKey || !date) return;
 
-    const res = await fetch(`${backend}/competitions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey, date, wallet: "ui" })
-    });
+    let res;
+try {
+  res = await fetch(`${backend}/competitions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apiKey,
+      date,
+      wallet: "ui"
+    })
+  });
+} catch (e) {
+  alert("Falha de conexão com o backend");
+  return;
+}
 
-    const json = await res.json();
+let json;
+try {
+  json = await res.json();
+} catch {
+  alert("Resposta inválida do servidor");
+  return;
+}
+
+if (!res.ok) {
+  alert(json.error || "Erro ao carregar competições");
+  return;
+}
     const panel = document.getElementById("competitions");
     panel.innerHTML = "";
     panel.style.display = "block";
