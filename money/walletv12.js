@@ -90,6 +90,10 @@ return {
   fixtureId
 };
 
+- if (!res.ok) {
+-   ...
+- }
+
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.error || "Erro no backend");
