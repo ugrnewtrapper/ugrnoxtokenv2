@@ -2,157 +2,124 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>V12 – Teste Técnico (Sem Carteira)</title>
+  <title>Teste Backend V12</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 20px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-    }
-    button {
-      background: #2563eb;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-    .league {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #334155;
-      border-radius: 6px;
-    }
-    .fixture {
-      padding: 6px;
-      cursor: pointer;
-      border-bottom: 1px solid #334155;
-    }
-    .fixture:hover {
-      background: #1e293b;
-    }
-    .selected {
-      background: #22c55e;
-      color: #020617;
-    }
-    pre {
-      background: #020617;
-      padding: 10px;
-      margin-top: 10px;
-      max-height: 300px;
-      overflow: auto;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    input, select, button { margin-top: 5px; padding: 5px; width: 100%; }
+    pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
   </style>
 </head>
 <body>
+  <h2>Teste Backend V12 – API-Football</h2>
 
-<h1>V12 – Teste Técnico (Sem Carteira)</h1>
+  <label>API Key:</label>
+  <input type="text" id="apiKey" placeholder="Digite sua API Key" />
 
-<h3>1️⃣ API-Key (API-Football)</h3>
-<input id="apiKey" placeholder="Cole sua API-Key">
+  <label>Data do jogo (YYYY-MM-DD):</label>
+  <input type="date" id="date" />
 
-<h3>2️⃣ Data do jogo</h3>
-<input id="date" type="date">
+  <button id="loadMatches">Carregar Competições e Partidas</button>
 
-<button onclick="carregar()">CARREGAR PARTIDAS</button>
+  <label>Selecione a partida:</label>
+  <select id="fixtureSelect">
+    <option value="">Nenhuma partida carregada</option>
+  </select>
 
-<h3>3️⃣ Escolha a partida</h3>
-<div id="lista"></div>
+  <button id="analyze">Analisar Partida (TxHash simulado)</button>
 
-<button onclick="analisar()">ANALISAR PARTIDA</button>
+  <h3>Resultado:</h3>
+  <pre id="result"></pre>
 
-<h3>📦 Resultado da Análise</h3>
-<pre id="output"></pre>
+  <script>
+    const backendUrl = "https://backendv12.srrimas2017.workers.dev";
 
-<script>
-const BASE = "https://backendv12.srrimas2017.workers.dev";
-let fixtureSelecionado = null;
+    const apiKeyInput = document.getElementById("apiKey");
+    const dateInput = document.getElementById("date");
+    const loadBtn = document.getElementById("loadMatches");
+    const fixtureSelect = document.getElementById("fixtureSelect");
+    const analyzeBtn = document.getElementById("analyze");
+    const resultPre = document.getElementById("result");
 
-async function post(endpoint, body) {
-  const res = await fetch(BASE + endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  return res.json();
-}
+    let loadedFixtures = [];
 
-async function carregar() {
-  const apiKey = document.getElementById("apiKey").value;
-  const date = document.getElementById("date").value;
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "Carregando...";
+    // Carregar competições e partidas automaticamente
+    loadBtn.addEventListener("click", async () => {
+      const apiKey = apiKeyInput.value.trim();
+      const date = dateInput.value.trim();
 
-  const data = await post("/api/partidas", {
-    apiKey,
-    date,
-    timezone: "America/Sao_Paulo"
-  });
+      if (!apiKey || !date) {
+        alert("Informe API Key e Data do jogo.");
+        return;
+      }
 
-  if (data.error) {
-    lista.innerHTML = data.message;
-    return;
-  }
+      resultPre.textContent = "Carregando partidas...";
 
-  const grouped = {};
-  data.data.forEach(f => {
-    const league = `${f.league.name} (${f.league.country})`;
-    grouped[league] ||= [];
-    grouped[league].push(f);
-  });
+      try {
+        // 1️⃣ Buscar todas as partidas do dia (sem precisar selecionar time)
+        const res = await fetch(`${backendUrl}/api/partidas`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ apiKey, date })
+        });
 
-  lista.innerHTML = "";
+        const data = await res.json();
+        if (!res.ok) {
+          resultPre.textContent = JSON.stringify(data, null, 2);
+          return;
+        }
 
-  Object.entries(grouped).forEach(([league, fixtures]) => {
-    const div = document.createElement("div");
-    div.className = "league";
-    div.innerHTML = `<strong>${league}</strong>`;
+        loadedFixtures = data.data;
+        fixtureSelect.innerHTML = "";
 
-    fixtures.forEach(f => {
-      const item = document.createElement("div");
-      item.className = "fixture";
-      item.textContent =
-        `${f.teams.home.name} x ${f.teams.away.name} — ${f.fixture.date.slice(11,16)}`;
+        if (loadedFixtures.length === 0) {
+          fixtureSelect.innerHTML = `<option value="">Nenhuma partida encontrada</option>`;
+          resultPre.textContent = "Nenhuma partida encontrada para esta data.";
+          return;
+        }
 
-      item.onclick = () => {
-        document.querySelectorAll(".fixture").forEach(e => e.classList.remove("selected"));
-        item.classList.add("selected");
-        fixtureSelecionado = f.fixture.id;
-      };
+        loadedFixtures.forEach(f => {
+          const option = document.createElement("option");
+          option.value = f.fixture.id;
+          option.textContent = `${f.teams.home.name} x ${f.teams.away.name} (${f.league.name})`;
+          fixtureSelect.appendChild(option);
+        });
 
-      div.appendChild(item);
+        resultPre.textContent = `Carregadas ${loadedFixtures.length} partidas.`;
+      } catch (err) {
+        resultPre.textContent = `Erro: ${err.message}`;
+      }
     });
 
-    lista.appendChild(div);
-  });
-}
+    // Analisar partida
+    analyzeBtn.addEventListener("click", async () => {
+      const apiKey = apiKeyInput.value.trim();
+      const fixtureId = fixtureSelect.value;
 
-async function analisar() {
-  if (!fixtureSelecionado) {
-    alert("Selecione uma partida");
-    return;
-  }
+      if (!apiKey || !fixtureId) {
+        alert("Informe API Key e selecione uma partida.");
+        return;
+      }
 
-  const apiKey = document.getElementById("apiKey").value;
+      resultPre.textContent = "Analisando partida...";
 
-  // 🔓 TXHASH FAKE (DEV ONLY)
-  const txHashFake =
-    "DEV_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+      try {
+        const res = await fetch(`${backendUrl}/api/analisar`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey,
+            fixtureId,
+            txHash: "DEV_TX"  // burlar validação de pagamento
+          })
+        });
 
-  const data = await post("/api/analisar", {
-    apiKey,
-    fixtureId: fixtureSelecionado,
-    txHash: txHashFake
-  });
-
-  document.getElementById("output").textContent =
-    JSON.stringify(data, null, 2);
-}
-</script>
-
+        const data = await res.json();
+        resultPre.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultPre.textContent = `Erro: ${err.message}`;
+      }
+    });
+  </script>
 </body>
 </html>
