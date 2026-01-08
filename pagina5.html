@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>V12 – Análises Esportivas</title>
+  <title>V12 – Teste Técnico (Sem Carteira)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -50,25 +50,22 @@
 </head>
 <body>
 
-<h1>V12 – Análises Esportivas</h1>
+<h1>V12 – Teste Técnico (Sem Carteira)</h1>
 
 <h3>1️⃣ API-Key (API-Football)</h3>
-<input id="apiKey" placeholder="Cole sua API-Key aqui">
+<input id="apiKey" placeholder="Cole sua API-Key">
 
 <h3>2️⃣ Data do jogo</h3>
 <input id="date" type="date">
 
-<button onclick="carregar()">CARREGAR COMPETIÇÕES E PARTIDAS</button>
+<button onclick="carregar()">CARREGAR PARTIDAS</button>
 
-<h3>3️⃣ Escolha uma partida</h3>
+<h3>3️⃣ Escolha a partida</h3>
 <div id="lista"></div>
-
-<h3>4️⃣ Pagamento (1 análise = 1 txHash)</h3>
-<input id="txHash" placeholder="txHash após pagamento">
 
 <button onclick="analisar()">ANALISAR PARTIDA</button>
 
-<h3>📦 Resultado</h3>
+<h3>📦 Resultado da Análise</h3>
 <pre id="output"></pre>
 
 <script>
@@ -119,7 +116,7 @@ async function carregar() {
       const item = document.createElement("div");
       item.className = "fixture";
       item.textContent =
-        `${f.fixture.id} — ${f.teams.home.name} x ${f.teams.away.name} (${f.fixture.date.slice(11,16)})`;
+        `${f.teams.home.name} x ${f.teams.away.name} — ${f.fixture.date.slice(11,16)}`;
 
       item.onclick = () => {
         document.querySelectorAll(".fixture").forEach(e => e.classList.remove("selected"));
@@ -141,12 +138,15 @@ async function analisar() {
   }
 
   const apiKey = document.getElementById("apiKey").value;
-  const txHash = document.getElementById("txHash").value;
+
+  // 🔓 TXHASH FAKE (DEV ONLY)
+  const txHashFake =
+    "DEV_" + Date.now() + "_" + Math.random().toString(16).slice(2);
 
   const data = await post("/api/analisar", {
     apiKey,
     fixtureId: fixtureSelecionado,
-    txHash
+    txHash: txHashFake
   });
 
   document.getElementById("output").textContent =
