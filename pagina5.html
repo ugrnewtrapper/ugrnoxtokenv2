@@ -213,6 +213,7 @@
 ============================== -->
 <script type="module">
   import { payAndAnalyze } from "./money/walletv12.js";
+import Statistics from "./statistics/statistics.js";
 
   const backend = "https://backendv12.srrimas2017.workers.dev";
   let selectedFixture = null;
@@ -293,29 +294,38 @@ if (!res.ok) {
   const apiKey = apiKeyInput();
   const status = document.getElementById("status");
 
-  status.textContent = "Aguardando confirmação da carteira...";
-
   try {
-    if (typeof payAndAnalyze !== "function") {
-      throw new Error("Wallet não carregada corretamente");
-    }
+    status.textContent = "Confirmando pagamento...";
 
-    status.textContent = "Pagamento confirmado. Processando estatísticas (até 20s)...";
+    const payment = await payAndAnalyze(selectedFixture, apiKey);
 
-    const result = await payAndAnalyze(selectedFixture, apiKey);
+    status.textContent = "Pagamento confirmado. Processando análise...";
 
-    if (!result?.analysis?.teams) {
-      throw new Error("Resposta inválida da análise");
-    }
+    const analysisResult = await Statistics.getAnalysis({
+      apiKey,
+      fixtureId: payment.fixtureId,
+      wallet: payment.wallet,
+      txHash: payment.txHash
+    });
 
-    render(result.analysis.teams);
-    status.textContent = "Análise concluída.";
+    render(analysisResult.teams);
 
-  } catch (err) {
-    console.error(err);
-    status.textContent = `Erro: ${err.message || "Falha inesperada"}`;
+    status.textContent = analysisResult.cached
+      ? "Análise carregada do cache."
+      : "Análise concluída.";
+
+  } 
+    catch (err) {
+  console.error(err);
+
+  if (err.message && err.message.includes("Processando")) {
+    status.textContent =
+      "Análise em processamento. Aguarde alguns segundos e tente novamente.";
+  } else {
+    status.textContent =
+      `Erro: ${err.message || "Falha inesperada"}`;
   }
-};
+    }
 
   function render(teams) {
 
