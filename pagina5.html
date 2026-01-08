@@ -1,76 +1,129 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Em Manutenção • V12</title>
+  <meta charset="UTF-8" />
+  <title>V12 – Teste Backend</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background: #0f172a;
       color: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
+      padding: 20px;
     }
-
-    .container {
-      max-width: 500px;
-      padding: 24px;
+    input, button, select {
+      padding: 8px;
+      margin: 4px 0;
+      width: 100%;
     }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-    }
-
-    p {
-      font-size: 1rem;
-      margin: 6px 0;
-      opacity: 0.9;
-    }
-
-    .version {
-      margin-top: 24px;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-      opacity: 0.7;
-    }
-
-    .btn-home {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 18px;
-      font-size: 0.95rem;
-      color: #0f172a;
-      background: #e5e7eb;
+    button {
+      background: #2563eb;
       border: none;
-      border-radius: 6px;
-      text-decoration: none;
+      color: white;
       cursor: pointer;
-      transition: opacity 0.2s ease;
     }
-
-    .btn-home:hover {
-      opacity: 0.85;
+    pre {
+      background: #020617;
+      padding: 10px;
+      overflow: auto;
+      max-height: 300px;
+    }
+    .box {
+      border: 1px solid #334155;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Site em manutenção</h1>
-    <p>Estamos preparando novidades e melhorias.</p>
-    <p>Aguarde.</p>
 
-    <a href="/" class="btn-home">Voltar para a tela inicial</a>
+<h1>V12 – Teste do Backend</h1>
 
-    <div class="version">
-      VERSÃO 12 — V12 FUTURE
-    </div>
-  </div>
+<div class="box">
+  <h3>1️⃣ API-Football Key</h3>
+  <input id="apiKey" placeholder="Sua API-Key da API-Football">
+</div>
+
+<div class="box">
+  <h3>2️⃣ Listar competições por país</h3>
+  <input id="country" placeholder="Ex: Brazil">
+  <button onclick="listarCompeticoes()">Carregar competições</button>
+</div>
+
+<div class="box">
+  <h3>3️⃣ Listar partidas por data</h3>
+  <input id="date" type="date">
+  <button onclick="listarPartidas()">Carregar partidas</button>
+</div>
+
+<div class="box">
+  <h3>4️⃣ Analisar partida (1 análise = 1 txHash)</h3>
+  <input id="fixtureId" placeholder="fixtureId da partida">
+  <input id="txHash" placeholder="txHash (simulado ou real)">
+  <button onclick="analisar()">ANALISAR</button>
+</div>
+
+<div class="box">
+  <h3>📦 Resposta do backend</h3>
+  <pre id="output"></pre>
+</div>
+
+<script>
+const BASE = "https://backendv12.srrimas2017.workers.dev";
+
+async function post(endpoint, body) {
+  const res = await fetch(BASE + endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+function show(data) {
+  document.getElementById("output").textContent =
+    JSON.stringify(data, null, 2);
+}
+
+async function listarCompeticoes() {
+  const apiKey = apiKeyValue();
+  const country = document.getElementById("country").value;
+
+  const data = await post("/api/competicoes", { apiKey, country });
+  show(data);
+}
+
+async function listarPartidas() {
+  const apiKey = apiKeyValue();
+  const date = document.getElementById("date").value;
+
+  const data = await post("/api/partidas", {
+    apiKey,
+    date,
+    timezone: "America/Sao_Paulo"
+  });
+
+  show(data);
+}
+
+async function analisar() {
+  const apiKey = apiKeyValue();
+  const fixtureId = Number(document.getElementById("fixtureId").value);
+  const txHash = document.getElementById("txHash").value;
+
+  const data = await post("/api/analisar", {
+    apiKey,
+    fixtureId,
+    txHash
+  });
+
+  show(data);
+}
+
+function apiKeyValue() {
+  return document.getElementById("apiKey").value;
+}
+</script>
+
 </body>
 </html>
