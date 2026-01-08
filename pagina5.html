@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>V12 – Teste Backend (Auto)</title>
+  <meta charset="UTF-8">
+  <title>V12 – Análises Esportivas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,9 +11,9 @@
       padding: 20px;
     }
     input, button {
-      padding: 8px;
-      margin: 6px 0;
       width: 100%;
+      padding: 10px;
+      margin: 6px 0;
     }
     button {
       background: #2563eb;
@@ -21,59 +21,59 @@
       color: white;
       cursor: pointer;
     }
+    .league {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #334155;
+      border-radius: 6px;
+    }
+    .fixture {
+      padding: 6px;
+      cursor: pointer;
+      border-bottom: 1px solid #334155;
+    }
+    .fixture:hover {
+      background: #1e293b;
+    }
+    .selected {
+      background: #22c55e;
+      color: #020617;
+    }
     pre {
       background: #020617;
       padding: 10px;
-      overflow: auto;
+      margin-top: 10px;
       max-height: 300px;
-    }
-    .box {
-      border: 1px solid #334155;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 6px;
-    }
-    .hint {
-      font-size: 12px;
-      opacity: 0.8;
+      overflow: auto;
     }
   </style>
 </head>
 <body>
 
-<h1>V12 – Teste Backend (Auto Load)</h1>
+<h1>V12 – Análises Esportivas</h1>
 
-<div class="box">
-  <h3>1️⃣ API-Football Key</h3>
-  <input id="apiKey" placeholder="Sua API-Key da API-Football">
-</div>
+<h3>1️⃣ API-Key (API-Football)</h3>
+<input id="apiKey" placeholder="Cole sua API-Key aqui">
 
-<div class="box">
-  <h3>2️⃣ País (carrega competições automaticamente)</h3>
-  <input id="country" placeholder="Ex: Brazil">
-  <div class="hint">Digite o país e aguarde…</div>
-</div>
+<h3>2️⃣ Data do jogo</h3>
+<input id="date" type="date">
 
-<div class="box">
-  <h3>3️⃣ Data (carrega partidas automaticamente)</h3>
-  <input id="date" type="date">
-</div>
+<button onclick="carregar()">CARREGAR COMPETIÇÕES E PARTIDAS</button>
 
-<div class="box">
-  <h3>4️⃣ Analisar partida</h3>
-  <input id="fixtureId" placeholder="fixtureId da partida">
-  <input id="txHash" placeholder="txHash (1 uso)">
-  <button onclick="analisar()">ANALISAR</button>
-</div>
+<h3>3️⃣ Escolha uma partida</h3>
+<div id="lista"></div>
 
-<div class="box">
-  <h3>📦 Resposta do backend</h3>
-  <pre id="output"></pre>
-</div>
+<h3>4️⃣ Pagamento (1 análise = 1 txHash)</h3>
+<input id="txHash" placeholder="txHash após pagamento">
+
+<button onclick="analisar()">ANALISAR PARTIDA</button>
+
+<h3>📦 Resultado</h3>
+<pre id="output"></pre>
 
 <script>
 const BASE = "https://backendv12.srrimas2017.workers.dev";
-let debounceTimer;
+let fixtureSelecionado = null;
 
 async function post(endpoint, body) {
   const res = await fetch(BASE + endpoint, {
@@ -84,76 +84,73 @@ async function post(endpoint, body) {
   return res.json();
 }
 
-function show(data) {
-  document.getElementById("output").textContent =
-    JSON.stringify(data, null, 2);
-}
-
-function apiKey() {
-  return document.getElementById("apiKey").value;
-}
-
-/* ===============================
-   AUTOLOAD COMPETIÇÕES
-================================ */
-
-document.getElementById("country").addEventListener("input", () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(async () => {
-    const country = countryValue();
-    if (!apiKey() || country.length < 3) return;
-
-    const data = await post("/api/competicoes", {
-      apiKey: apiKey(),
-      country
-    });
-
-    show(data);
-  }, 600);
-});
-
-function countryValue() {
-  return document.getElementById("country").value;
-}
-
-/* ===============================
-   AUTOLOAD PARTIDAS
-================================ */
-
-document.getElementById("date").addEventListener("change", async () => {
-  if (!apiKey()) return;
-
+async function carregar() {
+  const apiKey = document.getElementById("apiKey").value;
   const date = document.getElementById("date").value;
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "Carregando...";
 
   const data = await post("/api/partidas", {
-    apiKey: apiKey(),
+    apiKey,
     date,
     timezone: "America/Sao_Paulo"
   });
 
-  show(data);
-});
-
-/* ===============================
-   ANÁLISE
-================================ */
-
-async function analisar() {
-  const fixtureId = Number(document.getElementById("fixtureId").value);
-  const txHash = document.getElementById("txHash").value;
-
-  if (!fixtureId || !txHash) {
-    alert("fixtureId e txHash são obrigatórios");
+  if (data.error) {
+    lista.innerHTML = data.message;
     return;
   }
 
+  const grouped = {};
+  data.data.forEach(f => {
+    const league = `${f.league.name} (${f.league.country})`;
+    grouped[league] ||= [];
+    grouped[league].push(f);
+  });
+
+  lista.innerHTML = "";
+
+  Object.entries(grouped).forEach(([league, fixtures]) => {
+    const div = document.createElement("div");
+    div.className = "league";
+    div.innerHTML = `<strong>${league}</strong>`;
+
+    fixtures.forEach(f => {
+      const item = document.createElement("div");
+      item.className = "fixture";
+      item.textContent =
+        `${f.fixture.id} — ${f.teams.home.name} x ${f.teams.away.name} (${f.fixture.date.slice(11,16)})`;
+
+      item.onclick = () => {
+        document.querySelectorAll(".fixture").forEach(e => e.classList.remove("selected"));
+        item.classList.add("selected");
+        fixtureSelecionado = f.fixture.id;
+      };
+
+      div.appendChild(item);
+    });
+
+    lista.appendChild(div);
+  });
+}
+
+async function analisar() {
+  if (!fixtureSelecionado) {
+    alert("Selecione uma partida");
+    return;
+  }
+
+  const apiKey = document.getElementById("apiKey").value;
+  const txHash = document.getElementById("txHash").value;
+
   const data = await post("/api/analisar", {
-    apiKey: apiKey(),
-    fixtureId,
+    apiKey,
+    fixtureId: fixtureSelecionado,
     txHash
   });
 
-  show(data);
+  document.getElementById("output").textContent =
+    JSON.stringify(data, null, 2);
 }
 </script>
 
