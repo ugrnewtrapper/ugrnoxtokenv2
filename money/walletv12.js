@@ -79,21 +79,16 @@ export async function payAndAnalyze(fixtureId, apiKey) {
     await txApprove.wait();
   }
 
-  /* ---------- Pay */
-  const txPay = await payment.payForAnalysis();
-  const receipt = await txPay.wait();
+ /* ---------- Pay */
+const txPay = await payment.payForAnalysis();
+const receipt = await txPay.wait();
 
-  /* ---------- Send to backend */
-  const res = await fetch(`${CFG.backend}/analysis`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      apiKey,
-      fixtureId,
-      wallet,
-      txHash: receipt.hash
-    })
-  });
+/* ---------- Return minimal info */
+return {
+  wallet,
+  txHash: receipt.hash,
+  fixtureId
+};
 
   if (!res.ok) {
     const err = await res.json();
