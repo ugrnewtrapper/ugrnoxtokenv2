@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>V12 – Teste Backend</title>
+  <title>V12 – Teste Backend (Auto)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,9 +10,9 @@
       color: #e5e7eb;
       padding: 20px;
     }
-    input, button, select {
+    input, button {
       padding: 8px;
-      margin: 4px 0;
+      margin: 6px 0;
       width: 100%;
     }
     button {
@@ -33,11 +33,15 @@
       margin-bottom: 16px;
       border-radius: 6px;
     }
+    .hint {
+      font-size: 12px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
 
-<h1>V12 – Teste do Backend</h1>
+<h1>V12 – Teste Backend (Auto Load)</h1>
 
 <div class="box">
   <h3>1️⃣ API-Football Key</h3>
@@ -45,21 +49,20 @@
 </div>
 
 <div class="box">
-  <h3>2️⃣ Listar competições por país</h3>
+  <h3>2️⃣ País (carrega competições automaticamente)</h3>
   <input id="country" placeholder="Ex: Brazil">
-  <button onclick="listarCompeticoes()">Carregar competições</button>
+  <div class="hint">Digite o país e aguarde…</div>
 </div>
 
 <div class="box">
-  <h3>3️⃣ Listar partidas por data</h3>
+  <h3>3️⃣ Data (carrega partidas automaticamente)</h3>
   <input id="date" type="date">
-  <button onclick="listarPartidas()">Carregar partidas</button>
 </div>
 
 <div class="box">
-  <h3>4️⃣ Analisar partida (1 análise = 1 txHash)</h3>
+  <h3>4️⃣ Analisar partida</h3>
   <input id="fixtureId" placeholder="fixtureId da partida">
-  <input id="txHash" placeholder="txHash (simulado ou real)">
+  <input id="txHash" placeholder="txHash (1 uso)">
   <button onclick="analisar()">ANALISAR</button>
 </div>
 
@@ -70,6 +73,7 @@
 
 <script>
 const BASE = "https://backendv12.srrimas2017.workers.dev";
+let debounceTimer;
 
 async function post(endpoint, body) {
   const res = await fetch(BASE + endpoint, {
@@ -85,43 +89,71 @@ function show(data) {
     JSON.stringify(data, null, 2);
 }
 
-async function listarCompeticoes() {
-  const apiKey = apiKeyValue();
-  const country = document.getElementById("country").value;
-
-  const data = await post("/api/competicoes", { apiKey, country });
-  show(data);
+function apiKey() {
+  return document.getElementById("apiKey").value;
 }
 
-async function listarPartidas() {
-  const apiKey = apiKeyValue();
+/* ===============================
+   AUTOLOAD COMPETIÇÕES
+================================ */
+
+document.getElementById("country").addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    const country = countryValue();
+    if (!apiKey() || country.length < 3) return;
+
+    const data = await post("/api/competicoes", {
+      apiKey: apiKey(),
+      country
+    });
+
+    show(data);
+  }, 600);
+});
+
+function countryValue() {
+  return document.getElementById("country").value;
+}
+
+/* ===============================
+   AUTOLOAD PARTIDAS
+================================ */
+
+document.getElementById("date").addEventListener("change", async () => {
+  if (!apiKey()) return;
+
   const date = document.getElementById("date").value;
 
   const data = await post("/api/partidas", {
-    apiKey,
+    apiKey: apiKey(),
     date,
     timezone: "America/Sao_Paulo"
   });
 
   show(data);
-}
+});
+
+/* ===============================
+   ANÁLISE
+================================ */
 
 async function analisar() {
-  const apiKey = apiKeyValue();
   const fixtureId = Number(document.getElementById("fixtureId").value);
   const txHash = document.getElementById("txHash").value;
 
+  if (!fixtureId || !txHash) {
+    alert("fixtureId e txHash são obrigatórios");
+    return;
+  }
+
   const data = await post("/api/analisar", {
-    apiKey,
+    apiKey: apiKey(),
     fixtureId,
     txHash
   });
 
   show(data);
-}
-
-function apiKeyValue() {
-  return document.getElementById("apiKey").value;
 }
 </script>
 
