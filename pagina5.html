@@ -211,10 +211,9 @@
 </div><!-- =============================
      SCRIPT – INTEGRAÇÃO TOTAL
 ============================== -->
-<script type="module" src="./money/walletv12.js"></script>
-
 <script type="module">
   import { payAndAnalyze } from "./money/walletv12.js";
+</script>
 
   const backend = "https://backendv12.srrimas2017.workers.dev";
   let selectedFixture = null;
@@ -294,11 +293,7 @@ if (!res.ok) {
     const apiKey = apiKeyInput();
     const status = document.getElementById("status");
 
-    status.textContent = "Iniciando pagamento...";
-
-    status.textContent = "Confirmando transação...";
-
-    status.textContent = "Gerando análise automática...";
+    status.textContent = "Aguardando confirmação da carteira...";
 
     if (typeof payAndAnalyze !== "function") {
   alert("Wallet não carregada corretamente");
