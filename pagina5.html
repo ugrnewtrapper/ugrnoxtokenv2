@@ -213,8 +213,10 @@
 ============================== -->
   <script type="module" src="./money/walletv12.js"></script>
 
+  <script type="module">
   import { payAndAnalyze } from "./money/walletv12.js";
   window.payAndAnalyze = payAndAnalyze;
+</script>
 
   const backend = "https://backendv12.srrimas2017.workers.dev";
   let selectedFixture = null;
