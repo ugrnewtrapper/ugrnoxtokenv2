@@ -300,12 +300,11 @@ if (!res.ok) {
 }
 
 const result = await payAndAnalyze(selectedFixture, apiKey);
-    render(result.analysis);
+    render(result.analysis.teams);
     status.textContent = "Análise concluída.";
   };
 
-  function render(data) {
-    const teams = Object.values(data);
+  function render(teams) {
 
     document.getElementById("players").innerHTML = teams.map(t =>
       `${t.topGoals?.name || ""} (${t.topGoals?.value || 0})`
