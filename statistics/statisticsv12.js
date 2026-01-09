@@ -84,10 +84,17 @@ loadBtn.addEventListener("click", async () => {
       apiKey: state.apiKey
     });
 
+    if (!Array.isArray(res.data)) return;
+
     res.data.forEach(c => {
+      if (!c?.league?.id || !c?.league?.name) return;
+
       const btn = document.createElement("button");
       btn.textContent = c.league.name;
-      btn.onclick = () => carregarPartidas(c.league.id);
+      btn.onclick = () => {
+        if (state.locked) return;
+        carregarPartidas(c.league.id);
+      };
       competitionsEl.appendChild(btn);
     });
   } catch (err) {
@@ -108,8 +115,16 @@ async function carregarPartidas(leagueId) {
       date: state.date
     });
 
+    if (!Array.isArray(res.data)) return;
+
     res.data
-      .filter(f => f.league.id === leagueId)
+      .filter(
+        f =>
+          f?.league?.id === leagueId &&
+          f?.fixture?.id &&
+          f?.teams?.home?.name &&
+          f?.teams?.away?.name
+      )
       .forEach(f => {
         const btn = document.createElement("button");
         btn.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
@@ -134,18 +149,26 @@ analyzeBtn.addEventListener("click", async () => {
     if (!state.fixtureId) throw new Error("Nenhuma partida selecionada");
 
     state.locked = true;
-    state.paidFixtureId = state.fixtureId;
+    const fixtureSnapshot = state.fixtureId;
+    state.paidFixtureId = fixtureSnapshot;
 
     await wallet.connect();
     const payment = await wallet.pay();
 
-    if (state.paidFixtureId !== state.fixtureId) {
+    if (!payment?.txHash || typeof payment.txHash !== "string") {
+      throw new Error("Pagamento inválido");
+    }
+
+    if (
+      state.paidFixtureId !== fixtureSnapshot ||
+      state.fixtureId !== fixtureSnapshot
+    ) {
       throw new Error("Partida alterada após pagamento");
     }
 
     const res = await post("/api/analisar", {
       apiKey: state.apiKey,
-      fixtureId: state.fixtureId,
+      fixtureId: fixtureSnapshot,
       txHash: payment.txHash
     });
 
