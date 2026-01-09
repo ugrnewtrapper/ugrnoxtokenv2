@@ -10,120 +10,118 @@
     pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
   </style>
 </head>
+
 <body>
-  <h2>Teste Backend V12 – API-Football</h2>
+<h2>Teste Backend V12 – API-Football</h2>
 
-  <label>API Key:</label>
-  <input type="text" id="apiKey" placeholder="Digite sua API Key" />
+<label>API Key:</label>
+<input type="text" id="apiKey" placeholder="Digite sua API Key" />
 
-  <label>Data do jogo (YYYY-MM-DD):</label>
-  <input type="date" id="date" />
+<label>Data do jogo (YYYY-MM-DD):</label>
+<input type="date" id="date" />
 
-  <button id="loadMatches">Carregar Competições e Partidas</button>
+<button id="loadMatches">Carregar Competições e Partidas</button>
 
-  <label>Selecione a partida:</label>
-  <select id="fixtureSelect">
-    <option value="">Nenhuma partida carregada</option>
-  </select>
+<label>Selecione a partida:</label>
+<select id="fixtureSelect">
+  <option value="">Nenhuma partida carregada</option>
+</select>
 
-  <button id="analyze">Analisar Partida (Wallet V12)</button>
+<button id="analyze">Analisar Partida (Wallet Test)</button>
 
-  <h3>Resultado:</h3>
-  <pre id="result"></pre>
+<h3>Resultado:</h3>
+<pre id="result"></pre>
 
-  <!-- SCRIPT DE TESTE WALLET -->
-  <script type="module">
-    import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
+<script type="module">
+  import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
 
-    const backendUrl = "https://backendv12.srrimas2017.workers.dev";
+  const backendUrl = "https://backendv12.srrimas2017.workers.dev";
 
-    const apiKeyInput = document.getElementById("apiKey");
-    const dateInput = document.getElementById("date");
-    const loadBtn = document.getElementById("loadMatches");
-    const fixtureSelect = document.getElementById("fixtureSelect");
-    const analyzeBtn = document.getElementById("analyze");
-    const resultPre = document.getElementById("result");
+  const apiKeyInput = document.getElementById("apiKey");
+  const dateInput = document.getElementById("date");
+  const loadBtn = document.getElementById("loadMatches");
+  const fixtureSelect = document.getElementById("fixtureSelect");
+  const analyzeBtn = document.getElementById("analyze");
+  const resultPre = document.getElementById("result");
 
-    let loadedFixtures = [];
+  let loadedFixtures = [];
 
-    // Carregar partidas (INALTERADO)
-    loadBtn.addEventListener("click", async () => {
-      const apiKey = apiKeyInput.value.trim();
-      const date = dateInput.value.trim();
+  // ================================
+  // Carregar partidas (INALTERADO)
+  // ================================
+  loadBtn.addEventListener("click", async () => {
+    const apiKey = apiKeyInput.value.trim();
+    const date = dateInput.value.trim();
 
-      if (!apiKey || !date) {
-        alert("Informe API Key e Data do jogo.");
-        return;
-      }
+    if (!apiKey || !date) {
+      alert("Informe API Key e Data do jogo.");
+      return;
+    }
 
-      resultPre.textContent = "Carregando partidas...";
+    resultPre.textContent = "Carregando partidas...";
 
-      try {
-        const res = await fetch(`${backendUrl}/api/partidas`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ apiKey, date })
-        });
+    try {
+      const res = await fetch(`${backendUrl}/api/partidas`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey, date })
+      });
 
-        const data = await res.json();
-        if (!res.ok) {
-          resultPre.textContent = JSON.stringify(data, null, 2);
-          return;
-        }
-
-        loadedFixtures = data.data;
-        fixtureSelect.innerHTML = "";
-
-        if (loadedFixtures.length === 0) {
-          fixtureSelect.innerHTML = `<option value="">Nenhuma partida encontrada</option>`;
-          resultPre.textContent = "Nenhuma partida encontrada para esta data.";
-          return;
-        }
-
-        loadedFixtures.forEach(f => {
-          const option = document.createElement("option");
-          option.value = f.fixture.id;
-          option.textContent = `${f.teams.home.name} x ${f.teams.away.name} (${f.league.name})`;
-          fixtureSelect.appendChild(option);
-        });
-
-        resultPre.textContent = `Carregadas ${loadedFixtures.length} partidas.`;
-      } catch (err) {
-        resultPre.textContent = `Erro: ${err.message}`;
-      }
-    });
-
-    // 🔐 TESTE REAL DO walletv12.js
-    analyzeBtn.addEventListener("click", async () => {
-      const apiKey = apiKeyInput.value.trim();
-      const fixtureId = fixtureSelect.value;
-
-      if (!apiKey || !fixtureId) {
-        alert("Informe API Key e selecione uma partida.");
-        return;
-      }
-
-      const txHash = prompt("Cole o TxHash do pagamento (BSC):");
-
-      if (!txHash) {
-        alert("TxHash é obrigatório para testar a wallet.");
-        return;
-      }
-
-      resultPre.textContent = "Validando pagamento on-chain e solicitando análise...";
-
-      try {
-        const data = await validatePaymentAndRequestAnalysis({
-          apiKey,
-          fixtureId,
-          txHash
-        });
-
+      const data = await res.json();
+      if (!res.ok) {
         resultPre.textContent = JSON.stringify(data, null, 2);
-      } catch (err) {
-        resultPre.textContent = `Erro: ${err.message}`;
+        return;
       }
-    });
-  </script>
+
+      loadedFixtures = data.data;
+      fixtureSelect.innerHTML = "";
+
+      if (loadedFixtures.length === 0) {
+        fixtureSelect.innerHTML = `<option value="">Nenhuma partida encontrada</option>`;
+        resultPre.textContent = "Nenhuma partida encontrada para esta data.";
+        return;
+      }
+
+      loadedFixtures.forEach(f => {
+        const option = document.createElement("option");
+        option.value = f.fixture.id;
+        option.textContent = `${f.teams.home.name} x ${f.teams.away.name} (${f.league.name})`;
+        fixtureSelect.appendChild(option);
+      });
+
+      resultPre.textContent = `Carregadas ${loadedFixtures.length} partidas.`;
+    } catch (err) {
+      resultPre.textContent = `Erro: ${err.message}`;
+    }
+  });
+
+  // ================================
+  // Analisar partida (ÚNICA MUDANÇA)
+  // ================================
+  analyzeBtn.addEventListener("click", async () => {
+    const apiKey = apiKeyInput.value.trim();
+    const fixtureId = fixtureSelect.value;
+
+    if (!apiKey || !fixtureId) {
+      alert("Informe API Key e selecione uma partida.");
+      return;
+    }
+
+    resultPre.textContent = "Analisando partida (wallet test)...";
+
+    try {
+      const result = await validatePaymentAndRequestAnalysis({
+        apiKey,
+        fixtureId,
+        txHash: "DEV_TX" // modo teste da carteira
+      });
+
+      resultPre.textContent = JSON.stringify(result, null, 2);
+    } catch (err) {
+      resultPre.textContent = `Erro: ${err.message}`;
+    }
+  });
+</script>
+
 </body>
 </html>
