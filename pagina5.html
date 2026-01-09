@@ -26,12 +26,15 @@
     <option value="">Nenhuma partida carregada</option>
   </select>
 
-  <button id="analyze">Analisar Partida (TxHash simulado)</button>
+  <button id="analyze">Analisar Partida (Wallet V12)</button>
 
   <h3>Resultado:</h3>
   <pre id="result"></pre>
 
-  <script>
+  <!-- SCRIPT DE TESTE WALLET -->
+  <script type="module">
+    import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
+
     const backendUrl = "https://backendv12.srrimas2017.workers.dev";
 
     const apiKeyInput = document.getElementById("apiKey");
@@ -43,7 +46,7 @@
 
     let loadedFixtures = [];
 
-    // Carregar competições e partidas automaticamente
+    // Carregar partidas (INALTERADO)
     loadBtn.addEventListener("click", async () => {
       const apiKey = apiKeyInput.value.trim();
       const date = dateInput.value.trim();
@@ -56,7 +59,6 @@
       resultPre.textContent = "Carregando partidas...";
 
       try {
-        // 1️⃣ Buscar todas as partidas do dia (sem precisar selecionar time)
         const res = await fetch(`${backendUrl}/api/partidas`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +93,7 @@
       }
     });
 
-    // Analisar partida
+    // 🔐 TESTE REAL DO walletv12.js
     analyzeBtn.addEventListener("click", async () => {
       const apiKey = apiKeyInput.value.trim();
       const fixtureId = fixtureSelect.value;
@@ -101,20 +103,22 @@
         return;
       }
 
-      resultPre.textContent = "Analisando partida...";
+      const txHash = prompt("Cole o TxHash do pagamento (BSC):");
+
+      if (!txHash) {
+        alert("TxHash é obrigatório para testar a wallet.");
+        return;
+      }
+
+      resultPre.textContent = "Validando pagamento on-chain e solicitando análise...";
 
       try {
-        const res = await fetch(`${backendUrl}/api/analisar`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            apiKey,
-            fixtureId,
-            txHash: "DEV_TX"  // burlar validação de pagamento
-          })
+        const data = await validatePaymentAndRequestAnalysis({
+          apiKey,
+          fixtureId,
+          txHash
         });
 
-        const data = await res.json();
         resultPre.textContent = JSON.stringify(data, null, 2);
       } catch (err) {
         resultPre.textContent = `Erro: ${err.message}`;
