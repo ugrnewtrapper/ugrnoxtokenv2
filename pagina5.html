@@ -2,107 +2,111 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste V12 – Integração Completa</title>
+  <title>V12 – Teste Completo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    body { font-family: Arial, sans-serif; }
-    select { width: 100%; height: 140px; }
-    pre { background: #111; color: #0f0; padding: 10px; overflow: auto; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    section {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #333;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 4px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      cursor: pointer;
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    #competitions button,
+    #fixtures button {
+      margin-bottom: 5px;
+      text-align: left;
+    }
+
+    pre {
+      background: #111;
+      border: 1px solid #333;
+      padding: 10px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
 
-<h2>Teste V12 – Wallet + Backend</h2>
+  <h1>V12 – Teste de Análise</h1>
 
-<label>API Key:</label><br>
-<input id="apiKey" style="width: 100%;" /><br><br>
+  <!-- API KEY -->
+  <section>
+    <label>API-Football Key</label>
+    <input
+      id="apiKey"
+      type="text"
+      placeholder="Cole sua API Key"
+    />
+  </section>
 
-<label>Data:</label><br>
-<input id="date" type="date" /><br><br>
+  <!-- DATA -->
+  <section>
+    <label>Data das partidas</label>
+    <input
+      id="date"
+      type="date"
+    />
+  </section>
 
-<button id="load">Carregar partidas</button>
+  <!-- COMPETIÇÕES -->
+  <section>
+    <button id="loadCompetitions">
+      Carregar Competições
+    </button>
 
-<br><br>
+    <div id="competitions"></div>
+  </section>
 
-<label>Partidas:</label><br>
-<select id="fixtures"></select>
+  <!-- PARTIDAS -->
+  <section>
+    <div id="fixtures"></div>
+  </section>
 
-<br><br>
+  <!-- ANÁLISE -->
+  <section>
+    <button id="analyze">
+      Pagar e Analisar Partida
+    </button>
+  </section>
 
-<button id="analyze">Analisar</button>
+  <!-- SAÍDA -->
+  <section>
+    <pre id="output"></pre>
+  </section>
 
-<h3>Resultado:</h3>
-<pre id="output"></pre>
-
-<script type="module">
-  import { WalletV12 } from "./money/walletv12.js";
-
-  const API_BASE = "https://backendv12.srrimas2017.workers.dev";
-
-  const apiKeyInput = document.getElementById("apiKey");
-  const dateInput = document.getElementById("date");
-  const fixturesSelect = document.getElementById("fixtures");
-  const output = document.getElementById("output");
-
-  const wallet = new WalletV12();
-
-  document.getElementById("load").onclick = async () => {
-    output.textContent = "Carregando partidas...";
-
-    const res = await fetch(`${API_BASE}/api/partidas`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: apiKeyInput.value,
-        date: dateInput.value
-      })
-    });
-
-    const json = await res.json();
-    fixturesSelect.innerHTML = "";
-
-    if (!json.data?.length) {
-      output.textContent = "Nenhuma partida encontrada.";
-      return;
-    }
-
-    json.data.forEach(f => {
-      const opt = document.createElement("option");
-      opt.value = f.fixture.id;
-      opt.textContent =
-        `${f.league.name} | ${f.teams.home.name} x ${f.teams.away.name}`;
-      fixturesSelect.appendChild(opt);
-    });
-
-    output.textContent = "Partidas carregadas.";
-  };
-
-  document.getElementById("analyze").onclick = async () => {
-    try {
-      output.textContent = "Conectando carteira...";
-      await wallet.connect();
-
-      output.textContent = "Processando pagamento...";
-      const payment = await wallet.pay();
-
-      output.textContent = "Pagamento confirmado. Solicitando análise...";
-
-      const res = await fetch(`${API_BASE}/api/analisar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey: apiKeyInput.value,
-          fixtureId: Number(fixturesSelect.value),
-          txHash: payment.txHash
-        })
-      });
-
-      const json = await res.json();
-      output.textContent = JSON.stringify(json, null, 2);
-    } catch (err) {
-      output.textContent = "ERRO:\n" + err.message;
-    }
-  };
-</script>
+  <!-- SCRIPT -->
+  <script type="module" src="./codigo3.js"></script>
 
 </body>
 </html>
