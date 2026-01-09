@@ -1,73 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Backend V12</title>
+  <meta charset="UTF-8" />
+  <title>Teste V12</title>
 </head>
 <body>
 
-<input id="apiKey" placeholder="API Key"><br><br>
-<input type="date" id="date"><br><br>
+  <h3>Teste Integração V12</h3>
 
-<button id="load">Carregar partidas</button><br><br>
+  <label>API Key:</label><br>
+  <input id="apiKey" /><br><br>
 
-<select id="fixtures"></select><br><br>
+  <label>Data (YYYY-MM-DD):</label><br>
+  <input id="date" /><br><br>
 
-<button id="analyze">Analisar</button>
+  <button id="load">Carregar competições/partidas</button>
 
-<pre id="out"></pre>
+  <br><br>
 
-<script type="module">
-  import { WalletV12 } from "./money/walletv12.js";
-  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
+  <select id="fixtures"></select>
 
-  // 🔴 OBRIGATÓRIO: endereço real do seu Worker
-  const BACKEND_BASE = "https://backendv12.srrimas2017.workers.dev";
+  <br><br>
 
-  const out = document.getElementById("out");
-  const log = x => out.textContent = JSON.stringify(x, null, 2);
+  <button id="analyze">Analisar</button>
 
-  const wallet = new WalletV12();
+  <pre id="output"></pre>
 
-  document.getElementById("load").onclick = async () => {
-    const res = await fetch(`${BACKEND_BASE}/api/partidas`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: apiKey.value,
-        date: date.value
-      })
-    });
+  <script type="module">
+    import { WalletV12 } from "./money/walletv12.js";
 
-    const json = await res.json();
-    fixtures.innerHTML = "";
+    const wallet = new WalletV12();
 
-    json.data.forEach(f => {
-      const o = document.createElement("option");
-      o.value = f.fixture.id;
-      o.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-      fixtures.appendChild(o);
-    });
+    const apiBase = "https://SEU_WORKER.cloudflare.workers.dev";
 
-    log("Partidas carregadas");
-  };
+    const apiKeyInput = document.getElementById("apiKey");
+    const dateInput = document.getElementById("date");
+    const fixturesSelect = document.getElementById("fixtures");
+    const output = document.getElementById("output");
 
-  document.getElementById("analyze").onclick = async () => {
-    const payment = await wallet.pay();
+    document.getElementById("load").onclick = async () => {
+      const res = await fetch(`${apiBase}/api/partidas`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: apiKeyInput.value,
+          date: dateInput.value
+        })
+      });
 
-    const res = await fetch(`${BACKEND_BASE}/api/analisar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        apiKey: apiKey.value,
-        fixtureId: Number(fixtures.value),
-        txHash: payment.txHash
-      })
-    });
+      const json = await res.json();
+      fixturesSelect.innerHTML = "";
 
-    log(await res.json());
-  };
-</script>
+      json.data.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.fixture.id;
+        opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
+        fixturesSelect.appendChild(opt);
+      });
+    };
+
+    document.getElementById("analyze").onclick = async () => {
+      await wallet.connect();
+      const payment = await wallet.pay();
+
+      const res = await fetch(`${apiBase}/api/analisar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: apiKeyInput.value,
+          fixtureId: Number(fixturesSelect.value),
+          txHash: payment.txHash
+        })
+      });
+
+      output.textContent = JSON.stringify(await res.json(), null, 2);
+    };
+  </script>
 
 </body>
 </html>
