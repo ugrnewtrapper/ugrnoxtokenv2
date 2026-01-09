@@ -2,28 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste V12</title>
+  <title>Teste WalletV12</title>
 </head>
 <body>
 
-  <h3>Teste Integração V12</h3>
+  <h3>Teste isolado – Wallet V12</h3>
 
-  <label>API Key:</label><br>
-  <input id="apiKey" style="width: 400px;" /><br><br>
-
-  <label>Data:</label><br>
-  <input id="date" type="date" /><br><br>
-
-  <button id="load">Carregar competições/partidas</button>
-
-  <br><br>
-
-  <label>Partidas:</label><br>
-  <select id="fixtures" size="10" style="width: 500px;"></select>
-
-  <br><br>
-
-  <button id="analyze">Analisar</button>
+  <button id="connect">Conectar Carteira</button>
+  <button id="pay">Pagar Análise</button>
 
   <pre id="output"></pre>
 
@@ -31,55 +17,24 @@
     import { WalletV12 } from "./money/walletv12.js";
 
     const wallet = new WalletV12();
-
-    const apiBase = "https://backendv12.srrimas2017.workers.dev";
-
-    const apiKeyInput = document.getElementById("apiKey");
-    const dateInput = document.getElementById("date");
-    const fixturesSelect = document.getElementById("fixtures");
     const output = document.getElementById("output");
 
-    document.getElementById("load").onclick = async () => {
-      const res = await fetch(`${apiBase}/api/partidas`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey: apiKeyInput.value,
-          date: dateInput.value
-        })
-      });
-
-      const json = await res.json();
-      fixturesSelect.innerHTML = "";
-
-      if (!json.data) {
-        output.textContent = JSON.stringify(json, null, 2);
-        return;
+    document.getElementById("connect").onclick = async () => {
+      try {
+        const user = await wallet.connect();
+        output.textContent = "Conectado: " + user;
+      } catch (e) {
+        output.textContent = "Erro connect(): " + e.message;
       }
-
-      json.data.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f.fixture.id;
-        opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-        fixturesSelect.appendChild(opt);
-      });
     };
 
-    document.getElementById("analyze").onclick = async () => {
-      await wallet.connect();
-      const payment = await wallet.pay();
-
-      const res = await fetch(`${apiBase}/api/analisar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey: apiKeyInput.value,
-          fixtureId: Number(fixturesSelect.value),
-          txHash: payment.txHash
-        })
-      });
-
-      output.textContent = JSON.stringify(await res.json(), null, 2);
+    document.getElementById("pay").onclick = async () => {
+      try {
+        const result = await wallet.pay();
+        output.textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        output.textContent = "Erro pay(): " + e.message;
+      }
     };
   </script>
 
