@@ -2,18 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>V12 – HTML Teste Real</title>
+  <title>Teste Backend V12</title>
 </head>
-
 <body>
 
-<h3>V12 – Teste</h3>
-
-<input id="apiKey" placeholder="API Key API-Football"><br><br>
-
+<input id="apiKey" placeholder="API Key"><br><br>
 <input type="date" id="date"><br><br>
 
-<button id="loadCompetitions">Carregar competições</button><br><br>
+<button id="load">Carregar partidas</button><br><br>
 
 <select id="fixtures"></select><br><br>
 
@@ -26,15 +22,13 @@
   import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
 
   const out = document.getElementById("out");
-  const log = x => out.textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2);
+  const log = x => out.textContent = JSON.stringify(x, null, 2);
 
   const wallet = new WalletV12();
 
-  document.getElementById("loadCompetitions").onclick = async () => {
+  document.getElementById("load").onclick = async () => {
     const apiKey = apiKey.value;
     const date = date.value;
-
-    if (!apiKey || !date) return log("API Key ou data ausente");
 
     const res = await fetch("/api/partidas", {
       method: "POST",
@@ -43,9 +37,8 @@
     });
 
     const json = await res.json();
-    if (json.error) return log(json);
-
     fixtures.innerHTML = "";
+
     json.data.forEach(f => {
       const o = document.createElement("option");
       o.value = f.fixture.id;
@@ -60,26 +53,20 @@
     const apiKey = apiKey.value;
     const fixtureId = Number(fixtures.value);
 
-    if (!fixtureId) return log("Selecione uma partida");
+    const user = await wallet.connect();
+    const payment = await wallet.pay();
 
-    try {
-      const user = await wallet.connect();
-      log("Carteira: " + user);
+    const res = await fetch("/api/analisar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey,
+        fixtureId,
+        txHash: payment.txHash
+      })
+    });
 
-      const payment = await wallet.pay();
-      log("Pagamento OK: " + payment.txHash);
-
-      const res = await fetch("/api/analisar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apiKey, fixtureId, txHash: payment.txHash })
-      });
-
-      const json = await res.json();
-      log(json);
-    } catch (e) {
-      log(e.message);
-    }
+    log(await res.json());
   };
 </script>
 
