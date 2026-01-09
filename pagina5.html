@@ -2,43 +2,79 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste WalletV12</title>
+  <title>Teste Wallet V12</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 16px;
+      margin-right: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    pre {
+      background: #000;
+      padding: 15px;
+      height: 300px;
+      overflow: auto;
+      border: 1px solid #0f0;
+    }
+  </style>
 </head>
 <body>
 
-  <h3>Teste isolado – Wallet V12</h3>
+  <h2>Teste WalletV12 (Isolado)</h2>
 
   <button id="connect">Conectar Carteira</button>
   <button id="pay">Pagar Análise</button>
 
-  <pre id="output"></pre>
+  <pre id="log"></pre>
 
-  <script type="module">
-    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.min.js";
-    window.ethers = ethers;
-  </script>
+  <!-- ethers CDN (OBRIGATÓRIO) -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 
   <script type="module">
     import { WalletV12 } from "./money/walletv12.js";
 
-    const wallet = new WalletV12();
-    const output = document.getElementById("output");
+    const logEl = document.getElementById("log");
+    const log = (...args) => {
+      logEl.textContent += args.join(" ") + "\n";
+      logEl.scrollTop = logEl.scrollHeight;
+      console.log(...args);
+    };
+
+    let wallet;
+
+    try {
+      log("Inicializando WalletV12...");
+      wallet = new WalletV12();
+      log("WalletV12 carregada com sucesso.");
+    } catch (e) {
+      log("ERRO ao carregar WalletV12:", e.message);
+    }
 
     document.getElementById("connect").onclick = async () => {
       try {
+        log("Conectando carteira...");
         const user = await wallet.connect();
-        output.textContent = "Conectado: " + user;
+        log("Carteira conectada:", user);
       } catch (e) {
-        output.textContent = "Erro connect(): " + e.message;
+        log("ERRO connect():", e.message);
       }
     };
 
     document.getElementById("pay").onclick = async () => {
       try {
+        log("Iniciando pagamento...");
         const result = await wallet.pay();
-        output.textContent = JSON.stringify(result, null, 2);
+        log("Pagamento OK:");
+        log(JSON.stringify(result, null, 2));
       } catch (e) {
-        output.textContent = "Erro pay(): " + e.message;
+        log("ERRO pay():", e.message);
       }
     };
   </script>
