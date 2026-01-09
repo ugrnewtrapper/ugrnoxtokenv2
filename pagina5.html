@@ -2,129 +2,155 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Wallet V12</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste ALIT V12</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #38bdf8;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      background: #38bdf8;
+      color: #020617;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:disabled {
+      background: #64748b;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      background: #020617;
+    }
+
+    .success {
+      color: #22c55e;
+    }
+
+    .error {
+      color: #ef4444;
+    }
+  </style>
 </head>
-
 <body>
-  <h2>Teste Wallet V12 – Futebol</h2>
 
-  <!-- API KEY -->
-  <div>
-    <label>API-Football Key:</label><br />
-    <input id="apiKey" type="text" placeholder="API KEY" />
-  </div>
+  <h1>Teste ALIT V12</h1>
 
-  <br />
+  <label>API Key (API-Football)</label>
+  <input id="apiKey" placeholder="Cole sua API Key" />
 
-  <!-- DATA -->
-  <div>
-    <label>Data:</label><br />
-    <input id="date" type="date" />
-  </div>
+  <label>Data da competição</label>
+  <input type="date" id="date" />
 
-  <br />
+  <button id="loadCompetitions">Carregar Competições</button>
 
-  <!-- BOTÃO CARREGAR -->
-  <button id="btnLoad">Carregar partidas</button>
+  <label>Partida</label>
+  <select id="fixtures" disabled>
+    <option value="">Selecione uma partida</option>
+  </select>
 
-  <hr />
+  <button id="analyze" disabled>Analisar</button>
 
-  <!-- LISTA DE PARTIDAS -->
-  <div id="matches"></div>
-
-  <hr />
-
-  <!-- TX HASH -->
-  <div>
-    <label>TX Hash (pagamento já feito):</label><br />
-    <input id="txHash" type="text" style="width: 100%;" />
-  </div>
-
-  <br />
-
-  <!-- BOTÃO ANALISAR -->
-  <button id="btnAnalyze" disabled>Analisar</button>
-
-  <hr />
-
-  <!-- STATUS -->
-  <pre id="status"></pre>
+  <div id="status"></div>
 
   <script type="module">
-    import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
-
-    const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
+    import { ALITv12 } from "./money/walletv12.js";
 
     const apiKeyInput = document.getElementById("apiKey");
     const dateInput = document.getElementById("date");
-    const matchesDiv = document.getElementById("matches");
-    const txHashInput = document.getElementById("txHash");
-    const btnAnalyze = document.getElementById("btnAnalyze");
-    const statusBox = document.getElementById("status");
+    const fixturesSelect = document.getElementById("fixtures");
+    const statusDiv = document.getElementById("status");
+    const loadBtn = document.getElementById("loadCompetitions");
+    const analyzeBtn = document.getElementById("analyze");
 
-    let selectedFixtureId = null;
+    function setStatus(message, type = "") {
+      statusDiv.className = type;
+      statusDiv.textContent = message;
+    }
 
-    // CARREGAR PARTIDAS
-    document.getElementById("btnLoad").onclick = async () => {
-      statusBox.textContent = "Carregando partidas...";
-      matchesDiv.innerHTML = "";
-      btnAnalyze.disabled = true;
-      selectedFixtureId = null;
+    loadBtn.onclick = async () => {
+      fixturesSelect.innerHTML = `<option>Carregando...</option>`;
+      fixturesSelect.disabled = true;
+      analyzeBtn.disabled = true;
+      setStatus("");
 
       try {
-        const res = await fetch(`${BACKEND_URL}/api/partidas`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            apiKey: apiKeyInput.value,
-            date: dateInput.value
-          })
-        });
+        const apiKey = apiKeyInput.value.trim();
+        const date = dateInput.value;
 
-        const json = await res.json();
-
-        if (!res.ok || json.error) {
-          throw new Error(json.message || "Erro ao carregar partidas");
+        if (!apiKey || !date) {
+          throw new Error("API Key e data são obrigatórias");
         }
 
-        json.data.forEach(f => {
-          const div = document.createElement("div");
-          div.innerHTML = `
-            <label>
-              <input type="radio" name="fixture" value="${f.fixture.id}">
-              ${f.teams.home.name} x ${f.teams.away.name}
-            </label>
-          `;
-          div.querySelector("input").onchange = () => {
-            selectedFixtureId = f.fixture.id;
-            btnAnalyze.disabled = false;
-          };
-          matchesDiv.appendChild(div);
+        const alit = new ALITv12(apiKey);
+        const fixtures = await alit.getFixtures(date);
+
+        fixturesSelect.innerHTML = `<option value="">Selecione uma partida</option>`;
+
+        fixtures.forEach(f => {
+          const option = document.createElement("option");
+          option.value = f.id;
+          option.textContent = `${f.home} x ${f.away}`;
+          fixturesSelect.appendChild(option);
         });
 
-        statusBox.textContent = "Partidas carregadas.";
+        fixturesSelect.disabled = false;
+        setStatus("Competições carregadas com sucesso", "success");
       } catch (err) {
-        statusBox.textContent = "Erro: " + err.message;
+        fixturesSelect.innerHTML = `<option value="">Erro</option>`;
+        setStatus(err.message || "Erro ao carregar competições", "error");
       }
     };
 
-    // ANALISAR (WALLET V12)
-    btnAnalyze.onclick = async () => {
-      statusBox.textContent = "Validando pagamento via Wallet V12...";
+    fixturesSelect.onchange = () => {
+      analyzeBtn.disabled = !fixturesSelect.value;
+    };
+
+    analyzeBtn.onclick = async () => {
+      setStatus("Executando análise...", "");
+      analyzeBtn.disabled = true;
 
       try {
-        await validatePaymentAndRequestAnalysis({
-          apiKey: apiKeyInput.value,
-          fixtureId: selectedFixtureId,
-          txHash: txHashInput.value
-        });
+        const apiKey = apiKeyInput.value.trim();
+        const fixtureId = fixturesSelect.value;
 
-        statusBox.textContent = "✅ ANÁLISE LIBERADA (Wallet V12 OK)";
+        const alit = new ALITv12(apiKey);
+        await alit.analyze(fixtureId);
+
+        setStatus("✅ Análise liberada com sucesso!", "success");
       } catch (err) {
-        statusBox.textContent = "❌ ERRO: " + err.message;
+        setStatus(err.message || "Erro ao executar análise", "error");
+      } finally {
+        analyzeBtn.disabled = false;
       }
     };
   </script>
+
 </body>
 </html>
