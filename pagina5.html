@@ -2,82 +2,107 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste Wallet V12</title>
+  <title>Teste V12 – Integração Completa</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #0f0;
-      padding: 20px;
-    }
-    button {
-      padding: 10px 16px;
-      margin-right: 10px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    pre {
-      background: #000;
-      padding: 15px;
-      height: 300px;
-      overflow: auto;
-      border: 1px solid #0f0;
-    }
+    body { font-family: Arial, sans-serif; }
+    select { width: 100%; height: 140px; }
+    pre { background: #111; color: #0f0; padding: 10px; overflow: auto; }
   </style>
 </head>
 <body>
 
-  <h2>Teste WalletV12 (Isolado)</h2>
+<h2>Teste V12 – Wallet + Backend</h2>
 
-  <button id="connect">Conectar Carteira</button>
-  <button id="pay">Pagar Análise</button>
+<label>API Key:</label><br>
+<input id="apiKey" style="width: 100%;" /><br><br>
 
-  <pre id="log"></pre>
+<label>Data:</label><br>
+<input id="date" type="date" /><br><br>
 
-  <!-- ethers CDN (OBRIGATÓRIO) -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<button id="load">Carregar partidas</button>
 
-  <script type="module">
-    import { WalletV12 } from "./money/walletv12.js";
+<br><br>
 
-    const logEl = document.getElementById("log");
-    const log = (...args) => {
-      logEl.textContent += args.join(" ") + "\n";
-      logEl.scrollTop = logEl.scrollHeight;
-      console.log(...args);
-    };
+<label>Partidas:</label><br>
+<select id="fixtures"></select>
 
-    let wallet;
+<br><br>
 
-    try {
-      log("Inicializando WalletV12...");
-      wallet = new WalletV12();
-      log("WalletV12 carregada com sucesso.");
-    } catch (e) {
-      log("ERRO ao carregar WalletV12:", e.message);
+<button id="analyze">Analisar</button>
+
+<h3>Resultado:</h3>
+<pre id="output"></pre>
+
+<script type="module">
+  import { WalletV12 } from "./money/walletv12.js";
+
+  const API_BASE = "https://backendv12.srrimas2017.workers.dev";
+
+  const apiKeyInput = document.getElementById("apiKey");
+  const dateInput = document.getElementById("date");
+  const fixturesSelect = document.getElementById("fixtures");
+  const output = document.getElementById("output");
+
+  const wallet = new WalletV12();
+
+  document.getElementById("load").onclick = async () => {
+    output.textContent = "Carregando partidas...";
+
+    const res = await fetch(`${API_BASE}/api/partidas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: apiKeyInput.value,
+        date: dateInput.value
+      })
+    });
+
+    const json = await res.json();
+    fixturesSelect.innerHTML = "";
+
+    if (!json.data?.length) {
+      output.textContent = "Nenhuma partida encontrada.";
+      return;
     }
 
-    document.getElementById("connect").onclick = async () => {
-      try {
-        log("Conectando carteira...");
-        const user = await wallet.connect();
-        log("Carteira conectada:", user);
-      } catch (e) {
-        log("ERRO connect():", e.message);
-      }
-    };
+    json.data.forEach(f => {
+      const opt = document.createElement("option");
+      opt.value = f.fixture.id;
+      opt.textContent =
+        `${f.league.name} | ${f.teams.home.name} x ${f.teams.away.name}`;
+      fixturesSelect.appendChild(opt);
+    });
 
-    document.getElementById("pay").onclick = async () => {
-      try {
-        log("Iniciando pagamento...");
-        const result = await wallet.pay();
-        log("Pagamento OK:");
-        log(JSON.stringify(result, null, 2));
-      } catch (e) {
-        log("ERRO pay():", e.message);
-      }
-    };
-  </script>
+    output.textContent = "Partidas carregadas.";
+  };
+
+  document.getElementById("analyze").onclick = async () => {
+    try {
+      output.textContent = "Conectando carteira...";
+      await wallet.connect();
+
+      output.textContent = "Processando pagamento...";
+      const payment = await wallet.pay();
+
+      output.textContent = "Pagamento confirmado. Solicitando análise...";
+
+      const res = await fetch(`${API_BASE}/api/analisar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: apiKeyInput.value,
+          fixtureId: Number(fixturesSelect.value),
+          txHash: payment.txHash
+        })
+      });
+
+      const json = await res.json();
+      output.textContent = JSON.stringify(json, null, 2);
+    } catch (err) {
+      output.textContent = "ERRO:\n" + err.message;
+    }
+  };
+</script>
 
 </body>
 </html>
