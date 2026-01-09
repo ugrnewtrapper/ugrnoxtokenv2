@@ -21,19 +21,22 @@
   import { WalletV12 } from "./money/walletv12.js";
   import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
 
+  // 🔴 OBRIGATÓRIO: endereço real do seu Worker
+  const BACKEND_BASE = "https://SEU-WORKER-AQUI.cloudflare.dev";
+
   const out = document.getElementById("out");
   const log = x => out.textContent = JSON.stringify(x, null, 2);
 
   const wallet = new WalletV12();
 
   document.getElementById("load").onclick = async () => {
-    const apiKey = apiKey.value;
-    const date = date.value;
-
-    const res = await fetch("/api/partidas", {
+    const res = await fetch(`${BACKEND_BASE}/api/partidas`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey, date })
+      body: JSON.stringify({
+        apiKey: apiKey.value,
+        date: date.value
+      })
     });
 
     const json = await res.json();
@@ -50,18 +53,14 @@
   };
 
   document.getElementById("analyze").onclick = async () => {
-    const apiKey = apiKey.value;
-    const fixtureId = Number(fixtures.value);
-
-    const user = await wallet.connect();
     const payment = await wallet.pay();
 
-    const res = await fetch("/api/analisar", {
+    const res = await fetch(`${BACKEND_BASE}/api/analisar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        apiKey,
-        fixtureId,
+        apiKey: apiKey.value,
+        fixtureId: Number(fixtures.value),
         txHash: payment.txHash
       })
     });
