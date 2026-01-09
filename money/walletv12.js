@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.min.js";
 
 const BSC_CHAIN_ID = 56n;
 const CONTRACT_ADDRESS = "0xcf1Fe056d9E20f419873f42B4d87d243B6583bBD";
