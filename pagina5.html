@@ -2,140 +2,199 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>V12 – HTML de Teste</title>
-
-  <!-- ethers (obrigatório) -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <title>V12 – Teste Oficial</title>
 
   <style>
-    body { font-family: Arial, sans-serif; background:#0f1216; color:#e6e6e6; padding:20px; }
-    input, select, button { padding:8px; margin:5px 0; width:100%; }
-    button { cursor:pointer; background:#1f6feb; color:#fff; border:none; }
-    .box { background:#151a21; padding:15px; margin-bottom:15px; border-radius:6px; }
-    .log { font-size:12px; background:#000; padding:10px; margin-top:10px; height:150px; overflow:auto; }
+    body {
+      background:#0f1216;
+      color:#e6e6e6;
+      font-family:Arial, sans-serif;
+      padding:20px;
+    }
+    .box {
+      background:#151a21;
+      padding:15px;
+      margin-bottom:15px;
+      border-radius:6px;
+    }
+    input, select, button {
+      width:100%;
+      padding:8px;
+      margin-top:5px;
+    }
+    button {
+      background:#1f6feb;
+      border:none;
+      color:#fff;
+      cursor:pointer;
+    }
+    button:disabled {
+      background:#555;
+      cursor:not-allowed;
+    }
+    pre {
+      background:#000;
+      padding:10px;
+      max-height:200px;
+      overflow:auto;
+      font-size:12px;
+    }
   </style>
 </head>
 <body>
 
-  <h2>V12 – HTML de Teste (Auditado)</h2>
+<h2>V12 – HTML de Teste (Correspondência Real)</h2>
 
-  <div class="box">
-    <label>API Key (API-Football)</label>
-    <input id="apiKey" placeholder="Cole sua API Key aqui" />
-  </div>
+<div class="box">
+  <label>API Key (API-Football)</label>
+  <input id="apiKey" placeholder="Cole sua API Key" />
+</div>
 
-  <div class="box">
-    <label>Data da Partida</label>
-    <input type="date" id="date" />
-    <button id="loadMatches">Carregar partidas</button>
-  </div>
+<div class="box">
+  <label>País</label>
+  <input id="country" value="Brazil" />
+</div>
 
-  <div class="box">
-    <label>Partida</label>
-    <select id="fixtureSelect">
-      <option value="">Selecione uma partida</option>
-    </select>
-  </div>
+<div class="box">
+  <button id="loadLeagues">Carregar Competições</button>
+  <select id="leagueSelect">
+    <option value="">Selecione a competição</option>
+  </select>
+</div>
 
-  <div class="box">
-    <button id="connectWallet">Conectar Carteira</button>
-    <button id="analyze">Analisar (Pagamento + Análise)</button>
-  </div>
+<div class="box">
+  <label>Data da Partida</label>
+  <input type="date" id="date" />
+  <button id="loadMatches">Carregar Partidas</button>
+</div>
 
-  <div class="box">
-    <strong>Log</strong>
-    <div class="log" id="log"></div>
-  </div>
+<div class="box">
+  <select id="fixtureSelect">
+    <option value="">Selecione a partida</option>
+  </select>
+</div>
 
-  <!-- Wallet V12 -->
-  <script type="module">
-    import { WalletV12 } from "./money/walletv12.js";
+<div class="box">
+  <button id="connectWallet">Conectar Carteira</button>
+  <button id="analyze" disabled>Analisar (Pagamento + Análise)</button>
+</div>
 
-    const API_BASE = "https://backendnoxv22.srrimas2017.workers.dev";
+<div class="box">
+  <strong>Resposta</strong>
+  <pre id="output"></pre>
+</div>
 
-    const wallet = new WalletV12();
+<script type="module">
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
+  import { WalletV12 } from "./money/walletv12.js";
 
-    const log = msg => {
-      const el = document.getElementById("log");
-      el.innerHTML += msg + "<br>";
-      el.scrollTop = el.scrollHeight;
-    };
+  const wallet = new WalletV12();
+  const out = document.getElementById("output");
 
-    document.getElementById("connectWallet").onclick = async () => {
-      try {
-        const user = await wallet.connect();
-        log("Carteira conectada: " + user);
-      } catch (e) {
-        log("Erro carteira: " + e.message);
-      }
-    };
+  const log = obj => {
+    out.textContent = typeof obj === "string"
+      ? obj
+      : JSON.stringify(obj, null, 2);
+  };
 
-    document.getElementById("loadMatches").onclick = async () => {
-      const apiKey = document.getElementById("apiKey").value;
-      const date = document.getElementById("date").value;
+  // ---------------- WALLET ----------------
+  document.getElementById("connectWallet").onclick = async () => {
+    try {
+      const user = await wallet.connect();
+      log("Carteira conectada: " + user);
+      document.getElementById("analyze").disabled = false;
+    } catch (e) {
+      log(e.message);
+    }
+  };
 
-      if (!apiKey || !date) {
-        log("API Key ou data ausente");
-        return;
-      }
+  // ---------------- COMPETIÇÕES ----------------
+  document.getElementById("loadLeagues").onclick = async () => {
+    const apiKey = apiKeyInput.value;
+    const country = countryInput.value;
 
-      try {
-        const res = await fetch(`${API_BASE}/api/partidas`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ apiKey, date })
-        });
+    const res = await fetch("/api/competicoes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apiKey, country })
+    });
 
-        const json = await res.json();
-        const select = document.getElementById("fixtureSelect");
-        select.innerHTML = '<option value="">Selecione uma partida</option>';
+    const json = await res.json();
+    if (json.error) return log(json);
 
-        json.data.forEach(f => {
-          const opt = document.createElement("option");
-          opt.value = f.fixture.id;
-          opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-          select.appendChild(opt);
-        });
+    leagueSelect.innerHTML = `<option value="">Selecione a competição</option>`;
+    json.data.forEach(l => {
+      const opt = document.createElement("option");
+      opt.value = l.league.id;
+      opt.textContent = l.league.name;
+      leagueSelect.appendChild(opt);
+    });
 
-        log("Partidas carregadas");
-      } catch (e) {
-        log("Erro ao carregar partidas");
-      }
-    };
+    log("Competições carregadas");
+  };
 
-    document.getElementById("analyze").onclick = async () => {
-      const apiKey = document.getElementById("apiKey").value;
-      const fixtureId = document.getElementById("fixtureSelect").value;
+  // ---------------- PARTIDAS ----------------
+  document.getElementById("loadMatches").onclick = async () => {
+    const apiKey = apiKeyInput.value;
+    const date = dateInput.value;
 
-      if (!apiKey || !fixtureId) {
-        log("API Key ou partida ausente");
-        return;
-      }
+    const res = await fetch("/api/partidas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apiKey, date })
+    });
 
-      try {
-        log("Iniciando pagamento...");
-        const payment = await wallet.pay();
+    const json = await res.json();
+    if (json.error) return log(json);
 
-        log("Pagamento confirmado. TX: " + payment.txHash);
+    fixtureSelect.innerHTML = `<option value="">Selecione a partida</option>`;
+    json.data.forEach(f => {
+      const opt = document.createElement("option");
+      opt.value = f.fixture.id;
+      opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
+      fixtureSelect.appendChild(opt);
+    });
 
-        const res = await fetch(`${API_BASE}/api/analisar`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            apiKey,
-            fixtureId: Number(fixtureId),
-            txHash: payment.txHash
-          })
-        });
+    log("Partidas carregadas");
+  };
 
-        const json = await res.json();
-        log("Análise concluída:");
-        log(JSON.stringify(json, null, 2));
-      } catch (e) {
-        log("Erro análise: " + e.message);
-      }
-    };
-  </script>
+  // ---------------- ANÁLISE ----------------
+  document.getElementById("analyze").onclick = async () => {
+    const apiKey = apiKeyInput.value;
+    const fixtureId = Number(fixtureSelect.value);
+
+    if (!fixtureId) {
+      return log("Selecione uma partida");
+    }
+
+    try {
+      log("Pagamento em andamento...");
+      const payment = await wallet.pay();
+
+      const res = await fetch("/api/analisar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey,
+          fixtureId,
+          txHash: payment.txHash
+        })
+      });
+
+      const json = await res.json();
+      log(json);
+    } catch (e) {
+      log(e.message);
+    }
+  };
+
+  // aliases DOM
+  const apiKeyInput = document.getElementById("apiKey");
+  const countryInput = document.getElementById("country");
+  const leagueSelect = document.getElementById("leagueSelect");
+  const dateInput = document.getElementById("date");
+  const fixtureSelect = document.getElementById("fixtureSelect");
+</script>
 
 </body>
 </html>
