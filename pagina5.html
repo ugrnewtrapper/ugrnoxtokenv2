@@ -1,142 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>V12 – Teste Oficial</title>
-
-  <style>
-    body {
-      background:#0f1216;
-      color:#e6e6e6;
-      font-family:Arial, sans-serif;
-      padding:20px;
-    }
-    .box {
-      background:#151a21;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:6px;
-    }
-    input, select, button {
-      width:100%;
-      padding:8px;
-      margin-top:5px;
-    }
-    button {
-      background:#1f6feb;
-      border:none;
-      color:#fff;
-      cursor:pointer;
-    }
-    button:disabled {
-      background:#555;
-      cursor:not-allowed;
-    }
-    pre {
-      background:#000;
-      padding:10px;
-      max-height:200px;
-      overflow:auto;
-      font-size:12px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>V12 – HTML Teste Real</title>
 </head>
+
 <body>
 
-<h2>V12 – HTML de Teste (Correspondência Real)</h2>
+<h3>V12 – Teste</h3>
 
-<div class="box">
-  <label>API Key (API-Football)</label>
-  <input id="apiKey" placeholder="Cole sua API Key" />
-</div>
+<input id="apiKey" placeholder="API Key API-Football"><br><br>
 
-<div class="box">
-  <label>País</label>
-  <input id="country" value="Brazil" />
-</div>
+<input type="date" id="date"><br><br>
 
-<div class="box">
-  <button id="loadLeagues">Carregar Competições</button>
-  <select id="leagueSelect">
-    <option value="">Selecione a competição</option>
-  </select>
-</div>
+<button id="loadCompetitions">Carregar competições</button><br><br>
 
-<div class="box">
-  <label>Data da Partida</label>
-  <input type="date" id="date" />
-  <button id="loadMatches">Carregar Partidas</button>
-</div>
+<select id="fixtures"></select><br><br>
 
-<div class="box">
-  <select id="fixtureSelect">
-    <option value="">Selecione a partida</option>
-  </select>
-</div>
+<button id="analyze">Analisar</button>
 
-<div class="box">
-  <button id="connectWallet">Conectar Carteira</button>
-  <button id="analyze" disabled>Analisar (Pagamento + Análise)</button>
-</div>
-
-<div class="box">
-  <strong>Resposta</strong>
-  <pre id="output"></pre>
-</div>
+<pre id="out"></pre>
 
 <script type="module">
-  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
   import { WalletV12 } from "./money/walletv12.js";
+  import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.2/+esm";
+
+  const out = document.getElementById("out");
+  const log = x => out.textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2);
 
   const wallet = new WalletV12();
-  const out = document.getElementById("output");
 
-  const log = obj => {
-    out.textContent = typeof obj === "string"
-      ? obj
-      : JSON.stringify(obj, null, 2);
-  };
+  document.getElementById("loadCompetitions").onclick = async () => {
+    const apiKey = apiKey.value;
+    const date = date.value;
 
-  // ---------------- WALLET ----------------
-  document.getElementById("connectWallet").onclick = async () => {
-    try {
-      const user = await wallet.connect();
-      log("Carteira conectada: " + user);
-      document.getElementById("analyze").disabled = false;
-    } catch (e) {
-      log(e.message);
-    }
-  };
-
-  // ---------------- COMPETIÇÕES ----------------
-  document.getElementById("loadLeagues").onclick = async () => {
-    const apiKey = apiKeyInput.value;
-    const country = countryInput.value;
-
-    const res = await fetch("/api/competicoes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey, country })
-    });
-
-    const json = await res.json();
-    if (json.error) return log(json);
-
-    leagueSelect.innerHTML = `<option value="">Selecione a competição</option>`;
-    json.data.forEach(l => {
-      const opt = document.createElement("option");
-      opt.value = l.league.id;
-      opt.textContent = l.league.name;
-      leagueSelect.appendChild(opt);
-    });
-
-    log("Competições carregadas");
-  };
-
-  // ---------------- PARTIDAS ----------------
-  document.getElementById("loadMatches").onclick = async () => {
-    const apiKey = apiKeyInput.value;
-    const date = dateInput.value;
+    if (!apiKey || !date) return log("API Key ou data ausente");
 
     const res = await fetch("/api/partidas", {
       method: "POST",
@@ -147,38 +45,34 @@
     const json = await res.json();
     if (json.error) return log(json);
 
-    fixtureSelect.innerHTML = `<option value="">Selecione a partida</option>`;
+    fixtures.innerHTML = "";
     json.data.forEach(f => {
-      const opt = document.createElement("option");
-      opt.value = f.fixture.id;
-      opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-      fixtureSelect.appendChild(opt);
+      const o = document.createElement("option");
+      o.value = f.fixture.id;
+      o.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
+      fixtures.appendChild(o);
     });
 
     log("Partidas carregadas");
   };
 
-  // ---------------- ANÁLISE ----------------
   document.getElementById("analyze").onclick = async () => {
-    const apiKey = apiKeyInput.value;
-    const fixtureId = Number(fixtureSelect.value);
+    const apiKey = apiKey.value;
+    const fixtureId = Number(fixtures.value);
 
-    if (!fixtureId) {
-      return log("Selecione uma partida");
-    }
+    if (!fixtureId) return log("Selecione uma partida");
 
     try {
-      log("Pagamento em andamento...");
+      const user = await wallet.connect();
+      log("Carteira: " + user);
+
       const payment = await wallet.pay();
+      log("Pagamento OK: " + payment.txHash);
 
       const res = await fetch("/api/analisar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey,
-          fixtureId,
-          txHash: payment.txHash
-        })
+        body: JSON.stringify({ apiKey, fixtureId, txHash: payment.txHash })
       });
 
       const json = await res.json();
@@ -187,13 +81,6 @@
       log(e.message);
     }
   };
-
-  // aliases DOM
-  const apiKeyInput = document.getElementById("apiKey");
-  const countryInput = document.getElementById("country");
-  const leagueSelect = document.getElementById("leagueSelect");
-  const dateInput = document.getElementById("date");
-  const fixtureSelect = document.getElementById("fixtureSelect");
 </script>
 
 </body>
