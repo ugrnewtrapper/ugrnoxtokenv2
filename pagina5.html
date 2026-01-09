@@ -1,127 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste Backend V12</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
-    label { display: block; margin-top: 10px; }
-    input, select, button { margin-top: 5px; padding: 5px; width: 100%; }
-    pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Teste Wallet V12</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
-<h2>Teste Backend V12 – API-Football</h2>
+  <h2>Teste Wallet V12 – Futebol</h2>
 
-<label>API Key:</label>
-<input type="text" id="apiKey" placeholder="Digite sua API Key" />
+  <!-- API KEY -->
+  <div>
+    <label>API-Football Key:</label><br />
+    <input id="apiKey" type="text" placeholder="API KEY" />
+  </div>
 
-<label>Data do jogo (YYYY-MM-DD):</label>
-<input type="date" id="date" />
+  <br />
 
-<button id="loadMatches">Carregar Competições e Partidas</button>
+  <!-- DATA -->
+  <div>
+    <label>Data:</label><br />
+    <input id="date" type="date" />
+  </div>
 
-<label>Selecione a partida:</label>
-<select id="fixtureSelect">
-  <option value="">Nenhuma partida carregada</option>
-</select>
+  <br />
 
-<button id="analyze">Analisar Partida (Wallet Test)</button>
+  <!-- BOTÃO CARREGAR -->
+  <button id="btnLoad">Carregar partidas</button>
 
-<h3>Resultado:</h3>
-<pre id="result"></pre>
+  <hr />
 
-<script type="module">
-  import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
+  <!-- LISTA DE PARTIDAS -->
+  <div id="matches"></div>
 
-  const backendUrl = "https://backendv12.srrimas2017.workers.dev";
+  <hr />
 
-  const apiKeyInput = document.getElementById("apiKey");
-  const dateInput = document.getElementById("date");
-  const loadBtn = document.getElementById("loadMatches");
-  const fixtureSelect = document.getElementById("fixtureSelect");
-  const analyzeBtn = document.getElementById("analyze");
-  const resultPre = document.getElementById("result");
+  <!-- TX HASH -->
+  <div>
+    <label>TX Hash (pagamento já feito):</label><br />
+    <input id="txHash" type="text" style="width: 100%;" />
+  </div>
 
-  let loadedFixtures = [];
+  <br />
 
-  // ================================
-  // Carregar partidas (INALTERADO)
-  // ================================
-  loadBtn.addEventListener("click", async () => {
-    const apiKey = apiKeyInput.value.trim();
-    const date = dateInput.value.trim();
+  <!-- BOTÃO ANALISAR -->
+  <button id="btnAnalyze" disabled>Analisar</button>
 
-    if (!apiKey || !date) {
-      alert("Informe API Key e Data do jogo.");
-      return;
-    }
+  <hr />
 
-    resultPre.textContent = "Carregando partidas...";
+  <!-- STATUS -->
+  <pre id="status"></pre>
 
-    try {
-      const res = await fetch(`${backendUrl}/api/partidas`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apiKey, date })
-      });
+  <script type="module">
+    import { validatePaymentAndRequestAnalysis } from "./money/walletv12.js";
 
-      const data = await res.json();
-      if (!res.ok) {
-        resultPre.textContent = JSON.stringify(data, null, 2);
-        return;
+    const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
+
+    const apiKeyInput = document.getElementById("apiKey");
+    const dateInput = document.getElementById("date");
+    const matchesDiv = document.getElementById("matches");
+    const txHashInput = document.getElementById("txHash");
+    const btnAnalyze = document.getElementById("btnAnalyze");
+    const statusBox = document.getElementById("status");
+
+    let selectedFixtureId = null;
+
+    // CARREGAR PARTIDAS
+    document.getElementById("btnLoad").onclick = async () => {
+      statusBox.textContent = "Carregando partidas...";
+      matchesDiv.innerHTML = "";
+      btnAnalyze.disabled = true;
+      selectedFixtureId = null;
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/partidas`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey: apiKeyInput.value,
+            date: dateInput.value
+          })
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || json.error) {
+          throw new Error(json.message || "Erro ao carregar partidas");
+        }
+
+        json.data.forEach(f => {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <label>
+              <input type="radio" name="fixture" value="${f.fixture.id}">
+              ${f.teams.home.name} x ${f.teams.away.name}
+            </label>
+          `;
+          div.querySelector("input").onchange = () => {
+            selectedFixtureId = f.fixture.id;
+            btnAnalyze.disabled = false;
+          };
+          matchesDiv.appendChild(div);
+        });
+
+        statusBox.textContent = "Partidas carregadas.";
+      } catch (err) {
+        statusBox.textContent = "Erro: " + err.message;
       }
+    };
 
-      loadedFixtures = data.data;
-      fixtureSelect.innerHTML = "";
+    // ANALISAR (WALLET V12)
+    btnAnalyze.onclick = async () => {
+      statusBox.textContent = "Validando pagamento via Wallet V12...";
 
-      if (loadedFixtures.length === 0) {
-        fixtureSelect.innerHTML = `<option value="">Nenhuma partida encontrada</option>`;
-        resultPre.textContent = "Nenhuma partida encontrada para esta data.";
-        return;
+      try {
+        await validatePaymentAndRequestAnalysis({
+          apiKey: apiKeyInput.value,
+          fixtureId: selectedFixtureId,
+          txHash: txHashInput.value
+        });
+
+        statusBox.textContent = "✅ ANÁLISE LIBERADA (Wallet V12 OK)";
+      } catch (err) {
+        statusBox.textContent = "❌ ERRO: " + err.message;
       }
-
-      loadedFixtures.forEach(f => {
-        const option = document.createElement("option");
-        option.value = f.fixture.id;
-        option.textContent = `${f.teams.home.name} x ${f.teams.away.name} (${f.league.name})`;
-        fixtureSelect.appendChild(option);
-      });
-
-      resultPre.textContent = `Carregadas ${loadedFixtures.length} partidas.`;
-    } catch (err) {
-      resultPre.textContent = `Erro: ${err.message}`;
-    }
-  });
-
-  // ================================
-  // Analisar partida (ÚNICA MUDANÇA)
-  // ================================
-  analyzeBtn.addEventListener("click", async () => {
-    const apiKey = apiKeyInput.value.trim();
-    const fixtureId = fixtureSelect.value;
-
-    if (!apiKey || !fixtureId) {
-      alert("Informe API Key e selecione uma partida.");
-      return;
-    }
-
-    resultPre.textContent = "Analisando partida (wallet test)...";
-
-    try {
-      const result = await validatePaymentAndRequestAnalysis({
-        apiKey,
-        fixtureId,
-        txHash: "DEV_TX" // modo teste da carteira
-      });
-
-      resultPre.textContent = JSON.stringify(result, null, 2);
-    } catch (err) {
-      resultPre.textContent = `Erro: ${err.message}`;
-    }
-  });
-</script>
-
+    };
+  </script>
 </body>
 </html>
