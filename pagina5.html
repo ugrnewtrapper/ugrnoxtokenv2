@@ -2,60 +2,49 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Teste Backend v12</title>
+  <title>ORCS – Sanity Test Backend v12</title>
 </head>
 <body>
 
-<h3>Teste Backend v12 (root)</h3>
+<h3>Sanity Test – Backend v12 (ROOT)</h3>
 
-<p>apiKey</p>
-<input id="apiKey">
-
-<p>date (YYYY-MM-DD)</p>
-<input id="date">
-
-<p>matchId</p>
-<input id="matchId">
-
-<p>userId</p>
-<input id="userId">
-
-<br><br>
-<button onclick="send()">Enviar</button>
+<button onclick="testar()">Testar comunicação</button>
 
 <p id="status"></p>
-
-<pre id="result"></pre>
+<pre id="out"></pre>
 
 <script>
-const ENDPOINT = 'https://backendv12.srrimas2017.workers.dev';
+async function testar() {
+  document.getElementById('status').textContent = 'Enviando POST...';
+  document.getElementById('out').textContent = '';
 
-async function send() {
-  document.getElementById('status').textContent = 'Enviando...';
-  document.getElementById('result').textContent = '';
-
+  // Payload propositalmente simples e local
   const payload = {
-    apiKey: document.getElementById('apiKey').value,
-    date: document.getElementById('date').value,
-    matchId: document.getElementById('matchId').value,
-    userId: document.getElementById('userId').value
+    apiKey: "TEST_KEY",
+    date: "2020-01-01",
+    matchId: "1",
+    userId: "orcs_sanity"
   };
 
   try {
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const res = await fetch(
+      "https://backendv12.srrimas2017.workers.dev",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    );
 
     const text = await res.text();
 
     document.getElementById('status').textContent =
-      'HTTP ' + res.status;
+      "HTTP " + res.status;
 
-    document.getElementById('result').textContent = text;
+    document.getElementById('out').textContent = text;
+
   } catch (e) {
-    document.getElementById('result').textContent = e.message;
+    document.getElementById('out').textContent = e.message;
   }
 }
 </script>
