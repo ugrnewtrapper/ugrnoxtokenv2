@@ -1,53 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>ORCS – Sanity Test Backend v12</title>
+<meta charset="UTF-8" />
+<title>Teste Real – Análise de Partidas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+  padding: 20px;
+}
+.container {
+  max-width: 600px;
+  background: #020617;
+  padding: 20px;
+  border-radius: 8px;
+}
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: none;
+}
+input, select {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+button {
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  margin-top: 16px;
+}
+pre {
+  margin-top: 20px;
+  background: #020617;
+  padding: 15px;
+  border-radius: 6px;
+  max-height: 400px;
+  overflow: auto;
+}
+</style>
 </head>
+
 <body>
+<div class="container">
+  <h2>Análise Estatística de Partida</h2>
 
-<h3>Sanity Test – Backend v12 (ROOT)</h3>
+  <label>API Key (API-Football)</label>
+  <input type="text" id="apiKey" placeholder="Cole sua API Key" />
 
-<button onclick="testar()">Testar comunicação</button>
+  <label>Data da Partida</label>
+  <input type="date" id="date" />
 
-<p id="status"></p>
-<pre id="out"></pre>
+  <label>Partida</label>
+  <select id="matchSelect" disabled>
+    <option>Selecione a data primeiro</option>
+  </select>
+
+  <button id="analyzeBtn" disabled>Analisar (gera cobrança)</button>
+
+  <pre id="output"></pre>
+</div>
 
 <script>
-async function testar() {
-  document.getElementById('status').textContent = 'Enviando POST...';
-  document.getElementById('out').textContent = '';
+const BACKEND_BASE = 'https://backendv12.srrimas2017.workers.dev';
+const ANALYZE_ENDPOINT = `${BACKEND_BASE}/analyze`;
+const API_BASE = 'https://v3.football.api-sports.io';
 
-  // Payload propositalmente simples e local
+// UserID automático e persistente
+let userId = localStorage.getItem('userId');
+if (!userId) {
+  userId = crypto.randomUUID();
+  localStorage.setItem('userId', userId);
+}
+
+const apiKeyInput = document.getElementById('apiKey');
+const dateInput = document.getElementById('date');
+const matchSelect = document.getElementById('matchSelect');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const output = document.getElementById('output');
+
+// Buscar partidas da data
+dateInput.addEventListener('change', async () => {
+  matchSelect.innerHTML = '<option>Carregando partidas...</option>';
+  matchSelect.disabled = true;
+  analyzeBtn.disabled = true;
+
+  const apiKey = apiKeyInput.value.trim();
+  if (!apiKey) {
+    alert('Informe a API Key primeiro');
+    return;
+  }
+
+  const res = await fetch(`${API_BASE}/fixtures?date=${dateInput.value}`, {
+    headers: { 'x-apisports-key': apiKey }
+  });
+
+  const data = await res.json();
+  matchSelect.innerHTML = '';
+
+  data.response.forEach(fix => {
+    const opt = document.createElement('option');
+    opt.value = fix.fixture.id;
+    opt.textContent = `${fix.teams.home.name} x ${fix.teams.away.name}`;
+    matchSelect.appendChild(opt);
+  });
+
+  matchSelect.disabled = false;
+});
+
+// Analisar (pagamento acontece no backend)
+analyzeBtn.addEventListener('click', async () => {
+  output.textContent = '⏳ Processando análise (pagamento automático)...';
+
   const payload = {
-    apiKey: "TEST_KEY",
-    date: "2020-01-01",
-    matchId: "1",
-    userId: "orcs_sanity"
+    apiKey: apiKeyInput.value.trim(),
+    userId,
+    date: dateInput.value,
+    matchId: matchSelect.value
   };
 
-  try {
-    const res = await fetch(
-      "https://backendv12.srrimas2017.workers.dev",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }
-    );
+  const res = await fetch(ANALYZE_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
-    const text = await res.text();
+  const result = await res.json();
+  output.textContent = JSON.stringify(result, null, 2);
+});
 
-    document.getElementById('status').textContent =
-      "HTTP " + res.status;
-
-    document.getElementById('out').textContent = text;
-
-  } catch (e) {
-    document.getElementById('out').textContent = e.message;
-  }
-}
+matchSelect.addEventListener('change', () => {
+  analyzeBtn.disabled = false;
+});
 </script>
-
 </body>
 </html>
