@@ -1,82 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Teste Backend Workers.js</title>
+<meta charset="UTF-8">
+<title>TESTE TEMPORÁRIO — WORKER V24</title>
+
+<style>
+body {
+  background:#0f1216;
+  color:#e6e6e6;
+  font-family:monospace;
+  padding:20px;
+}
+h1 { color:#ffb300; font-size:20px }
+.box {
+  border:1px dashed #444;
+  background:#151a21;
+  padding:12px;
+  margin-bottom:12px;
+}
+.ok { color:#4caf50 }
+.err { color:#f44336 }
+pre {
+  background:#0b0e12;
+  padding:10px;
+  font-size:12px;
+  overflow:auto;
+}
+</style>
 </head>
+
 <body>
 
-  <h2>Teste Backend Cloudflare Worker</h2>
+<h1>🧪 TESTE TEMPORÁRIO — BACKEND CENTRAL (V24)</h1>
+<p>
+Arquivo isolado para validar fluxo, validações e respostas do worker.<br>
+Dependências WalletV24 / StatisticsV24 NÃO são implementadas aqui.
+</p>
 
-  <label>API Key:</label><br />
-  <input id="apiKey" style="width:400px" /><br /><br />
+<div id="out"></div>
 
-  <label>Data (YYYY-MM-DD):</label><br />
-  <input id="date" value="2024-01-01" /><br /><br />
+<script>
+/* ======================================================
+   CONFIGURAÇÃO
+   ====================================================== */
 
-  <label>Competition ID:</label><br />
-  <input id="competitionId" /><br /><br />
+const BACKEND_URL = "https://SEU_WORKER_AQUI"; // 🔴 ajuste
 
-  <label>Fixture ID:</label><br />
-  <input id="fixtureId" /><br /><br />
+const API_KEY_FAKE = "xxxxxxxxxxxxxxxxxxxxFAKEKEY";
 
-  <button onclick="loadCompetitions()">1️⃣ Competitions</button>
-  <button onclick="loadFixtures()">2️⃣ Fixtures</button>
-  <button onclick="testPayment()">3️⃣ Payment</button>
-  <button onclick="testAnalysis()">4️⃣ Analysis</button>
-
-  <pre id="output"></pre>
-
-  <script>
-    const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
-
-    async function send(payload) {
-      const res = await fetch(BACKEND_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const json = await res.json();
-      document.getElementById("output").textContent =
-        JSON.stringify(json, null, 2);
+/* Payloads de teste — respeitam o contrato real */
+const TESTS = [
+  {
+    name: "❌ Método inválido (GET)",
+    method: "GET",
+    body: null
+  },
+  {
+    name: "❌ Payload vazio",
+    method: "POST",
+    body: null
+  },
+  {
+    name: "❌ API Key inválida",
+    method: "POST",
+    body: { step:"competitions", apiKey:"123", date:"2024-01-01" }
+  },
+  {
+    name: "✅ Step competitions",
+    method: "POST",
+    body: {
+      step:"competitions",
+      apiKey:API_KEY_FAKE,
+      date:"2024-01-01"
     }
-
-    function loadCompetitions() {
-      send({
-        step: "competitions",
-        apiKey: apiKey.value,
-        date: date.value
-      });
+  },
+  {
+    name: "✅ Step fixtures",
+    method: "POST",
+    body: {
+      step:"fixtures",
+      apiKey:API_KEY_FAKE,
+      date:"2024-01-01",
+      competitionId:39
     }
-
-    function loadFixtures() {
-      send({
-        step: "fixtures",
-        apiKey: apiKey.value,
-        date: date.value,
-        competitionId: competitionId.value
-      });
+  },
+  {
+    name: "✅ Step payment",
+    method: "POST",
+    body: {
+      step:"payment",
+      apiKey:API_KEY_FAKE,
+      fixtureId:123456,
+      paymentData:{ mock:true }
     }
-
-    function testPayment() {
-      send({
-        step: "payment",
-        apiKey: apiKey.value,
-        fixtureId: fixtureId.value,
-        paymentData: { test: true }
-      });
+  },
+  {
+    name: "❌ Step analysis sem pagamento confirmado",
+    method: "POST",
+    body: {
+      step:"analysis",
+      apiKey:API_KEY_FAKE,
+      fixtureId:123456,
+      paymentData:{ mock:true }
     }
-
-    function testAnalysis() {
-      send({
-        step: "analysis",
-        apiKey: apiKey.value,
-        fixtureId: fixtureId.value,
-        paymentData: { test: true }
-      });
+  },
+  {
+    name: "❌ Step inexistente",
+    method: "POST",
+    body: {
+      step:"banana",
+      apiKey:API_KEY_FAKE
     }
-  </script>
+  }
+];
+
+/* ======================================================
+   EXECUTOR DE TESTES
+   ====================================================== */
+
+async function run(test) {
+  const box = document.createElement("div");
+  box.className = "box";
+  box.innerHTML = `<strong>${test.name}</strong><br>Executando...`;
+  out.appendChild(box);
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: test.method,
+      headers: { "Content-Type":"application/json" },
+      body: test.body ? JSON.stringify(test.body) : null
+    });
+
+    const txt = await res.text();
+    let json;
+    try { json = JSON.parse(txt); } catch { json = txt; }
+
+    box.innerHTML = `
+      <strong>${test.name}</strong><br>
+      Status: <span class="${res.ok?"ok":"err"}">${res.status}</span>
+      <pre>${JSON.stringify(json,null,2)}</pre>
+    `;
+  } catch (e) {
+    box.innerHTML = `
+      <strong>${test.name}</strong><br>
+      <span class="err">ERRO DE REDE</span>
+      <pre>${e.message}</pre>
+    `;
+  }
+}
+
+/* ======================================================
+   EXECUÇÃO AUTOMÁTICA
+   ====================================================== */
+
+(async()=>{
+  for (const t of TESTS) await run(t);
+})();
+</script>
 
 </body>
 </html>
