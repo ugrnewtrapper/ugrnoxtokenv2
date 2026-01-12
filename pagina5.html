@@ -1,173 +1,180 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Teste Real – Análise de Partidas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>NOX Football Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
-  padding: 20px;
-}
-.container {
-  max-width: 600px;
-  background: #020617;
-  padding: 20px;
-  border-radius: 8px;
-}
-label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-}
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  border-radius: 6px;
-  border: none;
-}
-input, select {
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-}
-button {
-  background: #2563eb;
-  color: white;
-  font-weight: bold;
-  margin-top: 16px;
-}
-pre {
-  margin-top: 20px;
-  background: #020617;
-  padding: 15px;
-  border-radius: 6px;
-  max-height: 400px;
-  overflow: auto;
-}
-</style>
+  <!-- Ethers v6 -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+
+  <!-- Wallet Frontend -->
+  <script type="module" src="./wallet-frontend.js"></script>
+
+  <style>
+    body {
+      background: #0f1216;
+      color: #e6e6e6;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+    }
+    .card {
+      background: #151a21;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #1f6feb;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #a0a7b4;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+    button {
+      background: #1f6feb;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    .status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: #a0a7b4;
+    }
+    .result {
+      margin-top: 12px;
+      padding: 10px;
+      background: #0f1216;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-  <h2>Análise Estatística de Partida</h2>
 
-  <label>API Key (API-Football)</label>
-  <input type="text" id="apiKey" placeholder="Cole sua API Key" />
+  <div class="card">
+    <h2>⚽ NOX Football Analytics</h2>
 
-  <label>Data da Partida</label>
-  <input type="date" id="date" />
+    <label>API Key (API-Football)</label>
+    <input id="apiKey" placeholder="Insira sua API Key" />
 
-  <label>Partida</label>
-  <select id="matchSelect" disabled>
-    <option>Selecione a data primeiro</option>
-  </select>
+    <label>Data da Partida</label>
+    <input type="date" id="date" />
 
-  <button id="analyzeBtn" disabled>Analisar (gera cobrança)</button>
+    <label>Partida</label>
+    <select id="matchSelect">
+      <option value="">Selecione uma data primeiro</option>
+    </select>
 
-  <pre id="output"></pre>
-</div>
+    <button id="analyzeBtn">ANALISAR</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Resultado da Análise</h2>
+    <div id="output" class="result">Nenhuma análise executada.</div>
+  </div>
 
 <script type="module">
-import WalletFrontend from './money/walletv24.js'; // novo arquivo frontend Wallet
-import { ethers } from 'https://cdn.ethers.io/lib/ethers-6.6.0.min.js';
+  import WalletFrontend from './wallet-frontend.js';
 
-const wallet = new WalletFrontend();
-let userAddress = null;
+  const WORKER_URL = 'https://backendv12.srrimas2017.workers.dev';
+  const wallet = new WalletFrontend(WORKER_URL);
 
-// UserID automático e persistente
-let userId = localStorage.getItem('userId');
-if (!userId) {
-  userId = crypto.randomUUID();
-  localStorage.setItem('userId', userId);
-}
+  const apiKeyInput = document.getElementById('apiKey');
+  const dateInput = document.getElementById('date');
+  const matchSelect = document.getElementById('matchSelect');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const statusEl = document.getElementById('status');
+  const outputEl = document.getElementById('output');
 
-const apiKeyInput = document.getElementById('apiKey');
-const dateInput = document.getElementById('date');
-const matchSelect = document.getElementById('matchSelect');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const output = document.getElementById('output');
+  let userId = null;
 
-// ------------------------
-// Botão temporário para testar conexão da carteira
-// ------------------------
-const connectBtn = document.createElement('button');
-connectBtn.textContent = 'Conectar Carteira (Teste)';
-connectBtn.style.marginTop = '10px';
-document.querySelector('.container').insertBefore(connectBtn, analyzeBtn);
-
-connectBtn.addEventListener('click', async () => {
-  try {
-    userAddress = await wallet.connectWallet();
-    output.textContent = `✅ Carteira conectada: ${userAddress}`;
-    connectBtn.disabled = true;
-  } catch (err) {
-    output.textContent = `❌ Erro ao conectar carteira: ${err.message}`;
-  }
-});
-
-// ------------------------
-// Restante do código original (busca partidas / análise) permanece igual
-// ------------------------
-
-// Buscar partidas da data
-dateInput.addEventListener('change', async () => {
-  matchSelect.innerHTML = '<option>Carregando partidas...</option>';
-  matchSelect.disabled = true;
-  analyzeBtn.disabled = true;
-
-  const apiKey = apiKeyInput.value.trim();
-  if (!apiKey) {
-    alert('Informe a API Key primeiro');
-    return;
+  async function setStatus(msg) {
+    statusEl.textContent = msg;
   }
 
-  const res = await fetch(`${API_BASE}/fixtures?date=${dateInput.value}`, {
-    headers: { 'x-apisports-key': apiKey }
+  // ---------------------------
+  // Carrega partidas por data
+  // ---------------------------
+  dateInput.addEventListener('change', async () => {
+    matchSelect.innerHTML = '<option>Carregando...</option>';
+
+    try {
+      const res = await fetch('https://v3.football.api-sports.io/fixtures?date=' + dateInput.value, {
+        headers: { 'x-apisports-key': apiKeyInput.value }
+      });
+
+      const data = await res.json();
+      matchSelect.innerHTML = '<option value="">Selecione a partida</option>';
+
+      data.response.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.fixture.id;
+        opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
+        matchSelect.appendChild(opt);
+      });
+    } catch {
+      matchSelect.innerHTML = '<option>Erro ao carregar partidas</option>';
+    }
   });
 
-  const data = await res.json();
-  matchSelect.innerHTML = '';
+  // ---------------------------
+  // Executa análise completa
+  // ---------------------------
+  analyzeBtn.addEventListener('click', async () => {
+    analyzeBtn.disabled = true;
+    outputEl.textContent = '';
+    await setStatus('Conectando carteira...');
 
-  data.response.forEach(fix => {
-    const opt = document.createElement('option');
-    opt.value = fix.fixture.id;
-    opt.textContent = `${fix.teams.home.name} x ${fix.teams.away.name}`;
-    matchSelect.appendChild(opt);
+    try {
+      if (!userId) {
+        userId = await wallet.connectWallet();
+      }
+
+      await setStatus('Executando pagamento...');
+      const analysis = await wallet.runAnalysis({
+        userId,
+        amount: 1, // valor simbólico
+        apiKey: apiKeyInput.value,
+        date: dateInput.value,
+        matchId: matchSelect.value
+      });
+
+      await setStatus('Análise concluída.');
+
+      outputEl.innerHTML = `
+        <strong>Melhor em Gols:</strong> ${analysis.bestPlayers.goals?.name || '-'}<br>
+        <strong>Melhor em Assistências:</strong> ${analysis.bestPlayers.assists?.name || '-'}<br>
+        <strong>Melhor em Chutes:</strong> ${analysis.bestPlayers.shots?.name || '-'}<br><br>
+        <strong>Moda de Cartões:</strong> ${analysis.modes.cards ?? '-'}<br>
+        <strong>Moda de Escanteios:</strong> ${analysis.modes.corners ?? '-'}
+      `;
+    } catch (err) {
+      await setStatus('Erro: ' + err.message);
+    } finally {
+      analyzeBtn.disabled = false;
+    }
   });
-
-  matchSelect.disabled = false;
-});
-
-// Analisar (pagamento acontece no backend)
-analyzeBtn.addEventListener('click', async () => {
-  output.textContent = '⏳ Processando análise (pagamento automático)...';
-
-  const payload = {
-    apiKey: apiKeyInput.value.trim(),
-    userId,
-    date: dateInput.value,
-    matchId: matchSelect.value
-  };
-
-  const res = await fetch(ANALYZE_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  const result = await res.json();
-  output.textContent = JSON.stringify(result, null, 2);
-});
-
-matchSelect.addEventListener('change', () => {
-  analyzeBtn.disabled = false;
-});
 </script>
-    
+
 </body>
 </html>
