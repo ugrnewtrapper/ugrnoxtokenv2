@@ -1,154 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Teste Backend v12 – Analyze</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f1216;
-      color: #e6e6e6;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #1f6feb;
-    }
-
-    .card {
-      background: #151a21;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 520px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 12px;
-      font-size: 14px;
-      color: #a0a7b4;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: #0f1216;
-      color: #fff;
-    }
-
-    button {
-      margin-top: 16px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #1f6feb;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    pre {
-      background: #0f1216;
-      padding: 15px;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-size: 13px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #a0a7b4;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Teste Backend v12</title>
 </head>
 <body>
 
-  <h1>🧪 Teste Backend v12 – /analyze</h1>
+<h3>Teste Backend v12 (root)</h3>
 
-  <div class="card">
-    <label>API Key (API-Football)</label>
-    <input id="apiKey" placeholder="Sua API Key" />
+<p>apiKey</p>
+<input id="apiKey">
 
-    <label>Data (YYYY-MM-DD)</label>
-    <input id="date" placeholder="2024-01-10" />
+<p>date (YYYY-MM-DD)</p>
+<input id="date">
 
-    <label>ID da Partida (matchId)</label>
-    <input id="matchId" placeholder="123456" />
+<p>matchId</p>
+<input id="matchId">
 
-    <label>User ID (obrigatório)</label>
-    <input id="userId" placeholder="user_test_001" />
+<p>userId</p>
+<input id="userId">
 
-    <button id="btn">Executar Análise</button>
+<br><br>
+<button onclick="send()">Enviar</button>
 
-    <div class="status" id="status"></div>
-  </div>
+<p id="status"></p>
 
-  <div class="card">
-    <h3>📦 Resposta</h3>
-    <pre id="output">Aguardando...</pre>
-  </div>
+<pre id="result"></pre>
 
-  <script>
-    const ENDPOINT = 'https://backendv12.srrimas2017.workers.dev/analyze';
+<script>
+const ENDPOINT = 'https://backendv12.srrimas2017.workers.dev';
 
-    const btn = document.getElementById('btn');
-    const output = document.getElementById('output');
-    const status = document.getElementById('status');
+async function send() {
+  document.getElementById('status').textContent = 'Enviando...';
+  document.getElementById('result').textContent = '';
 
-    btn.onclick = async () => {
-      btn.disabled = true;
-      output.textContent = 'Enviando requisição...';
-      status.textContent = '';
+  const payload = {
+    apiKey: document.getElementById('apiKey').value,
+    date: document.getElementById('date').value,
+    matchId: document.getElementById('matchId').value,
+    userId: document.getElementById('userId').value
+  };
 
-      const payload = {
-        apiKey: document.getElementById('apiKey').value.trim(),
-        date: document.getElementById('date').value.trim(),
-        matchId: document.getElementById('matchId').value.trim(),
-        userId: document.getElementById('userId').value.trim()
-      };
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
-      const start = performance.now();
+    const text = await res.text();
 
-      try {
-        const res = await fetch(ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+    document.getElementById('status').textContent =
+      'HTTP ' + res.status;
 
-        const time = (performance.now() - start).toFixed(0);
-        const text = await res.text();
-
-        let json;
-        try {
-          json = JSON.parse(text);
-        } catch {
-          json = text;
-        }
-
-        status.textContent = `HTTP ${res.status} • ${time} ms`;
-        output.textContent = JSON.stringify(json, null, 2);
-      } catch (err) {
-        output.textContent = 'Erro: ' + err.message;
-      } finally {
-        btn.disabled = false;
-      }
-    };
-  </script>
+    document.getElementById('result').textContent = text;
+  } catch (e) {
+    document.getElementById('result').textContent = e.message;
+  }
+}
+</script>
 
 </body>
 </html>
