@@ -119,9 +119,40 @@
     matchSelect.innerHTML = '<option>Carregando...</option>';
 
     try {
-      const res = await fetch('https://v3.football.api-sports.io/fixtures?date=' + dateInput.value, {
-        headers: { 'x-apisports-key': apiKeyInput.value }
-      });
+      dateInput.addEventListener('change', async () => {
+  matchSelect.innerHTML = '<option>Carregando...</option>';
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: apiKeyInput.value,
+        date: dateInput.value
+      })
+    });
+
+    const data = await res.json();
+
+    if (!Array.isArray(data.fixtures)) {
+      throw new Error('Resposta inválida do backend');
+    }
+
+    matchSelect.innerHTML = '<option value="">Selecione a partida</option>';
+
+    data.fixtures.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.fixture.id;
+      opt.textContent =
+        `${f.teams.home.name} x ${f.teams.away.name}`;
+      matchSelect.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error(err);
+    matchSelect.innerHTML = '<option>Erro ao carregar partidas</option>';
+  }
+});
 
       const data = await res.json();
       matchSelect.innerHTML = '<option value="">Selecione a partida</option>';
