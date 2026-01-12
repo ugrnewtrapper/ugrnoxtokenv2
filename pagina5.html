@@ -1,162 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>TESTE TEMPORÁRIO — WORKER V24</title>
+  <meta charset="UTF-8" />
+  <title>Teste Backend v12 – Analyze</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  background:#0f1216;
-  color:#e6e6e6;
-  font-family:monospace;
-  padding:20px;
-}
-h1 { color:#ffb300; font-size:20px }
-.box {
-  border:1px dashed #444;
-  background:#151a21;
-  padding:12px;
-  margin-bottom:12px;
-}
-.ok { color:#4caf50 }
-.err { color:#f44336 }
-pre {
-  background:#0b0e12;
-  padding:10px;
-  font-size:12px;
-  overflow:auto;
-}
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1216;
+      color: #e6e6e6;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #1f6feb;
+    }
+
+    .card {
+      background: #151a21;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 520px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #a0a7b4;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #0f1216;
+      color: #fff;
+    }
+
+    button {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #1f6feb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    pre {
+      background: #0f1216;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #a0a7b4;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>🧪 TESTE TEMPORÁRIO — BACKEND CENTRAL (V24)</h1>
-<p>
-Arquivo isolado para validar fluxo, validações e respostas do worker.<br>
-Dependências WalletV24 / StatisticsV24 NÃO são implementadas aqui.
-</p>
+  <h1>🧪 Teste Backend v12 – /analyze</h1>
 
-<div id="out"></div>
+  <div class="card">
+    <label>API Key (API-Football)</label>
+    <input id="apiKey" placeholder="Sua API Key" />
 
-<script>
-/* ======================================================
-   CONFIGURAÇÃO
-   ====================================================== */
+    <label>Data (YYYY-MM-DD)</label>
+    <input id="date" placeholder="2024-01-10" />
 
-const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev"; // ✔ correção aplicada
+    <label>ID da Partida (matchId)</label>
+    <input id="matchId" placeholder="123456" />
 
-const API_KEY_FAKE = "xxxxxxxxxxxxxxxxxxxxFAKEKEY";
+    <label>User ID (obrigatório)</label>
+    <input id="userId" placeholder="user_test_001" />
 
-/* Payloads de teste — respeitam o contrato real */
-const TESTS = [
-  {
-    name: "❌ Método inválido (GET)",
-    method: "GET",
-    body: null
-  },
-  {
-    name: "❌ Payload vazio",
-    method: "POST",
-    body: null
-  },
-  {
-    name: "❌ API Key inválida",
-    method: "POST",
-    body: { step:"competitions", apiKey:"123", date:"2024-01-01" }
-  },
-  {
-    name: "✅ Step competitions",
-    method: "POST",
-    body: {
-      step:"competitions",
-      apiKey:API_KEY_FAKE,
-      date:"2024-01-01"
-    }
-  },
-  {
-    name: "✅ Step fixtures",
-    method: "POST",
-    body: {
-      step:"fixtures",
-      apiKey:API_KEY_FAKE,
-      date:"2024-01-01",
-      competitionId:39
-    }
-  },
-  {
-    name: "✅ Step payment",
-    method: "POST",
-    body: {
-      step:"payment",
-      apiKey:API_KEY_FAKE,
-      fixtureId:123456,
-      paymentData:{ mock:true }
-    }
-  },
-  {
-    name: "❌ Step analysis sem pagamento confirmado",
-    method: "POST",
-    body: {
-      step:"analysis",
-      apiKey:API_KEY_FAKE,
-      fixtureId:123456,
-      paymentData:{ mock:true }
-    }
-  },
-  {
-    name: "❌ Step inexistente",
-    method: "POST",
-    body: {
-      step:"banana",
-      apiKey:API_KEY_FAKE
-    }
-  }
-];
+    <button id="btn">Executar Análise</button>
 
-/* ======================================================
-   EXECUTOR DE TESTES
-   ====================================================== */
+    <div class="status" id="status"></div>
+  </div>
 
-async function run(test) {
-  const box = document.createElement("div");
-  box.className = "box";
-  box.innerHTML = `<strong>${test.name}</strong><br>Executando...`;
-  out.appendChild(box);
+  <div class="card">
+    <h3>📦 Resposta</h3>
+    <pre id="output">Aguardando...</pre>
+  </div>
 
-  try {
-    const res = await fetch(BACKEND_URL, {
-      method: test.method,
-      headers: { "Content-Type":"application/json" },
-      body: test.body ? JSON.stringify(test.body) : null
-    });
+  <script>
+    const ENDPOINT = 'https://backendv12.srrimas2017.workers.dev/analyze';
 
-    const txt = await res.text();
-    let json;
-    try { json = JSON.parse(txt); } catch { json = txt; }
+    const btn = document.getElementById('btn');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
 
-    box.innerHTML = `
-      <strong>${test.name}</strong><br>
-      Status: <span class="${res.ok?"ok":"err"}">${res.status}</span>
-      <pre>${JSON.stringify(json,null,2)}</pre>
-    `;
-  } catch (e) {
-    box.innerHTML = `
-      <strong>${test.name}</strong><br>
-      <span class="err">ERRO DE REDE</span>
-      <pre>${e.message}</pre>
-    `;
-  }
-}
+    btn.onclick = async () => {
+      btn.disabled = true;
+      output.textContent = 'Enviando requisição...';
+      status.textContent = '';
 
-/* ======================================================
-   EXECUÇÃO AUTOMÁTICA
-   ====================================================== */
+      const payload = {
+        apiKey: document.getElementById('apiKey').value.trim(),
+        date: document.getElementById('date').value.trim(),
+        matchId: document.getElementById('matchId').value.trim(),
+        userId: document.getElementById('userId').value.trim()
+      };
 
-(async()=>{
-  for (const t of TESTS) await run(t);
-})();
-</script>
+      const start = performance.now();
+
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const time = (performance.now() - start).toFixed(0);
+        const text = await res.text();
+
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          json = text;
+        }
+
+        status.textContent = `HTTP ${res.status} • ${time} ms`;
+        output.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        output.textContent = 'Erro: ' + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    };
+  </script>
 
 </body>
 </html>
