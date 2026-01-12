@@ -2,160 +2,81 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Teste de Integração V12</title>
-  <style>
-    body {
-      font-family: monospace;
-      background: #111;
-      color: #eee;
-      padding: 20px;
-    }
-    button {
-      margin-right: 10px;
-      padding: 8px 12px;
-      font-family: monospace;
-    }
-    pre {
-      background: #000;
-      padding: 10px;
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #444;
-    }
-  </style>
+  <title>Teste Backend Workers.js</title>
 </head>
 <body>
 
-<h2>Teste de Integração — V12</h2>
+  <h2>Teste Backend Cloudflare Worker</h2>
 
-<button id="init">Inicializar</button>
-<button id="run">Executar Fluxo Completo</button>
-<button id="reset">Resetar</button>
+  <label>API Key:</label><br />
+  <input id="apiKey" style="width:400px" /><br /><br />
 
-<pre id="log"></pre>
+  <label>Data (YYYY-MM-DD):</label><br />
+  <input id="date" value="2024-01-01" /><br /><br />
 
-<script type="module">
-/* ============================================================
- * UTILITÁRIOS DE LOG (OBSERVAÇÃO, NÃO CORREÇÃO)
- * ============================================================
- */
+  <label>Competition ID:</label><br />
+  <input id="competitionId" /><br /><br />
 
-const logEl = document.getElementById("log");
+  <label>Fixture ID:</label><br />
+  <input id="fixtureId" /><br /><br />
 
-function log(...args) {
-  console.log(...args);
-  logEl.textContent += args.map(a =>
-    typeof a === "string" ? a : JSON.stringify(a, null, 2)
-  ).join(" ") + "\n";
-}
+  <button onclick="loadCompetitions()">1️⃣ Competitions</button>
+  <button onclick="loadFixtures()">2️⃣ Fixtures</button>
+  <button onclick="testPayment()">3️⃣ Payment</button>
+  <button onclick="testAnalysis()">4️⃣ Analysis</button>
 
-window.addEventListener("error", e => {
-  log("[ERRO NÃO TRATADO]", e.message);
-});
+  <pre id="output"></pre>
 
-window.addEventListener("unhandledrejection", e => {
-  log("[PROMISE NÃO TRATADA]", e.reason);
-});
+  <script>
+    const BACKEND_URL = "https://backendv12.srrimas2017.workers.dev";
 
-/* ============================================================
- * CARREGAMENTO DOS CÓDIGOS (ORDEM EXPLÍCITA)
- * ============================================================
- */
+    async function send(payload) {
+      const res = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-log("==> Início do carregamento dos módulos");
+      const json = await res.json();
+      document.getElementById("output").textContent =
+        JSON.stringify(json, null, 2);
+    }
 
-import { WalletV12 } from "./money/walletv12.js";
-log("✔ walletv12.js carregado");
+    function loadCompetitions() {
+      send({
+        step: "competitions",
+        apiKey: apiKey.value,
+        date: date.value
+      });
+    }
 
-import { FlowOrchestratorV12 } from "./statistics/statisticsv12.js";
-log("✔ flowOrchestratorV12.js carregado");
+    function loadFixtures() {
+      send({
+        step: "fixtures",
+        apiKey: apiKey.value,
+        date: date.value,
+        competitionId: competitionId.value
+      });
+    }
 
-/*
- * statisticsv12.js NÃO é importado aqui,
- * pois é um Cloudflare Worker.
- * Ele será testado via chamadas HTTP reais.
- */
+    function testPayment() {
+      send({
+        step: "payment",
+        apiKey: apiKey.value,
+        fixtureId: fixtureId.value,
+        paymentData: { test: true }
+      });
+    }
 
-log("==> Fim do carregamento dos módulos");
-
-/* ============================================================
- * EXPOSIÇÃO GLOBAL (SEM CRIAR NADA NOVO)
- * ============================================================
- */
-
-window.WalletV12 = WalletV12;
-window.FlowOrchestratorV12 = FlowOrchestratorV12;
-
-log("Objetos expostos em window:", {
-  WalletV12: typeof WalletV12,
-  FlowOrchestratorV12: typeof FlowOrchestratorV12
-});
-
-/* ============================================================
- * INSTÂNCIA DE TESTE
- * ============================================================
- */
-
-let orchestrator = null;
-
-document.getElementById("init").onclick = () => {
-  log("==> Inicialização do Orquestrador");
-
-  orchestrator = new FlowOrchestratorV12({
-    apiBaseUrl: "http://localhost:8787" // ajuste conforme o Worker
-  });
-
-  log("Orquestrador criado:", orchestrator);
-};
-
-document.getElementById("run").onclick = async () => {
-  if (!orchestrator) {
-    log("⚠ Orquestrador não inicializado");
-    return;
-  }
-
-  log("==> INÍCIO DO FLUXO COMPLETO");
-
-  // ⚠ Valores reais devem ser inseridos manualmente
-  const API_KEY = "SUA_API_KEY_AQUI";
-  const DATE = "2024-01-01";
-
-  log("[1] Setando API Key");
-  orchestrator.setApiKey(API_KEY);
-
-  log("[2] Setando data");
-  orchestrator.setDate(DATE);
-
-  log("[3] Carregando competições");
-  const competitions = await orchestrator.loadCompetitions();
-  log("Competições retornadas:", competitions.length);
-
-  log("[4] Carregando partidas");
-  const fixtures = await orchestrator.loadFixtures();
-  log("Partidas retornadas:", fixtures.length);
-
-  const fixture = fixtures[0];
-  log("[5] Selecionando partida:", fixture);
-
-  orchestrator.selectFixture(fixture);
-
-  log("[6] Executando pagamento (wallet)");
-  const payment = await orchestrator.payForAnalysis();
-  log("Pagamento retornado:", payment);
-
-  log("[7] Executando análise");
-  const analysis = await orchestrator.runAnalysis();
-  log("Resultado da análise:", analysis);
-
-  log("==> FIM DO FLUXO COMPLETO");
-};
-
-document.getElementById("reset").onclick = () => {
-  log("==> RESET MANUAL");
-  orchestrator = null;
-  logEl.textContent = "";
-};
-</script>
+    function testAnalysis() {
+      send({
+        step: "analysis",
+        apiKey: apiKey.value,
+        fixtureId: fixtureId.value,
+        paymentData: { test: true }
+      });
+    }
+  </script>
 
 </body>
 </html>
