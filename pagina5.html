@@ -72,10 +72,12 @@ pre {
   <pre id="output"></pre>
 </div>
 
-<script>
-const BACKEND_BASE = 'https://backendv12.srrimas2017.workers.dev';
-const ANALYZE_ENDPOINT = `${BACKEND_BASE}/analyze`;
-const API_BASE = 'https://v3.football.api-sports.io';
+<script type="module">
+import WalletFrontend from './money/walletv24.js'; // novo arquivo frontend Wallet
+import { ethers } from 'https://cdn.ethers.io/lib/ethers-6.6.0.min.js';
+
+const wallet = new WalletFrontend();
+let userAddress = null;
 
 // UserID automático e persistente
 let userId = localStorage.getItem('userId');
@@ -89,6 +91,28 @@ const dateInput = document.getElementById('date');
 const matchSelect = document.getElementById('matchSelect');
 const analyzeBtn = document.getElementById('analyzeBtn');
 const output = document.getElementById('output');
+
+// ------------------------
+// Botão temporário para testar conexão da carteira
+// ------------------------
+const connectBtn = document.createElement('button');
+connectBtn.textContent = 'Conectar Carteira (Teste)';
+connectBtn.style.marginTop = '10px';
+document.querySelector('.container').insertBefore(connectBtn, analyzeBtn);
+
+connectBtn.addEventListener('click', async () => {
+  try {
+    userAddress = await wallet.connectWallet();
+    output.textContent = `✅ Carteira conectada: ${userAddress}`;
+    connectBtn.disabled = true;
+  } catch (err) {
+    output.textContent = `❌ Erro ao conectar carteira: ${err.message}`;
+  }
+});
+
+// ------------------------
+// Restante do código original (busca partidas / análise) permanece igual
+// ------------------------
 
 // Buscar partidas da data
 dateInput.addEventListener('change', async () => {
@@ -144,5 +168,6 @@ matchSelect.addEventListener('change', () => {
   analyzeBtn.disabled = false;
 });
 </script>
+    
 </body>
 </html>
