@@ -1,182 +1,203 @@
 import { WalletV12 } from "./money/walletv12.js";
 
-const API_BASE = "https://backendv12.srrimas2017.workers.dev";
-const wallet = new WalletV12();
+export class statisticsv12 {
+  constructor({ apiBaseUrl }) {
+    if (!apiBaseUrl) {
+      throw new Error("apiBaseUrl não definido"); // [C7]
+    }
 
-let state = {
-  apiKey: null,
-  date: null,
-  fixtureId: null,
-  paidFixtureId: null,
-  locked: false
-};
+    this.apiBaseUrl = apiBaseUrl;
+    this.wallet = new WalletV12();
 
-/* ================= DOM ================= */
+    this.apiKey = null;
+    this.selectedDate = null;
+    this.selectedFixture = null;
+    this.payment = null;
+  }
 
-const apiKeyInput = document.getElementById("apiKey");
-const dateInput = document.getElementById("date");
-const loadBtn = document.getElementById("loadCompetitions");
-const competitionsEl = document.getElementById("competitions");
-const fixturesEl = document.getElementById("fixtures");
-const analyzeBtn = document.getElementById("analyze");
-const outputEl = document.getElementById("output");
+  /* ============================================================
+   * ETAPA 1 — API KEY
+   * ============================================================
+   */
 
-/* ================= HTTP ================= */
+  setApiKey(apiKey) {
+    if (!apiKey) {
+      throw new Error("API Key inválida");
+    }
+    this.apiKey = apiKey;
+  }
 
-async function post(endpoint, body) {
-  let res;
-  try {
-    res = await fetch(`${API_BASE}${endpoint}`, {
+  /* ============================================================
+   * ETAPA 2 — DATA
+   * ============================================================
+   */
+
+  setDate(date) {
+    if (!date) {
+      throw new Error("Data inválida");
+    }
+    this.selectedDate = date;
+  }
+
+  /* ============================================================
+   * ETAPA 3 — COMPETIÇÕES
+   * ============================================================
+   */
+
+  async loadCompetitions(country = null) {
+    if (!this.apiKey) {
+      throw new Error("API Key não definida");
+    }
+
+    const res = await fetch(`${this.apiBaseUrl}/api/competicoes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-  } catch {
-    throw new Error("[NETWORK] Falha de conexão");
-  }
-
-  let json;
-  try {
-    json = await res.json();
-  } catch {
-    throw new Error("[INVALID_RESPONSE] Resposta inválida");
-  }
-
-  if (!res.ok || json.error) {
-    throw new Error(`[${json.code || "ERROR"}] ${json.message || "Erro"}`);
-  }
-
-  return json;
-}
-
-/* ================= UI ================= */
-
-function clear(el) {
-  el.innerHTML = "";
-}
-
-function errorOut(err) {
-  outputEl.textContent = err.message;
-}
-
-/* ================= INPUT ================= */
-
-apiKeyInput.addEventListener("change", e => {
-  state.apiKey = e.target.value.trim();
-});
-
-dateInput.addEventListener("change", e => {
-  state.date = e.target.value;
-});
-
-/* ================= FLOW ================= */
-
-// Competicoes
-loadBtn.addEventListener("click", async () => {
-  try {
-    if (!state.apiKey) throw new Error("API Key ausente");
-
-    clear(competitionsEl);
-    clear(fixturesEl);
-    state.fixtureId = null;
-
-    const res = await post("/api/competicoes", {
-      apiKey: state.apiKey
+      body: JSON.stringify({
+        apiKey: this.apiKey,
+        country
+      })
     });
 
-    if (!Array.isArray(res.data)) return;
-
-    res.data.forEach(c => {
-      if (!c?.league?.id || !c?.league?.name) return;
-
-      const btn = document.createElement("button");
-      btn.textContent = c.league.name;
-      btn.onclick = () => {
-        if (state.locked) return;
-        carregarPartidas(c.league.id);
-      };
-      competitionsEl.appendChild(btn);
-    });
-  } catch (err) {
-    errorOut(err);
-  }
-});
-
-// Partidas
-async function carregarPartidas(leagueId) {
-  try {
-    if (!state.date) throw new Error("Data não selecionada");
-
-    clear(fixturesEl);
-    state.fixtureId = null;
-
-    const res = await post("/api/partidas", {
-      apiKey: state.apiKey,
-      date: state.date
-    });
-
-    if (!Array.isArray(res.data)) return;
-
-    res.data
-      .filter(
-        f =>
-          f?.league?.id === leagueId &&
-          f?.fixture?.id &&
-          f?.teams?.home?.name &&
-          f?.teams?.away?.name
-      )
-      .forEach(f => {
-        const btn = document.createElement("button");
-        btn.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-        btn.onclick = () => {
-          if (state.locked) return;
-          state.fixtureId = f.fixture.id;
-        };
-        fixturesEl.appendChild(btn);
-      });
-  } catch (err) {
-    errorOut(err);
-  }
-}
-
-// Analisar
-analyzeBtn.addEventListener("click", async () => {
-  if (state.locked) return;
-
-  try {
-    if (!state.apiKey) throw new Error("API Key ausente");
-    if (!state.date) throw new Error("Data não selecionada");
-    if (!state.fixtureId) throw new Error("Nenhuma partida selecionada");
-
-    state.locked = true;
-    const fixtureSnapshot = state.fixtureId;
-    state.paidFixtureId = fixtureSnapshot;
-
-    await wallet.connect();
-    const payment = await wallet.pay();
-
-    if (!payment?.txHash || typeof payment.txHash !== "string") {
-      throw new Error("Pagamento inválido");
+    let data;
+    try {
+      data = await res.json(); // [C1]
+    } catch {
+      throw new Error("Resposta inválida do servidor");
     }
 
-    if (
-      state.paidFixtureId !== fixtureSnapshot ||
-      state.fixtureId !== fixtureSnapshot
-    ) {
-      throw new Error("Partida alterada após pagamento");
+    if (data.version !== "v12") { // [C3]
+      throw new Error("Versão incompatível da API");
     }
 
-    const res = await post("/api/analisar", {
-      apiKey: state.apiKey,
-      fixtureId: fixtureSnapshot,
-      txHash: payment.txHash
+    if (!res.ok || data.error) {
+      throw new Error(data.message || "Erro ao carregar competições");
+    }
+
+    if (!Array.isArray(data.data)) { // [C2]
+      throw new Error("Formato inesperado de dados");
+    }
+
+    return data.data;
+  }
+
+  /* ============================================================
+   * ETAPA 4 — PARTIDAS
+   * ============================================================
+   */
+
+  async loadFixtures(timezone = "UTC") {
+    if (!this.apiKey || !this.selectedDate) {
+      throw new Error("API Key ou data não definida");
+    }
+
+    const res = await fetch(`${this.apiBaseUrl}/api/partidas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: this.apiKey,
+        date: this.selectedDate,
+        timezone
+      })
     });
 
-    outputEl.textContent = JSON.stringify(res, null, 2);
-  } catch (err) {
-    errorOut(err);
-  } finally {
-    state.locked = false;
-    state.paidFixtureId = null;
+    let data;
+    try {
+      data = await res.json(); // [C1]
+    } catch {
+      throw new Error("Resposta inválida do servidor");
+    }
+
+    if (data.version !== "v12") { // [C3]
+      throw new Error("Versão incompatível da API");
+    }
+
+    if (!res.ok || data.error) {
+      throw new Error(data.message || "Erro ao carregar partidas");
+    }
+
+    if (!Array.isArray(data.data)) { // [C2]
+      throw new Error("Formato inesperado de dados");
+    }
+
+    return data.data;
   }
-});
+
+  selectFixture(fixture) {
+    const fixtureId = fixture?.fixture?.id;
+
+    if (!Number.isInteger(fixtureId)) { // [C5]
+      throw new Error("ID de partida inválido");
+    }
+
+    this.selectedFixture = fixture;
+  }
+
+  /* ============================================================
+   * ETAPA 5 — PAGAMENTO
+   * ============================================================
+   */
+
+  async payForAnalysis() {
+    const user = await this.wallet.connect();
+    if (!user) {
+      throw new Error("Carteira não conectada");
+    }
+
+    const payment = await this.wallet.pay();
+
+    if (!payment?.txHash) {
+      throw new Error("Pagamento não confirmado");
+    }
+
+    this.payment = payment;
+    return payment;
+  }
+
+  /* ============================================================
+   * ETAPA 6 — ANÁLISE
+   * ============================================================
+   */
+
+  async runAnalysis() {
+    if (!this.payment?.txHash) {
+      throw new Error("Pagamento não realizado");
+    }
+
+    if (!this.selectedFixture) {
+      throw new Error("Partida não selecionada");
+    }
+
+    const res = await fetch(`${this.apiBaseUrl}/api/analisar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: this.apiKey,
+        fixtureId: this.selectedFixture.fixture.id,
+        txHash: this.payment.txHash
+      })
+    });
+
+    let data;
+    try {
+      data = await res.json(); // [C1]
+    } catch {
+      throw new Error("Resposta inválida do servidor");
+    }
+
+    if (data.version !== "v12") { // [C3]
+      throw new Error("Versão incompatível da API");
+    }
+
+    if (data.code === "REPLAY") { // [C6]
+      throw new Error("Este pagamento já foi utilizado");
+    }
+
+    if (!res.ok || data.error) {
+      throw new Error(data.message || "Erro ao executar análise");
+    }
+
+    this.payment = null; // [C4]
+
+    return data;
+  }
+}
