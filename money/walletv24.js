@@ -18,7 +18,7 @@ const TOKEN_ADDRESS = '0xa131ebbfB81118F1A7228A54Cc435e1E86744EB8';
 const TOKEN_DECIMALS = 18; // padrão BEP-20
 
 // URL do worker.js
-const WORKER_URL = 'https://seu-worker-url.com/analyze';
+const WORKER_URL = 'backendv12.srrimas2017.workers.dev';
 
 // Cache local de txHash usados
 const usedTxMap = new Map();
