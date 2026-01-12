@@ -2,111 +2,160 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>V12 – Teste Completo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <title>Teste de Integração V12</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #f0f0f0;
+      font-family: monospace;
+      background: #111;
+      color: #eee;
       padding: 20px;
     }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    section {
-      margin-bottom: 20px;
-      padding: 10px;
-      border: 1px solid #333;
-    }
-
-    input, button {
-      padding: 8px;
-      margin: 4px 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
     button {
-      cursor: pointer;
-      background: #222;
-      color: #fff;
-      border: 1px solid #444;
+      margin-right: 10px;
+      padding: 8px 12px;
+      font-family: monospace;
     }
-
-    button:hover {
-      background: #333;
-    }
-
-    #competitions button,
-    #fixtures button {
-      margin-bottom: 5px;
-      text-align: left;
-    }
-
     pre {
-      background: #111;
-      border: 1px solid #333;
+      background: #000;
       padding: 10px;
-      overflow-x: auto;
-      white-space: pre-wrap;
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #444;
     }
   </style>
 </head>
 <body>
 
-  <h1>V12 – Teste de Análise</h1>
+<h2>Teste de Integração — V12</h2>
 
-  <!-- API KEY -->
-  <section>
-    <label>API-Football Key</label>
-    <input
-      id="apiKey"
-      type="text"
-      placeholder="Cole sua API Key"
-    />
-  </section>
+<button id="init">Inicializar</button>
+<button id="run">Executar Fluxo Completo</button>
+<button id="reset">Resetar</button>
 
-  <!-- DATA -->
-  <section>
-    <label>Data das partidas</label>
-    <input
-      id="date"
-      type="date"
-    />
-  </section>
+<pre id="log"></pre>
 
-  <!-- COMPETIÇÕES -->
-  <section>
-    <button id="loadCompetitions">
-      Carregar Competições
-    </button>
+<script type="module">
+/* ============================================================
+ * UTILITÁRIOS DE LOG (OBSERVAÇÃO, NÃO CORREÇÃO)
+ * ============================================================
+ */
 
-    <div id="competitions"></div>
-  </section>
+const logEl = document.getElementById("log");
 
-  <!-- PARTIDAS -->
-  <section>
-    <div id="fixtures"></div>
-  </section>
+function log(...args) {
+  console.log(...args);
+  logEl.textContent += args.map(a =>
+    typeof a === "string" ? a : JSON.stringify(a, null, 2)
+  ).join(" ") + "\n";
+}
 
-  <!-- ANÁLISE -->
-  <section>
-    <button id="analyze">
-      Pagar e Analisar Partida
-    </button>
-  </section>
+window.addEventListener("error", e => {
+  log("[ERRO NÃO TRATADO]", e.message);
+});
 
-  <!-- SAÍDA -->
-  <section>
-    <pre id="output"></pre>
-  </section>
+window.addEventListener("unhandledrejection", e => {
+  log("[PROMISE NÃO TRATADA]", e.reason);
+});
 
-  <!-- SCRIPT -->
-  <script type="module" src="./codigo3.js"></script>
+/* ============================================================
+ * CARREGAMENTO DOS CÓDIGOS (ORDEM EXPLÍCITA)
+ * ============================================================
+ */
+
+log("==> Início do carregamento dos módulos");
+
+import { WalletV12 } from "./money/walletv12.js";
+log("✔ walletv12.js carregado");
+
+import { FlowOrchestratorV12 } from "./statistics/statisticsv12.js";
+log("✔ flowOrchestratorV12.js carregado");
+
+/*
+ * statisticsv12.js NÃO é importado aqui,
+ * pois é um Cloudflare Worker.
+ * Ele será testado via chamadas HTTP reais.
+ */
+
+log("==> Fim do carregamento dos módulos");
+
+/* ============================================================
+ * EXPOSIÇÃO GLOBAL (SEM CRIAR NADA NOVO)
+ * ============================================================
+ */
+
+window.WalletV12 = WalletV12;
+window.FlowOrchestratorV12 = FlowOrchestratorV12;
+
+log("Objetos expostos em window:", {
+  WalletV12: typeof WalletV12,
+  FlowOrchestratorV12: typeof FlowOrchestratorV12
+});
+
+/* ============================================================
+ * INSTÂNCIA DE TESTE
+ * ============================================================
+ */
+
+let orchestrator = null;
+
+document.getElementById("init").onclick = () => {
+  log("==> Inicialização do Orquestrador");
+
+  orchestrator = new FlowOrchestratorV12({
+    apiBaseUrl: "http://localhost:8787" // ajuste conforme o Worker
+  });
+
+  log("Orquestrador criado:", orchestrator);
+};
+
+document.getElementById("run").onclick = async () => {
+  if (!orchestrator) {
+    log("⚠ Orquestrador não inicializado");
+    return;
+  }
+
+  log("==> INÍCIO DO FLUXO COMPLETO");
+
+  // ⚠ Valores reais devem ser inseridos manualmente
+  const API_KEY = "SUA_API_KEY_AQUI";
+  const DATE = "2024-01-01";
+
+  log("[1] Setando API Key");
+  orchestrator.setApiKey(API_KEY);
+
+  log("[2] Setando data");
+  orchestrator.setDate(DATE);
+
+  log("[3] Carregando competições");
+  const competitions = await orchestrator.loadCompetitions();
+  log("Competições retornadas:", competitions.length);
+
+  log("[4] Carregando partidas");
+  const fixtures = await orchestrator.loadFixtures();
+  log("Partidas retornadas:", fixtures.length);
+
+  const fixture = fixtures[0];
+  log("[5] Selecionando partida:", fixture);
+
+  orchestrator.selectFixture(fixture);
+
+  log("[6] Executando pagamento (wallet)");
+  const payment = await orchestrator.payForAnalysis();
+  log("Pagamento retornado:", payment);
+
+  log("[7] Executando análise");
+  const analysis = await orchestrator.runAnalysis();
+  log("Resultado da análise:", analysis);
+
+  log("==> FIM DO FLUXO COMPLETO");
+};
+
+document.getElementById("reset").onclick = () => {
+  log("==> RESET MANUAL");
+  orchestrator = null;
+  logEl.textContent = "";
+};
+</script>
 
 </body>
 </html>
