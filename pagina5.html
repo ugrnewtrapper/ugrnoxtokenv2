@@ -1,211 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>NOX Football Analytics</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Ethers v6 -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
-
-  <!-- Wallet Frontend -->
-  <script type="module" src="./money/walletv24.js"></script>
-
+  <meta charset="UTF-8">
+  <title>Página em Manutenção</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background: #0f1216;
-      color: #e6e6e6;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 16px;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f0f0f;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
     }
-    .card {
-      background: #151a21;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
+    .container {
+      max-width: 600px;
+      padding: 20px;
     }
-    h2 {
-      margin-top: 0;
-      color: #1f6feb;
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
-    label {
-      display: block;
-      margin-top: 12px;
-      font-size: 14px;
-      color: #a0a7b4;
+    p {
+      font-size: 1.1rem;
+      opacity: 0.85;
     }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 6px;
-      border: none;
-      font-size: 14px;
-    }
-    button {
-      background: #1f6feb;
-      color: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
-    .status {
-      font-size: 13px;
-      margin-top: 8px;
-      color: #a0a7b4;
-    }
-    .result {
-      margin-top: 12px;
-      padding: 10px;
-      background: #0f1216;
-      border-radius: 6px;
-      font-size: 14px;
+    .version {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+      letter-spacing: 2px;
     }
   </style>
 </head>
-
 <body>
-
-  <div class="card">
-    <h2>⚽ NOX Football Analytics</h2>
-
-    <label>API Key (API-Football)</label>
-    <input id="apiKey" placeholder="Insira sua API Key" />
-
-    <label>Data da Partida</label>
-    <input type="date" id="date" />
-
-    <label>Partida</label>
-    <select id="matchSelect">
-      <option value="">Selecione uma data primeiro</option>
-    </select>
-
-    <button id="analyzeBtn">ANALISAR</button>
-    <div class="status" id="status"></div>
+  <div class="container">
+    <h1>PÁGINA EM MANUTENÇÃO</h1>
+    <p>Estamos trabalhando para entregar uma nova experiência.</p>
+    <div class="version">VERSÃO V33 • FUTURE FINAL</div>
   </div>
-
-  <div class="card">
-    <h2>📊 Resultado da Análise</h2>
-    <div id="output" class="result">Nenhuma análise executada.</div>
-  </div>
-
-<script type="module">
-  import WalletFrontend from './wallet-frontend.js';
-
-  const WORKER_URL = 'https://backendv12.srrimas2017.workers.dev';
-  const wallet = new WalletFrontend(WORKER_URL);
-
-  const apiKeyInput = document.getElementById('apiKey');
-  const dateInput = document.getElementById('date');
-  const matchSelect = document.getElementById('matchSelect');
-  const analyzeBtn = document.getElementById('analyzeBtn');
-  const statusEl = document.getElementById('status');
-  const outputEl = document.getElementById('output');
-
-  let userId = null;
-
-  async function setStatus(msg) {
-    statusEl.textContent = msg;
-  }
-
-  // ---------------------------
-  // Carrega partidas por data
-  // ---------------------------
-  dateInput.addEventListener('change', async () => {
-    matchSelect.innerHTML = '<option>Carregando...</option>';
-
-    try {
-      dateInput.addEventListener('change', async () => {
-  matchSelect.innerHTML = '<option>Carregando...</option>';
-
-  try {
-    const res = await fetch(BACKEND_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        apiKey: apiKeyInput.value,
-        date: dateInput.value
-      })
-    });
-
-    const data = await res.json();
-
-    if (!Array.isArray(data.fixtures)) {
-      throw new Error('Resposta inválida do backend');
-    }
-
-    matchSelect.innerHTML = '<option value="">Selecione a partida</option>';
-
-    data.fixtures.forEach(f => {
-      const opt = document.createElement('option');
-      opt.value = f.fixture.id;
-      opt.textContent =
-        `${f.teams.home.name} x ${f.teams.away.name}`;
-      matchSelect.appendChild(opt);
-    });
-
-  } catch (err) {
-    console.error(err);
-    matchSelect.innerHTML = '<option>Erro ao carregar partidas</option>';
-  }
-});
-
-      const data = await res.json();
-      matchSelect.innerHTML = '<option value="">Selecione a partida</option>';
-
-      data.response.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f.fixture.id;
-        opt.textContent = `${f.teams.home.name} x ${f.teams.away.name}`;
-        matchSelect.appendChild(opt);
-      });
-    } catch {
-      matchSelect.innerHTML = '<option>Erro ao carregar partidas</option>';
-    }
-  });
-
-  // ---------------------------
-  // Executa análise completa
-  // ---------------------------
-  analyzeBtn.addEventListener('click', async () => {
-    analyzeBtn.disabled = true;
-    outputEl.textContent = '';
-    await setStatus('Conectando carteira...');
-
-    try {
-      if (!userId) {
-        userId = await wallet.connectWallet();
-      }
-
-      await setStatus('Executando pagamento...');
-      const analysis = await wallet.runAnalysis({
-        userId,
-        amount: 1, // valor simbólico
-        apiKey: apiKeyInput.value,
-        date: dateInput.value,
-        matchId: matchSelect.value
-      });
-
-      await setStatus('Análise concluída.');
-
-      outputEl.innerHTML = `
-        <strong>Melhor em Gols:</strong> ${analysis.bestPlayers.goals?.name || '-'}<br>
-        <strong>Melhor em Assistências:</strong> ${analysis.bestPlayers.assists?.name || '-'}<br>
-        <strong>Melhor em Chutes:</strong> ${analysis.bestPlayers.shots?.name || '-'}<br><br>
-        <strong>Moda de Cartões:</strong> ${analysis.modes.cards ?? '-'}<br>
-        <strong>Moda de Escanteios:</strong> ${analysis.modes.corners ?? '-'}
-      `;
-    } catch (err) {
-      await setStatus('Erro: ' + err.message);
-    } finally {
-      analyzeBtn.disabled = false;
-    }
-  });
-</script>
-
 </body>
 </html>
