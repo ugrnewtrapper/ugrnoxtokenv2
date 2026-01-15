@@ -110,6 +110,9 @@
             color: var(--text-main);
             border: 1px solid rgba(255,255,255,0.08);
         }
+        .card input[type="date"] {
+    text-align: center;
+        }
 
         .card input::placeholder {
             color: #5faab8;
@@ -129,11 +132,34 @@
         }
 
         /* Área competições */
-        .competitions {
-            text-align: left;
-            font-size: 14px;
-            color: var(--text-soft);
-        }
+.competitions {
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Nome da competição */
+.competition-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+/* Partidas */
+.match {
+    padding: 10px;
+    border-radius: 8px;
+    background: #04181d;
+    margin-bottom: 8px;
+    color: var(--text-soft);
+    cursor: pointer;
+}
+
+.match:hover {
+    background: #06232b;
+    color: #bdf1ff;
+}
 
         .selected-match {
             margin-top: 15px;
