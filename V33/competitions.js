@@ -3,7 +3,7 @@
    Função: Buscar e organizar competições por data
    ===================================================== */
 
-const BACKEND_URL = 'https://backendv12.srrimas2017.workers.dev';
+const BACKEND_URL = 'https://backendv12.srrimas2017.workers.dev/V33/competitions.js';
 
 /* ======================
    LOAD COMPETITIONS
