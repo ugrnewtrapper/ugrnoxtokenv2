@@ -3,173 +3,213 @@
    Função: Orquestrador principal
    ===================================================== */
 
+console.log('NOX FLOW V33 iniciado');
+
+/* ======================
+   IMPORTS
+   ====================== */
 import { loadCompetitions } from './competitions.js';
 import { requestAnalysisRelease } from './release.js';
 import { runCalculator } from './calculator.js';
 
 /* ======================
-   ESTADO GLOBAL CONTROLADO
+   DOM READY (OBRIGATÓRIO)
    ====================== */
-const NOX_STATE = {
-    apiKey: null,
-    selectedDate: null,
-    selectedMatch: null,
-    analysisUnlocked: false
-};
+document.addEventListener('DOMContentLoaded', () => {
 
-/* ======================
-   ELEMENTOS DO DOM
-   ====================== */
-const apiKeyInput        = document.getElementById('apiKey');
-const dateInput          = document.getElementById('matchDate');
-const loadBtn            = document.getElementById('loadCompetitions');
-const competitionsBox    = document.getElementById('competitionsList');
-const selectedMatchBox   = document.getElementById('selectedMatch');
-const analyzeBtn         = document.getElementById('analyzeMatch');
+    console.log('DOM carregado');
 
-/* ======================
-   SEGURANÇA BÁSICA DE INPUT
-   ====================== */
-function sanitize(value) {
-    return value.replace(/[<>]/g, '');
-}
+    /* ======================
+       ESTADO GLOBAL CONTROLADO
+       ====================== */
+    const NOX_STATE = {
+        apiKey: null,
+        selectedDate: null,
+        selectedMatch: null,
+        analysisUnlocked: false
+    };
 
-/* ======================
-   API KEY
-   ====================== */
-apiKeyInput.addEventListener('change', () => {
-    const value = sanitize(apiKeyInput.value.trim());
+    /* ======================
+       ELEMENTOS DO DOM
+       ====================== */
+    const apiKeyInput      = document.getElementById('apiKey');
+    const dateInput        = document.getElementById('matchDate');
+    const loadBtn          = document.getElementById('loadCompetitions');
+    const competitionsBox  = document.getElementById('competitionsList');
+    const selectedMatchBox = document.getElementById('selectedMatch');
+    const analyzeBtn       = document.getElementById('analyzeMatch');
 
-    if (value.length < 10) {
-        alert('API Key inválida');
+    if (
+        !apiKeyInput ||
+        !dateInput ||
+        !loadBtn ||
+        !competitionsBox ||
+        !selectedMatchBox ||
+        !analyzeBtn
+    ) {
+        console.error('Erro: elementos do DOM não encontrados');
         return;
     }
 
-    NOX_STATE.apiKey = value;
-});
-
-/* ======================
-   DATA
-   ====================== */
-dateInput.addEventListener('change', () => {
-    NOX_STATE.selectedDate = dateInput.value;
-});
-
-/* ======================
-   CARREGAR COMPETIÇÕES
-   ====================== */
-loadBtn.addEventListener('click', async () => {
-
-    if (!NOX_STATE.apiKey || !NOX_STATE.selectedDate) {
-        alert('Informe API Key e data');
-        return;
+    /* ======================
+       SEGURANÇA BÁSICA DE INPUT
+       ====================== */
+    function sanitize(value) {
+        return value.replace(/[<>]/g, '');
     }
 
-    competitionsBox.innerHTML = 'Carregando competições...';
+    /* ======================
+       API KEY
+       ====================== */
+    apiKeyInput.addEventListener('change', () => {
+        const value = sanitize(apiKeyInput.value.trim());
 
-    try {
-        const competitions = await loadCompetitions(
-            NOX_STATE.apiKey,
-            NOX_STATE.selectedDate
-        );
-
-        renderCompetitions(competitions);
-
-    } catch (err) {
-        competitionsBox.innerHTML = 'Erro ao carregar competições';
-        console.error(err);
-    }
-});
-
-/* ======================
-   RENDER COMPETIÇÕES
-   ====================== */
-function renderCompetitions(data) {
-
-    competitionsBox.innerHTML = '';
-
-    data.forEach(country => {
-        const countryBlock = document.createElement('div');
-        countryBlock.innerHTML = `<strong>${country.name}</strong>`;
-
-        country.matches.forEach(match => {
-            const matchEl = document.createElement('div');
-            matchEl.style.cursor = 'pointer';
-            matchEl.innerText = `${match.time} - ${match.home} x ${match.away}`;
-
-            matchEl.onclick = () => selectMatch(match);
-
-            countryBlock.appendChild(matchEl);
-        });
-
-        competitionsBox.appendChild(countryBlock);
-    });
-}
-
-/* ======================
-   SELEÇÃO DA PARTIDA
-   ====================== */
-function selectMatch(match) {
-    NOX_STATE.selectedMatch = match;
-
-    competitionsBox.innerHTML = '';
-    selectedMatchBox.innerHTML = `
-        Partida selecionada:<br>
-        ${match.home} x ${match.away} – ${match.time}
-    `;
-}
-
-/* ======================
-   ANALISAR (PAGAMENTO + CÁLCULO)
-   ====================== */
-analyzeBtn.addEventListener('click', async () => {
-
-    if (!NOX_STATE.selectedMatch) {
-        alert('Selecione uma partida');
-        return;
-    }
-
-    try {
-        analyzeBtn.innerText = 'Aguardando pagamento...';
-
-        const released = await requestAnalysisRelease();
-
-        if (!released) {
-            alert('Pagamento não confirmado');
-            analyzeBtn.innerText = 'ANALISAR';
+        if (value.length < 10) {
+            alert('API Key inválida');
             return;
         }
 
-        NOX_STATE.analysisUnlocked = true;
+        NOX_STATE.apiKey = value;
+        console.log('API Key definida');
+    });
 
-        analyzeBtn.innerText = 'Calculando...';
+    /* ======================
+       DATA
+       ====================== */
+    dateInput.addEventListener('change', () => {
+        NOX_STATE.selectedDate = dateInput.value;
+        console.log('Data selecionada:', NOX_STATE.selectedDate);
+    });
 
-        const result = await runCalculator(
-            NOX_STATE.apiKey,
-            NOX_STATE.selectedMatch
-        );
+    /* ======================
+       CARREGAR COMPETIÇÕES
+       ====================== */
+    loadBtn.addEventListener('click', async () => {
 
-        injectResults(result);
+        if (!NOX_STATE.apiKey || !NOX_STATE.selectedDate) {
+            alert('Informe API Key e data');
+            return;
+        }
 
-        analyzeBtn.innerText = 'ANALISAR';
+        competitionsBox.innerHTML = 'Carregando competições...';
 
-    } catch (err) {
-        console.error(err);
-        analyzeBtn.innerText = 'ANALISAR';
+        try {
+            const competitions = await loadCompetitions(
+                NOX_STATE.apiKey,
+                NOX_STATE.selectedDate
+            );
+
+            renderCompetitions(competitions);
+
+        } catch (err) {
+            competitionsBox.innerHTML = 'Erro ao carregar competições';
+            console.error('Erro loadCompetitions:', err);
+        }
+    });
+
+    /* ======================
+       RENDER COMPETIÇÕES
+       ====================== */
+    function renderCompetitions(data) {
+
+        competitionsBox.innerHTML = '';
+
+        if (!Array.isArray(data) || data.length === 0) {
+            competitionsBox.innerHTML = 'Nenhuma competição encontrada';
+            return;
+        }
+
+        data.forEach(country => {
+            if (!country || !Array.isArray(country.matches)) return;
+
+            const countryBlock = document.createElement('div');
+            countryBlock.innerHTML = `<strong>${country.name}</strong>`;
+
+            country.matches.forEach(match => {
+                if (!match) return;
+
+                const matchEl = document.createElement('div');
+                matchEl.style.cursor = 'pointer';
+                matchEl.innerText = `${match.time} - ${match.home} x ${match.away}`;
+
+                matchEl.onclick = () => selectMatch(match);
+
+                countryBlock.appendChild(matchEl);
+            });
+
+            competitionsBox.appendChild(countryBlock);
+        });
     }
+
+    /* ======================
+       SELEÇÃO DA PARTIDA
+       ====================== */
+    function selectMatch(match) {
+        NOX_STATE.selectedMatch = match;
+
+        competitionsBox.innerHTML = '';
+        selectedMatchBox.innerHTML = `
+            Partida selecionada:<br>
+            ${match.home} x ${match.away} – ${match.time}
+        `;
+
+        console.log('Partida selecionada:', match);
+    }
+
+    /* ======================
+       ANALISAR (PAGAMENTO + CÁLCULO)
+       ====================== */
+    analyzeBtn.addEventListener('click', async () => {
+
+        if (!NOX_STATE.selectedMatch) {
+            alert('Selecione uma partida');
+            return;
+        }
+
+        try {
+            analyzeBtn.innerText = 'Aguardando pagamento...';
+
+            const released = await requestAnalysisRelease();
+
+            if (!released) {
+                alert('Pagamento não confirmado');
+                analyzeBtn.innerText = 'ANALISAR';
+                return;
+            }
+
+            NOX_STATE.analysisUnlocked = true;
+            analyzeBtn.innerText = 'Calculando...';
+
+            const result = await runCalculator(
+                NOX_STATE.apiKey,
+                NOX_STATE.selectedMatch
+            );
+
+            injectResults(result);
+            analyzeBtn.innerText = 'ANALISAR';
+
+        } catch (err) {
+            console.error('Erro na análise:', err);
+            analyzeBtn.innerText = 'ANALISAR';
+        }
+    });
+
+    /* ======================
+       INJETAR RESULTADOS
+       ====================== */
+    function injectResults(result) {
+
+        if (!result) return;
+
+        const playersEl = document.querySelector('.result-card:nth-child(1) .result-data');
+        const cornersEl = document.querySelector('.result-card:nth-child(2) .result-data');
+        const cardsEl   = document.querySelector('.result-card:nth-child(3) .result-data');
+
+        if (playersEl) playersEl.innerText = result.players ?? 'Sem dados';
+        if (cornersEl) cornersEl.innerText = result.corners ?? 'Sem dados';
+        if (cardsEl)   cardsEl.innerText   = result.cards ?? 'Sem dados';
+
+        console.log('Resultados injetados');
+    }
+
 });
-
-/* ======================
-   INJETAR RESULTADOS
-   ====================== */
-function injectResults(result) {
-
-    document.querySelector('.result-card:nth-child(1) .result-data')
-        .innerText = result.players;
-
-    document.querySelector('.result-card:nth-child(2) .result-data')
-        .innerText = result.corners;
-
-    document.querySelector('.result-card:nth-child(3) .result-data')
-        .innerText = result.cards;
-}
