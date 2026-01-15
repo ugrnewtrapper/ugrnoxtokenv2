@@ -1,48 +1,292 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Página em Manutenção</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0f0f0f;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-      text-align: center;
-    }
-    .container {
-      max-width: 600px;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
-    }
-    p {
-      font-size: 1.1rem;
-      opacity: 0.85;
-    }
-    .version {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      opacity: 0.6;
-      letter-spacing: 2px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOX PREMIUM – V33</title>
+
+    <!-- Fonte tecnológica -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #06232b;
+            --bg-card: #0b3a44;
+            --accent: #00c2ff;
+            --text-main: #e6f4f7;
+            --text-soft: #9ccfd9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(180deg, #051c22, #06232b);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Botão voltar */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-btn span {
+            margin-right: 6px;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        /* Títulos */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(36px, 6vw, 64px);
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            white-space: nowrap;
+        }
+
+        .logo {
+            margin: 20px 0 30px;
+        }
+
+        .logo img {
+            max-width: 180px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #b8eaff;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-soft);
+            margin-bottom: 40px;
+        }
+
+        /* Balões / Cards */
+        .card {
+            background: linear-gradient(180deg, #0b3a44, #072d36);
+            border: 1px solid rgba(0,194,255,0.2);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 25px rgba(0,194,255,0.08);
+        }
+
+        .card input,
+        .card button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .card input {
+            background: #04181d;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .card input::placeholder {
+            color: #5faab8;
+        }
+
+        .card button {
+            background: linear-gradient(90deg, #00c2ff, #0094c9);
+            color: #00161b;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .card button:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Área competições */
+        .competitions {
+            text-align: left;
+            font-size: 14px;
+            color: var(--text-soft);
+        }
+
+        .selected-match {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #bdf1ff;
+        }
+
+        /* Botão analisar */
+        .analyze-btn {
+            margin: 40px 0 60px;
+        }
+
+        /* Área de resultados */
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .result-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .result-data {
+            font-size: 14px;
+            color: var(--text-soft);
+            line-height: 1.6;
+        }
+
+        /* Rodapé */
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: #6fb6c4;
+        }
+
+        footer a {
+            display: inline-block;
+            margin: 30px 0 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .version {
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>PÁGINA EM MANUTENÇÃO</h1>
-    <p>Estamos trabalhando para entregar uma nova experiência.</p>
-    <div class="version">VERSÃO V33 • FUTURE FINAL</div>
-  </div>
+
+    <a href="javascript:history.back()" class="back-btn">
+        <span>←</span> Voltar
+    </a>
+
+    <div class="container">
+
+        <h1>NOX PREMIUM</h1>
+
+        <div class="logo">
+            <img src="images/logo2.png" alt="NOX Logo">
+        </div>
+
+        <h2>V33 CALCULATOR</h2>
+        <div class="subtitle">
+            USAR NAVEGADOR TRUSTWALLET, METAMASK OU SIMILARES.
+        </div>
+
+        <!-- API Key -->
+        <div class="card">
+            <input 
+                type="password" 
+                id="apiKey" 
+                placeholder="Insira sua API Key da API-Football">
+        </div>
+
+        <!-- Calendário -->
+        <div class="card">
+            <input 
+                type="date" 
+                id="matchDate">
+        </div>
+
+        <!-- Carregar competições -->
+        <div class="card">
+            <button id="loadCompetitions">
+                CARREGAR COMPETIÇÕES
+            </button>
+        </div>
+
+        <!-- Lista de competições -->
+        <div class="card competitions" id="competitionsList">
+            <!-- Conteúdo gerado pelo JS -->
+        </div>
+
+        <!-- Partida selecionada -->
+        <div class="card selected-match" id="selectedMatch">
+            <!-- Seleção do usuário -->
+        </div>
+
+        <!-- Botão analisar -->
+        <div class="analyze-btn">
+            <button class="card" id="analyzeMatch">
+                ANALISAR
+            </button>
+        </div>
+
+        <!-- Resultados -->
+        <div class="results">
+
+            <div class="card result-card">
+                <h3>JOGADORES</h3>
+                <div class="result-data">
+                    Dados estatísticos de gols, assistências e chutes.
+                </div>
+            </div>
+
+            <div class="card result-card">
+                <h3>ESCANTEIOS</h3>
+                <div class="result-data">
+                    Moda e padrões estatísticos de escanteios.
+                </div>
+            </div>
+
+            <div class="card result-card">
+                <h3>CARTÕES</h3>
+                <div class="result-data">
+                    Frequência e comportamento disciplinar.
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <a href="https://www.api-football.com/" target="_blank">
+                GERE SUA API GRÁTIS
+            </a>
+
+            <div class="version">
+                VERSÃO 33.0
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Script externo -->
+    <script src="V33/flow.js"></script>
+
 </body>
-</html>
+  </html>
