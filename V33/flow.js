@@ -18,6 +18,7 @@ import { runCalculator } from './calculator.js';
 document.addEventListener('DOMContentLoaded', () => {
 
     console.log('DOM carregado');
+   let NOX_PAY_LOCK = false;
 
     /* ======================
        ESTADO GLOBAL CONTROLADO
@@ -160,14 +161,17 @@ document.addEventListener('DOMContentLoaded', () => {
        ANALISAR (PAGAMENTO + CÁLCULO)
        ====================== */
     analyzeBtn.addEventListener('click', async () => {
-
+if (NOX_PAY_LOCK) return;
+       NOX_PAY_LOCK = true;
         if (!NOX_STATE.selectedMatch) {
             alert('Selecione uma partida');
+           NOX_PAY_LOCK = false;
             return;
         }
 
         try {
             analyzeBtn.innerText = 'Aguardando pagamento...';
+           analyzeBtn.disabled = true;
 
             const released = await requestAnalysisRelease();
 
@@ -187,10 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             injectResults(result);
             analyzeBtn.innerText = 'ANALISAR';
-
+analyzeBtn.disabled = false;
+           NOX_PAY_LOCK = false;
         } catch (err) {
             console.error('Erro na análise:', err);
             analyzeBtn.innerText = 'ANALISAR';
+           analyzeBtn.disabled = false;
+           NOX_PAY_LOCK = false;
         }
     });
 
