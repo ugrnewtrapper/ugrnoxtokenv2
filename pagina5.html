@@ -257,14 +257,14 @@
     color: #e6f4f7;
     font-size: 14px;
 }
-        /* ===== CARD DA DATA (CRIADO AGORA) ===== */
+        /* ===== CARD DA DATA ===== */
 .date-card {
-    padding: 40px 25px;
+    padding: 15px 20px;   /* diminui o quadro */
 }
 
 .date-card input {
-    padding: 18px;
-    font-size: 18px;
+    padding: 10px;        /* diminui altura do input */
+    font-size: 14px;      /* texto menor */
 }
     </style>
 </head>
@@ -296,12 +296,9 @@
         </div>
 
         <!-- Calendário -->
-        <div class="card">
-            <input 
-                type="date" 
-                id="matchDate">
-        </div>
-
+        <div class="card date-card">
+    <input type="date" id="matchDate">
+</div>
         <!-- Carregar competições -->
         <div class="card">
             <button id="loadCompetitions">
