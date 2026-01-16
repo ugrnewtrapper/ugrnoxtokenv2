@@ -189,10 +189,7 @@ if (NOX_PAY_LOCK) return;
                 NOX_STATE.selectedMatch
             );
 
-            injectResults(result);
-            analyzeBtn.innerText = 'ANALISAR';
-analyzeBtn.disabled = false;
-           NOX_PAY_LOCK = false;
+            
         } catch (err) {
             console.error('Erro na análise:', err);
             analyzeBtn.innerText = 'ANALISAR';
