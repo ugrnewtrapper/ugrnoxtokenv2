@@ -48,9 +48,17 @@ let paymentLock = false;
 
 export async function requestAnalysisRelease() {
 
+    if (sessionStorage.getItem('nox_paid_tx')) {
+        return true;
+    }
+
     if (paymentLock) return false;
     paymentLock = true;
 
+   if (!sessionStorage.getItem('nox_session_id')) {
+  throw new Error('Sessão inválida');
+   }
+   
     try {
         /* WALLET */
         const eth = window.ethereum || window.trustwallet;
@@ -151,16 +159,15 @@ async function authorizeBackend(payload) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            ...payload,
-            userAgent: navigator.userAgent,
-            timestamp: Date.now()
-        })
+  sessionId: sessionStorage.getItem('nox_session_id'),
+  proof: payload.txHash
+})
     });
 
     if (!res.ok) return false;
 
     const data = await res.json();
-    return data?.authorized === true;
+return data?.released === true;
 }
 
 /* ======================
