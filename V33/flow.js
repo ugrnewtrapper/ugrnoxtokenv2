@@ -173,8 +173,9 @@ if (NOX_PAY_LOCK) return;
             analyzeBtn.innerText = 'Aguardando pagamento...';
            analyzeBtn.disabled = true;
 
-            const released = await requestAnalysisRelease();
-
+            const released = await requestAnalysisRelease({
+   action: 'check'
+});
             if (!released) {
     alert('Pagamento não confirmado');
     analyzeBtn.innerText = 'ANALISAR';
