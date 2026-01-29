@@ -122,7 +122,7 @@ export async function requestAnalysisRelease() {
             throw new Error('Evento inválido');
         }
 
-        /* BACKEND – OBRIGATÓRIO */
+    /* BACKEND – OBRIGATÓRIO */
 const backendOK = await authorizeBackend({
     txHash: receipt.transactionHash
 });
