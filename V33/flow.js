@@ -171,25 +171,18 @@ if (NOX_PAY_LOCK) return;
 
         try {
             // NÃO TOCA NO DOM AINDA
-const started = await requestAnalysisRelease({ action: 'start' });
+// chama pagamento (wallet + contrato + backend)
+const paid = await requestAnalysisRelease({ action: 'start' });
 
-if (!started) {
+if (!paid) {
+    alert('Pagamento não confirmado');
     NOX_PAY_LOCK = false;
     return;
 }
 
-// só depois altera UI
-analyzeBtn.innerText = 'Aguardando pagamento...';
+// agora sim muda UI
+analyzeBtn.innerText = 'Calculando...';
 analyzeBtn.disabled = true;
-// depois verifica
-const released = await requestAnalysisRelease({ action: 'check' });
-            if (!released) {
-    alert('Pagamento não confirmado');
-    analyzeBtn.innerText = 'ANALISAR';
-    analyzeBtn.disabled = false;
-    NOX_PAY_LOCK = false;
-    return;
-            }
 
             NOX_STATE.analysisUnlocked = true;
             analyzeBtn.innerText = 'Calculando...';
