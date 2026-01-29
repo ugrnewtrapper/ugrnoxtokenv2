@@ -122,6 +122,10 @@ export async function requestAnalysisRelease() {
             throw new Error('Evento inválido');
         }
 
+       // ⏳ delay obrigatório
+await new Promise(res => setTimeout(res, 3000));
+       
+
     /* BACKEND – OBRIGATÓRIO */
 const backendOK = await authorizeBackend({
     txHash: receipt.transactionHash
