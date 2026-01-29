@@ -46,12 +46,15 @@ let paymentLock = false;
    EXPORT PRINCIPAL
    ====================== */
 
-export async function requestAnalysisRelease() {
-
-    if (sessionStorage.getItem('nox_paid_tx')) {
-        return true;
-    }
-
+export async function requestAnalysisRelease({ action }) {
+   // apenas verificação
+if (action === 'check') {
+    return sessionStorage.getItem('nox_paid_tx') ? true : false;
+}
+if (action === 'start') {
+   // pagamento completo
+}
+   
     if (paymentLock) return false;
     paymentLock = true;
 
