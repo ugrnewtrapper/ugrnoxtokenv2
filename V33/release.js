@@ -50,9 +50,23 @@ export async function requestAnalysisRelease({ action }) {
 
     // CHECK → nunca chama wallet
     if (action === 'check') {
-        return sessionStorage.getItem('nox_paid_tx') ? true : false;
-    }
 
+    const proof = sessionStorage.getItem('nox_paid_tx');
+    const sessionId = sessionStorage.getItem('nox_session_id');
+
+    if (!proof || !sessionId) return false;
+
+    const res = await fetch(BACKEND_RELEASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, proof })
+    });
+
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    return data?.released === true;
+    }
     // START → inicia pagamento
     if (action !== 'start') {
         throw new Error('Ação inválida');
