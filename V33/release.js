@@ -123,12 +123,7 @@ export async function requestAnalysisRelease() {
         }
 
         /* BACKEND – OBRIGATÓRIO */
-        const backendOK = await authorizeBackend({
-            txHash: receipt.transactionHash,
-            wallet: wallet,
-            amount: event.args.amount.toString(),
-            chainId: CHAIN_ID
-        });
+        const backendOK = 
 
         if (!backendOK) {
             throw new Error('Backend recusou pagamento');
