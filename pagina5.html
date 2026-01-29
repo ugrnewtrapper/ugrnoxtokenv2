@@ -279,6 +279,33 @@
     max-width: 360px;
     margin: 0 auto 25px;
         }
+        /* ===== BOTÃO ANALISAR LOADING ===== */
+
+#analyzeMatch.loading {
+    pointer-events: none;
+    opacity: 0.7;
+    background: linear-gradient(90deg, #00c2ff, #0094c9);
+    position: relative;
+}
+
+#analyzeMatch.loading::after {
+    content: "";
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(0,0,0,0.2);
+    border-top: 3px solid #00161b;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
     </style>
 </head>
 <body>
