@@ -170,12 +170,17 @@ if (NOX_PAY_LOCK) return;
         }
 
         try {
-            analyzeBtn.innerText = 'Aguardando pagamento...';
-           analyzeBtn.disabled = true;
+            // NÃO TOCA NO DOM AINDA
+const started = await requestAnalysisRelease({ action: 'start' });
 
-            // inicia pagamento
-await requestAnalysisRelease({ action: 'start' });
+if (!started) {
+    NOX_PAY_LOCK = false;
+    return;
+}
 
+// só depois altera UI
+analyzeBtn.innerText = 'Aguardando pagamento...';
+analyzeBtn.disabled = true;
 // depois verifica
 const released = await requestAnalysisRelease({ action: 'check' });
             if (!released) {
