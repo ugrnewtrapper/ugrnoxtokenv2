@@ -123,12 +123,13 @@ export async function requestAnalysisRelease() {
         }
 
         /* BACKEND – OBRIGATÓRIO */
-        const backendOK = 
+const backendOK = await authorizeBackend({
+    txHash: receipt.transactionHash
+});
 
-        if (!backendOK) {
-            throw new Error('Backend recusou pagamento');
-        }
-
+if (!backendOK) {
+    throw new Error('Backend recusou pagamento');
+}
         /* CACHE DE SESSÃO */
         sessionStorage.setItem('nox_paid_tx', receipt.transactionHash);
 
