@@ -47,20 +47,25 @@ let paymentLock = false;
    ====================== */
 
 export async function requestAnalysisRelease({ action }) {
-   // apenas verificação
-if (action === 'check') {
-    return sessionStorage.getItem('nox_paid_tx') ? true : false;
-}
-if (action === 'start') {
-   // pagamento completo
-}
-   
+
+    // CHECK → nunca chama wallet
+    if (action === 'check') {
+        return sessionStorage.getItem('nox_paid_tx') ? true : false;
+    }
+
+    // START → inicia pagamento
+    if (action !== 'start') {
+        throw new Error('Ação inválida');
+    }
+
     if (paymentLock) return false;
     paymentLock = true;
 
-   if (!sessionStorage.getItem('nox_session_id')) {
-  throw new Error('Sessão inválida');
-   }
+    if (!sessionStorage.getItem('nox_session_id')) {
+        throw new Error('Sessão inválida');
+    }
+
+    // ⬇️ daqui pra baixo fica EXATAMENTE o código que você já tem
    
     try {
         /* WALLET */
