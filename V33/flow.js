@@ -176,9 +176,11 @@ if (NOX_PAY_LOCK) return;
             const released = await requestAnalysisRelease();
 
             if (!released) {
-                alert('Pagamento não confirmado');
-                analyzeBtn.innerText = 'ANALISAR';
-                return;
+    alert('Pagamento não confirmado');
+    analyzeBtn.innerText = 'ANALISAR';
+    analyzeBtn.disabled = false;
+    NOX_PAY_LOCK = false;
+    return;
             }
 
             NOX_STATE.analysisUnlocked = true;
