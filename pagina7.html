@@ -101,6 +101,30 @@
       transform: translateY(-2px);
     }
 
+    /* BOTÃO VOLTAR */
+    .btn-voltar {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      padding: 10px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 999;
+      animation: flutuar 3s ease-in-out infinite;
+      transition: all 0.25s ease;
+    }
+
+    .btn-voltar:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
     footer {
       margin-top: 40px;
       opacity: 0.7;
@@ -116,6 +140,12 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes flutuar {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
+    }
+
     @media (max-width: 600px) {
       h1 { font-size: 1.9rem; }
       h2 { font-size: 1.05rem; }
@@ -125,6 +155,10 @@
 </head>
 
 <body>
+
+  <!-- Botão Voltar -->
+  <a href="index.htm" class="btn-voltar">← Voltar</a>
+
   <main>
 
     <h1>Outros Serviços UGRNT</h1>
@@ -155,7 +189,7 @@
 
     <!-- Chamada de Serviço -->
     <div class="servicos">
-      <a href="UGROFC.html" class="btn">
+      <a href="UGROFC.html" class="btn" target="_blank" rel="noopener noreferrer">
         UGROFC • Consultoria Ambiental e Gestão
       </a>
     </div>
