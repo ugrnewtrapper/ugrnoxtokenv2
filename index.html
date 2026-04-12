@@ -95,6 +95,36 @@
       transform: translateY(-2px);
     }
 
+    /* 🔥 NOVO BLOCO (imagens escondidas corrigidas) */
+    .hidden-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+      opacity: 0.4;
+    }
+
+    .hidden-links a {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+
+    .hidden-links img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hidden-links img:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
     footer {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -121,6 +151,51 @@
     <!-- Logo -->
     <img src="images/logo2.png" alt="UGRNOXTOKEN Logo" class="logo">
 
+    <!-- Conteúdo -->
+    <h1>UGRNOXTOKEN</h1>
+    <h2>Tecnologia, dados e inteligência aplicados ao futebol</h2>
+
+    <p>
+      A <strong>UGRNOXTOKEN</strong> é uma plataforma desenvolvida para quem analisa futebol
+      de forma estratégica, profissional e orientada por dados.
+      <br><br>
+      Nosso ecossistema integra tecnologia moderna, processamento estatístico e inteligência analítica
+      para oferecer <strong>análises esportivas precisas</strong>, com foco em desempenho,
+      leitura de cenário e tomada de decisão.
+      <br><br>
+      Além do ativo digital, a plataforma disponibiliza ferramentas avançadas,
+      análises especializadas e produtos exclusivos,
+      desenvolvidos para usuários que valorizam consistência, clareza e visão de longo prazo.
+    </p>
+
+    <!-- Navegação -->
+    <div class="buttons">
+      <a href="pagina2.html" class="btn">Comprar Token UGR</a>
+      <a href="pagina3.html" class="btn">Análises Gratuitas</a>
+      <a href="pagina4.html" class="btn">Calculadora SureBet</a>
+      <a href="pagina5.html" class="btn">Análises Premium</a>
+      <a href="pagina6.html" class="btn">Raspadinha Oficial</a>
+    </div>
+
+    <!-- 🔥 IMAGENS ESCONDIDAS -->
+    <div class="hidden-links">
+      <a href="https://ugr.app.br/UGROFC">
+        <img src="images/ugrlogo.png" alt="UGR OFC">
+      </a>
+
+      <a href="https://ugr.app.br/UGRPISCINAS">
+        <img src="images/logo6.png" alt="UGR Piscinas">
+      </a>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+      <p>UGRNOXTOKEN • Versão 3.0 ULTRA</p>
+    </footer>
+
+  </main>
+</body>
+</html>
     <!-- Conteúdo -->
     <h1>UGRNOXTOKEN</h1>
     <h2>Tecnologia, dados e inteligência aplicados ao futebol</h2>
