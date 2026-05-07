@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGR Poisson Future 1.0</title>
+
+<style>
+:root {
+  --bg-main: #0f1216;
+  --bg-card: #151a21;
+  --primary: #1f6feb;
+  --primary-dark: #164fb3;
+  --text-main: #e6e6e6;
+  --text-muted: #a0a7b4;
+  --border-soft: rgba(255,255,255,0.08);
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0c0f14, var(--bg-main));
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+}
+
+main {
+  max-width: 900px;
+  width: 100%;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+h2 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+  font-weight: 400;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: #0c0f14;
+  color: var(--text-main);
+  width: 140px;
+  text-align: center;
+}
+
+.x {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+button {
+  padding: 14px 26px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: var(--primary-dark);
+}
+
+/* RESULTADOS */
+.result {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.box {
+  background: #0c0f14;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+}
+
+.title {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.value {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.green { background: rgba(34,197,94,0.15); color: var(--green); }
+.red { background: rgba(239,68,68,0.15); color: var(--red); }
+
+.footer-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<img src="images/logo2.png" class="logo">
+
+<h1>UGR POISSON FUTURE</h1>
+<h2>Versão 1.0 • Modelo estatístico 1X2 com EV automático</h2>
+
+<div class="card">
+
+  <div class="row">
+    <input id="homeAvg" type="number" step="0.1" placeholder="Média Casa">
+    <div class="x">X</div>
+    <input id="awayAvg" type="number" step="0.1" placeholder="Média Fora">
+  </div>
+
+  <div class="row">
+    <input id="odd1" type="number" step="0.01" placeholder="Odd 1">
+    <input id="oddX" type="number" step="0.01" placeholder="Odd X">
+    <input id="odd2" type="number" step="0.01" placeholder="Odd 2">
+  </div>
+
+  <button onclick="calcular()">Analisar Valor</button>
+
+  <div class="result" id="result"></div>
+
+</div>
+
+</main>
+
+<script>
+function factorial(n){
+  return n <= 1 ? 1 : n * factorial(n-1);
+}
+
+function poisson(l, k){
+  return (Math.pow(l,k) * Math.exp(-l)) / factorial(k);
+}
+
+function calcProb(home, away){
+  let max = 10;
+
+  let pH = 0, pD = 0, pA = 0;
+
+  for(let i=0;i<=max;i++){
+    for(let j=0;j<=max;j++){
+      let p = poisson(home,i) * poisson(away,j);
+
+      if(i>j) pH += p;
+      else if(i===j) pD += p;
+      else pA += p;
+    }
+  }
+
+  return {pH,pD,pA};
+}
+
+function box(title, value, ev){
+  let cls = ev > 0 ? "green" : "red";
+  let label = ev > 0 ? "VALUE BET" : "SEM VALOR";
+
+  return `
+    <div class="box">
+      <div class="title">${title}</div>
+      <div class="value">${(value*100).toFixed(2)}%</div>
+      <div class="badge ${cls}">${label}</div>
+    </div>
+  `;
+}
+
+function calcular(){
+
+  let home = parseFloat(document.getElementById("homeAvg").value);
+  let away = parseFloat(document.getElementById("awayAvg").value);
+
+  let odd1 = parseFloat(document.getElementById("odd1").value);
+  let oddX = parseFloat(document.getElementById("oddX").value);
+  let odd2 = parseFloat(document.getElementById("odd2").value);
+
+  if(!home || !away || !odd1 || !oddX || !odd2){
+    document.getElementById("result").innerHTML = "Preencha todos os campos.";
+    return;
+  }
+
+  let p = calcProb(home,away);
+
+  let ev1 = p.pH * odd1 - 1;
+  let evX = p.pD * oddX - 1;
+  let ev2 = p.pA * odd2 - 1;
+
+  document.getElementById("result").innerHTML = `
+    <div class="grid">
+
+      ${box("CASA (1)", p.pH, ev1)}
+      ${box("EMPATE (X)", p.pD, evX)}
+      ${box("VISITANTE (2)", p.pA, ev2)}
+
+    </div>
+
+    <div class="footer-note">
+      EV > 0 indica vantagem estatística baseada no modelo Poisson
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
