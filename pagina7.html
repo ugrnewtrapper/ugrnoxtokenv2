@@ -268,41 +268,21 @@ button:hover{
 
   background:#0a1119;
 
-  border:1px solid var(--line);
-
   border-radius:18px;
 
   padding:20px;
 
   transition:0.2s;
 
+  overflow:hidden;
+
+  position:relative;
+
 }
 
 .result-box:hover{
 
   transform:translateY(-3px);
-
-  border-color:rgba(59,130,246,0.25);
-
-}
-
-.result-title{
-
-  color:var(--muted);
-
-  font-size:0.85rem;
-
-  margin-bottom:12px;
-
-}
-
-.result-value{
-
-  font-size:2rem;
-
-  font-weight:800;
-
-  margin-bottom:14px;
 
 }
 
@@ -438,8 +418,6 @@ button:hover{
 
   <div class="card">
 
-    <!-- XG -->
-
     <div class="section-title">
 
       Dados Principais do Jogo
@@ -461,7 +439,6 @@ button:hover{
         <div class="desc">
 
           Insira o xG ofensivo esperado do mandante.
-          Use média recente ou xG ajustado.
 
         </div>
 
@@ -480,15 +457,12 @@ button:hover{
         <div class="desc">
 
           Insira o xG ofensivo esperado do visitante.
-          Pode usar xG fora de casa.
 
         </div>
 
       </div>
 
     </div>
-
-    <!-- ODDS -->
 
     <div class="section-title">
 
@@ -536,8 +510,6 @@ button:hover{
 
     </div>
 
-    <!-- AJUSTES -->
-
     <div class="section-title">
 
       Ajustes Inteligentes (Opcional)
@@ -556,13 +528,6 @@ button:hover{
 
         <input id="homeBoost" type="number" step="0.1" placeholder="0">
 
-        <div class="desc">
-
-          Use valores entre 0 e 0.5 para mando forte,
-          torcida, gramado ou sequência positiva.
-
-        </div>
-
       </div>
 
       <div class="input-box">
@@ -574,13 +539,6 @@ button:hover{
         </label>
 
         <input id="awayWeak" type="number" step="0.1" placeholder="0">
-
-        <div class="desc">
-
-          Use valores entre 0 e 0.5 para lesões,
-          suspensão, desgaste físico ou viagem longa.
-
-        </div>
 
       </div>
 
@@ -613,12 +571,6 @@ button:hover{
           </option>
 
         </select>
-
-        <div class="desc">
-
-          Ajusta intensidade competitiva da partida.
-
-        </div>
 
       </div>
 
@@ -724,10 +676,6 @@ function calcProb(home,away){
 
   }
 
-  /*
-  CORREÇÃO PROFISSIONAL DE EMPATE
-  */
-
   pD *= 1.12;
 
   return normalizeProbabilities(pH,pD,pA);
@@ -737,36 +685,6 @@ function calcProb(home,away){
 function getEV(prob,odd){
 
   return (prob * odd) - 1;
-
-}
-
-function getBadge(ev){
-
-  if(ev >= 0.08){
-
-    return `
-    <div class="badge green">
-      VALUE BET FORTE
-    </div>
-    `;
-
-  }
-
-  if(ev > 0){
-
-    return `
-    <div class="badge yellow">
-      VALUE BET MODERADO
-    </div>
-    `;
-
-  }
-
-  return `
-  <div class="badge red">
-    SEM VALOR
-  </div>
-  `;
 
 }
 
@@ -796,10 +714,6 @@ function marketProbability(odd){
 
 function blendProbability(model,market){
 
-  /*
-  REGRESSÃO AO MERCADO
-  */
-
   return (
 
     (model * 0.70) +
@@ -812,33 +726,157 @@ function blendProbability(model,market){
 
 function resultBox(title,prob,ev){
 
+  let isPositive = ev > 0;
+
   return `
 
-  <div class="result-box">
+  <div class="result-box" style="
+    border:${isPositive ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(239,68,68,0.25)'};
+    background:${isPositive ? '#07140d' : '#140707'};
+  ">
 
-    <div class="result-title">
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+    ">
 
-      ${title}
+      <div style="
+        font-size:0.9rem;
+        color:${isPositive ? '#22c55e' : '#ef4444'};
+        font-weight:700;
+      ">
+        ${isPositive ? title : 'SEM EV+'}
+      </div>
+
+      <div style="
+        font-size:2.3rem;
+      ">
+        ${isPositive ? '📈' : '📉'}
+      </div>
 
     </div>
 
-    <div class="result-value">
+    ${
+      isPositive
+      ?
+      `
+      <div style="
+        font-size:2rem;
+        font-weight:800;
+        color:#22c55e;
+        margin-bottom:10px;
+      ">
+        ${(prob * 100).toFixed(2)}%
+      </div>
 
-      ${(prob * 100).toFixed(2)}%
+      <div class="badge green">
+        EV+
+      </div>
 
-    </div>
+      <div class="info">
 
-    ${getBadge(ev)}
+        Resultado:
+        <b>${title}</b><br><br>
 
-    <div class="info">
+        EV:
+        <b>${(ev * 100).toFixed(2)}%</b><br><br>
 
-      EV:
-      <b>${(ev * 100).toFixed(2)}%</b>
+        Confiança:
+        <b>${getConfidence(ev)}</b>
 
-      <br><br>
+      </div>
+      `
+      :
+      `
+      <div style="
+        font-size:1.5rem;
+        font-weight:800;
+        color:#ef4444;
+        margin-bottom:12px;
+      ">
+        MERCADO NEGATIVO
+      </div>
 
-      Confiança:
-      <b>${getConfidence(ev)}</b>
+      <div class="badge red">
+        EV-
+      </div>
+
+      <div class="info">
+
+        Nenhum valor esperado encontrado.
+
+      </div>
+      `
+    }
+
+    <div style="
+      margin-top:18px;
+      height:85px;
+      border-radius:14px;
+      overflow:hidden;
+      background:#091019;
+      border:1px solid rgba(255,255,255,0.05);
+    ">
+
+      <svg width="100%" height="100%" viewBox="0 0 300 85" preserveAspectRatio="none">
+
+        ${
+          isPositive
+          ?
+          `
+          <polyline
+            fill="none"
+            stroke="#22c55e"
+            stroke-width="4"
+            points="
+            0,75
+            40,70
+            80,62
+            120,50
+            160,42
+            200,28
+            240,16
+            300,4
+            "
+          />
+
+          <line x1="40" y1="70" x2="40" y2="58" stroke="#22c55e" stroke-width="6"/>
+          <line x1="80" y1="62" x2="80" y2="46" stroke="#22c55e" stroke-width="6"/>
+          <line x1="120" y1="50" x2="120" y2="30" stroke="#22c55e" stroke-width="6"/>
+          <line x1="160" y1="42" x2="160" y2="20" stroke="#22c55e" stroke-width="6"/>
+          <line x1="200" y1="28" x2="200" y2="12" stroke="#22c55e" stroke-width="6"/>
+          <line x1="240" y1="16" x2="240" y2="2" stroke="#22c55e" stroke-width="6"/>
+          `
+          :
+          `
+          <polyline
+            fill="none"
+            stroke="#ef4444"
+            stroke-width="4"
+            points="
+            0,10
+            40,18
+            80,28
+            120,40
+            160,52
+            200,62
+            240,72
+            300,82
+            "
+          />
+
+          <line x1="40" y1="18" x2="40" y2="32" stroke="#ef4444" stroke-width="6"/>
+          <line x1="80" y1="28" x2="80" y2="44" stroke="#ef4444" stroke-width="6"/>
+          <line x1="120" y1="40" x2="120" y2="56" stroke="#ef4444" stroke-width="6"/>
+          <line x1="160" y1="52" x2="160" y2="68" stroke="#ef4444" stroke-width="6"/>
+          <line x1="200" y1="62" x2="200" y2="78" stroke="#ef4444" stroke-width="6"/>
+          <line x1="240" y1="72" x2="240" y2="84" stroke="#ef4444" stroke-width="6"/>
+          `
+        }
+
+      </svg>
 
     </div>
 
@@ -874,10 +912,6 @@ function calcular(){
   let motivation =
   parseFloat(document.getElementById("motivation").value) || 0;
 
-  /*
-  VALIDAÇÃO
-  */
-
   if(
 
     isNaN(home) ||
@@ -904,10 +938,6 @@ function calcular(){
 
   }
 
-  /*
-  LIMITES DE SEGURANÇA
-  */
-
   home =
   Math.min(Math.max(home,0.2),4);
 
@@ -919,10 +949,6 @@ function calcular(){
 
   awayWeak =
   Math.min(Math.max(awayWeak,0),0.5);
-
-  /*
-  AJUSTES CALIBRADOS
-  */
 
   let adjustedHome =
 
@@ -942,26 +968,14 @@ function calcular(){
 
   (homeBoost * 0.10);
 
-  /*
-  PISO MÍNIMO
-  */
-
   if(adjustedAway < 0.25){
 
     adjustedAway = 0.25;
 
   }
 
-  /*
-  PROBABILIDADES POISSON
-  */
-
   let p =
   calcProb(adjustedHome,adjustedAway);
-
-  /*
-  PROBABILIDADES DO MERCADO
-  */
 
   let marketH =
   marketProbability(odd1);
@@ -979,10 +993,6 @@ function calcular(){
   marketD /= marketTotal;
   marketA /= marketTotal;
 
-  /*
-  BLEND MODELO + MERCADO
-  */
-
   let finalH =
   blendProbability(p.pH,marketH);
 
@@ -992,20 +1002,12 @@ function calcular(){
   let finalA =
   blendProbability(p.pA,marketA);
 
-  /*
-  NORMALIZAÇÃO FINAL
-  */
-
   let normalized =
   normalizeProbabilities(
     finalH,
     finalD,
     finalA
   );
-
-  /*
-  EV FINAL
-  */
 
   let ev1 =
   getEV(normalized.pH,odd1);
@@ -1015,10 +1017,6 @@ function calcular(){
 
   let ev2 =
   getEV(normalized.pA,odd2);
-
-  /*
-  OUTPUT
-  */
 
   document.getElementById("result").innerHTML =
 
@@ -1035,32 +1033,19 @@ function calcular(){
 
   <div class="info">
 
-    <b>Modelo utilizado:</b><br>
+    <b>Leitura do gráfico:</b><br><br>
 
-    Poisson Ajustado +
-    Correção de Empate +
-    Regressão ao Mercado +
-    Controle de Overfitting.<br><br>
+    📈 Verde → Mercado com EV+ encontrado<br>
+    📉 Vermelho → Mercado sem valor esperado<br><br>
 
-    <b>Como interpretar:</b><br><br>
-
-    • VALUE BET FORTE → EV acima de 8%<br>
-    • VALUE BET MODERADO → EV positivo<br>
-    • SEM VALOR → EV negativo<br><br>
-
-    <b>Confiança:</b><br>
-
-    • ALTA → forte alinhamento estatístico<br>
-    • MODERADA → entrada aceitável<br>
-    • BAIXA → alta variância ou edge fraco<br><br>
-
-    O sistema continua funcionando mesmo sem os ajustes opcionais.
+    Apenas mercados positivos exibem
+    porcentagem e edge estatística.
 
   </div>
 
   <div class="footer">
 
-    UGR Future PRO • Engine Estatística Adaptativa v2.0
+    UGR Future PRO • EV Candlestick Engine v3.0
 
   </div>
 
