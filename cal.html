@@ -80,6 +80,27 @@ input{
 .vermelho{
     color:#ff4d4d;
 }
+
+.botoes{
+    margin-top:25px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+button{
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:17px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
 </style>
 
 </head>
@@ -105,33 +126,70 @@ R$ 0,00
 </div>
 
 <div class="box">
-<h2>🥂 Brinde (2%)</h2>
+<h2>🥂 Brinde</h2>
 <div id="brinde" class="valor vermelho">
 R$ 0,00
 </div>
+</div>
+
+<div class="botoes">
+
+<button onclick="primeiraCompra()">
+Primeira compra
+</button>
+
+<button onclick="segundaCompra()">
+Segunda compra
+</button>
+
+<button onclick="reiniciar()">
+Reiniciar
+</button>
+
 </div>
 
 </div>
 
 <script>
 
+let percentualAlcool = 0.02;
+
 function calcular(){
 
 let saldo = parseFloat(document.getElementById("saldo").value) || 0;
 
 let mary = saldo * 0.06;
-let brinde = saldo * 0.02;
+let brinde = saldo * percentualAlcool;
 
 let maryDiv = document.getElementById("mary");
 let brindeDiv = document.getElementById("brinde");
 
 maryDiv.innerHTML = "R$ " + mary.toFixed(2).replace(".",",");
+
 brindeDiv.innerHTML = "R$ " + brinde.toFixed(2).replace(".",",");
 
 maryDiv.className = "valor " + (mary >= 50 ? "verde" : "vermelho");
+
 brindeDiv.className = "valor " + (brinde >= 5 ? "verde" : "vermelho");
 
 }
+
+function primeiraCompra(){
+    percentualAlcool = 0.01;
+    calcular();
+}
+
+function segundaCompra(){
+    percentualAlcool = 0.00;
+    calcular();
+}
+
+function reiniciar(){
+    percentualAlcool = 0.02;
+    calcular();
+}
+
+calcular();
 
 </script>
 
