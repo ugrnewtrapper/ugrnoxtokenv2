@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limite X</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    color:#fff;
+}
+
+.card{
+    width:90%;
+    max-width:420px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(10px);
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+h1{
+    font-size:34px;
+    margin-bottom:25px;
+    letter-spacing:2px;
+}
+
+label{
+    font-size:18px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    margin-bottom:25px;
+    border:none;
+    border-radius:12px;
+    text-align:center;
+    font-size:22px;
+}
+
+.box{
+    background:rgba(255,255,255,.12);
+    border-radius:15px;
+    padding:18px;
+    margin-top:18px;
+}
+
+.box h2{
+    margin-bottom:10px;
+    font-size:22px;
+}
+
+.valor{
+    font-size:34px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.verde{
+    color:#38ff74;
+}
+
+.vermelho{
+    color:#ff4d4d;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<h1>Limite X</h1>
+
+<label>Saldo</label>
+
+<input
+type="number"
+id="saldo"
+placeholder="Digite seu saldo"
+oninput="calcular()">
+
+<div class="box">
+<h2>🍃 Mary Jane (6%)</h2>
+<div id="mary" class="valor vermelho">
+R$ 0,00
+</div>
+</div>
+
+<div class="box">
+<h2>🥂 Brinde (2%)</h2>
+<div id="brinde" class="valor vermelho">
+R$ 0,00
+</div>
+</div>
+
+</div>
+
+<script>
+
+function calcular(){
+
+let saldo = parseFloat(document.getElementById("saldo").value) || 0;
+
+let mary = saldo * 0.06;
+let brinde = saldo * 0.02;
+
+let maryDiv = document.getElementById("mary");
+let brindeDiv = document.getElementById("brinde");
+
+maryDiv.innerHTML = "R$ " + mary.toFixed(2).replace(".",",");
+brindeDiv.innerHTML = "R$ " + brinde.toFixed(2).replace(".",",");
+
+maryDiv.className = "valor " + (mary >= 50 ? "verde" : "vermelho");
+brindeDiv.className = "valor " + (brinde >= 5 ? "verde" : "vermelho");
+
+}
+
+</script>
+
+</body>
+</html>
