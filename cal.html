@@ -39,7 +39,7 @@ bt.innerHTML='R$ '+bets.toFixed(2).replace('.',',');
 md.className='valor '+(mary>=50?'verde':'vermelho');
 bd.className='valor '+(brinde>=5?'verde':'vermelho');
 if(bets>=10){bt.className='valor verde';m.innerHTML='Apostas liberadas. Limite diário: 1% do dinheiro informado.';}
-else{bt.className='valor vermelho';m.innerHTML='Apostas bloqueadas. O limite mínimo diário é R$ 10,00. Informe pelo menos R$ 1.000,00.';}
+else{bt.className='valor vermelho';m.innerHTML='Apostas bloqueadas. O limite mínimo diário é R$ 10,00.';}
 }
 function primeiraCompra(){percentualAlcool=0.01;calcular();}
 function segundaCompra(){percentualAlcool=0;calcular();}
