@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>SOBERANO 14.0 PREMIUM</title>
+
+<link rel="icon" href="images/logo2.png">
+
+
+<style>
+
+/* =========================================================
+   SOBERANO 14.0 PREMIUM
+   IDENTIDADE VISUAL ORIGINAL
+   ========================================================= */
+
+:root{
+
+    --bg-main:#0f1216;
+    --bg-card:#151a21;
+    --primary:#1f6feb;
+
+    --text:#e6e6e6;
+    --muted:#a0a7b4;
+
+    --border:rgba(255,255,255,.08);
+
+    --verde:#38ff74;
+    --vermelho:#ff4d4d;
+
+}
+
+
+/* RESET */
+
+*{
+
+    margin:0;
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+}
+
+
+/* CORPO */
+
+body{
+
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(31,111,235,.14),
+            transparent 38%
+        ),
+        linear-gradient(
+            180deg,
+            #0c0f14,
+            var(--bg-main)
+        );
+
+    color:var(--text);
+
+    padding:20px 14px;
+
+}
+
+
+/* CONTAINER */
+
+.container{
+
+    width:100%;
+
+    max-width:620px;
+
+    margin:auto;
+
+}
+
+
+/* CARD PRINCIPAL */
+
+.card{
+
+    width:100%;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35);
+
+}
+
+
+/* CABEÇALHO */
+
+.header{
+
+    text-align:center;
+
+    padding:28px 20px;
+
+}
+
+
+/* LOGO */
+
+.logo{
+
+    width:110px;
+
+    max-width:45%;
+
+    margin-bottom:12px;
+
+}
+
+
+/* NOME */
+
+h1{
+
+    color:var(--primary);
+
+    font-size:30px;
+
+    letter-spacing:2px;
+
+    margin-bottom:5px;
+
+}
+
+
+/* VERSÃO */
+
+.version{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+}
+
+
+/* FRASE */
+
+.motivacional{
+
+    margin-top:22px;
+
+    padding:20px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+}
+
+
+.frase{
+
+    font-size:20px;
+
+    line-height:1.5;
+
+    font-weight:bold;
+
+}
+
+
+.frase-destaque{
+
+    color:var(--primary);
+
+}
+
+
+.subfrase{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.5;
+
+}
+
+
+/* TÍTULOS */
+
+.titulo{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
+
+/* DATA */
+
+.data-box{
+
+    text-align:center;
+
+}
+
+
+.data-box label{
+
+    display:block;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:8px;
+
+}
+
+
+#dataAtual{
+
+    width:100%;
+
+    padding:15px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    color:white;
+
+    font-size:18px;
+
+    text-align:center;
+
+    outline:none;
+
+}
+
+
+#dataAtual:focus{
+
+    border-color:var(--primary);
+
+}
+
+
+/* BOTÃO */
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:10px;
+
+    background:var(--primary);
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+    filter:brightness(1.1);
+
+}
+
+
+/* DATA ATUAL EXIBIDA */
+
+.data-exibida{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:10px;
+
+}
+
+
+/* HÁBITO */
+
+.habito{
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    margin-bottom:14px;
+
+}
+
+
+.habito:last-child{
+
+    margin-bottom:0;
+
+}
+
+
+/* CABEÇALHO DO HÁBITO */
+
+.habito-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+
+.habito-nome{
+
+    font-size:19px;
+
+    font-weight:bold;
+
+}
+
+
+/* STATUS */
+
+.status{
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    letter-spacing:.5px;
+
+    padding:6px 9px;
+
+    border-radius:20px;
+
+}
+
+
+.status-bloqueado{
+
+    color:var(--vermelho);
+
+    background:rgba(255,77,77,.08);
+
+    border:1px solid rgba(255,77,77,.2);
+
+}
+
+
+/* CONTADOR */
+
+.contador{
+
+    text-align:center;
+
+    margin:18px 0 3px;
+
+}
+
+
+.numero{
+
+    font-size:48px;
+
+    line-height:1;
+
+    font-weight:bold;
+
+    color:var(--verde);
+
+}
+
+
+.texto-dias{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    margin-top:7px;
+
+}
+
+
+/* INFORMAÇÕES */
+
+.info-habito{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:13px;
+
+}
+
+
+/* BLOQUEIO */
+
+.bloqueio{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:rgba(255,77,77,.06);
+
+    border:1px solid rgba(255,77,77,.15);
+
+    color:var(--vermelho);
+
+    text-align:center;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    line-height:1.5;
+
+}
+
+
+/* ANOTAÇÃO */
+
+textarea{
+
+    width:100%;
+
+    min-height:120px;
+
+    resize:vertical;
+
+    padding:14px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    color:white;
+
+    outline:none;
+
+    font-size:14px;
+
+}
+
+
+textarea:focus{
+
+    border-color:var(--primary);
+
+}
+
+
+/* RODAPÉ */
+
+.footer{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    padding:5px 0 15px;
+
+    letter-spacing:.5px;
+
+}
+
+
+/* RESPONSIVO */
+
+@media(max-width:450px){
+
+    .card{
+
+        padding:20px;
+
+    }
+
+    h1{
+
+        font-size:26px;
+
+    }
+
+    .frase{
+
+        font-size:18px;
+
+    }
+
+    .numero{
+
+        font-size:43px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<!-- ======================================================
+     CABEÇALHO
+     ====================================================== -->
+
+<div class="card header">
+
+
+    <img
+        src="images/logo2.png"
+        class="logo"
+        alt="SOBERANO">
+
+
+    <h1>SOBERANO</h1>
+
+
+    <div class="version">
+        14.0 PREMIUM
+    </div>
+
+
+    <div class="motivacional">
+
+        <div class="frase">
+
+            “Vagão não puxa trem.
+            <span class="frase-destaque">
+                Você vai continuar sendo puxado
+            </span>
+            ou vai assumir o comando da sua própria vida?”
+
+        </div>
+
+
+        <div class="subfrase">
+
+            Quem governa seus hábitos governa seus caminhos.
+            Encerre o que te domina. Assuma o controle.
+            O seu reinado começa quando você decide mudar.
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     DATA ATUAL
+     ====================================================== -->
+
+<div class="card">
+
+
+    <div class="titulo">
+        📅 DATA DE CONTROLE
+    </div>
+
+
+    <div class="data-box">
+
+        <label for="dataAtual">
+            Informe a data que será usada nos cálculos
+        </label>
+
+
+        <input
+            type="date"
+            id="dataAtual">
+
+
+        <button onclick="recalcular()">
+            RECALCULAR CONTADORES
+        </button>
+
+
+        <div
+            class="data-exibida"
+            id="dataExibida">
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     CONTADORES
+     ====================================================== -->
+
+<div class="card">
+
+
+    <div class="titulo">
+        👑 MEU REINADO
+    </div>
+
+
+    <div id="listaHabitos"></div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     ANOTAÇÕES
+     ====================================================== -->
+
+<div class="card">
+
+
+    <div class="titulo">
+        📝 ANOTAÇÕES
+    </div>
+
+
+    <textarea
+        id="anotacoes"
+        placeholder="Escreva aqui seus pensamentos, objetivos, motivos para continuar ou qualquer anotação importante..."></textarea>
+
+
+    <button onclick="salvarAnotacoes()">
+        SALVAR ANOTAÇÕES
+    </button>
+
+
+</div>
+
+
+
+<!-- RODAPÉ -->
+
+<div class="footer">
+
+    SOBERANO • 14.0 PREMIUM<br>
+    DOMÍNIO • DISCIPLINA • RECOMEÇO
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   CONFIGURAÇÃO DOS HÁBITOS
+
+   ADICIONE NOVOS HÁBITOS AQUI.
+
+   Formato:
+
+   {
+       nome: "Nome do hábito",
+       inicio: "DD/MM/AAAA",
+       bloqueado: false
+   }
+
+   Para um bloqueio permanente:
+
+   bloqueado: true
+
+   ========================================================= */
+
+
+const HABITOS = [
+
+
+    {
+        nome: "Álcool",
+        inicio: "09/08/2026",
+        bloqueado: true
+    },
+
+
+    /*
+    EXEMPLO DE NOVO HÁBITO:
+
+    {
+        nome: "Outro hábito",
+        inicio: "12/08/2026",
+        bloqueado: false
+    },
+
+    */
+
+
+];
+
+
+
+/* =========================================================
+   CONVERTER DATA DD/MM/AAAA
+   ========================================================= */
+
+function converterData(data){
+
+    const partes = data.split("/");
+
+    return new Date(
+        Number(partes[2]),
+        Number(partes[1]) - 1,
+        Number(partes[0])
+    );
+
+}
+
+
+
+/* =========================================================
+   FORMATAR DATA
+   ========================================================= */
+
+function formatarData(data){
+
+    const dia =
+        String(data.getDate()).padStart(2,"0");
+
+    const mes =
+        String(data.getMonth() + 1).padStart(2,"0");
+
+    const ano =
+        data.getFullYear();
+
+    return `${dia}/${mes}/${ano}`;
+
+}
+
+
+
+/* =========================================================
+   CALCULAR DIAS
+   ========================================================= */
+
+function calcularDias(inicio, atual){
+
+    const dataInicio =
+        converterData(inicio);
+
+    const dataAtual =
+        new Date(atual);
+
+    /*
+       Remove horas para evitar problemas
+       de horário de verão/fuso.
+    */
+
+    dataInicio.setHours(0,0,0,0);
+
+    dataAtual.setHours(0,0,0,0);
+
+
+    const diferenca =
+        dataAtual - dataInicio;
+
+
+    const dias =
+        Math.floor(
+            diferenca /
+            (1000 * 60 * 60 * 24)
+        );
+
+
+    return Math.max(0,dias);
+
+}
+
+
+
+/* =========================================================
+   RENDERIZAR HÁBITOS
+   ========================================================= */
+
+function renderizarHabitos(){
+
+    const lista =
+        document.getElementById("listaHabitos");
+
+
+    lista.innerHTML = "";
+
+
+    const campoData =
+        document.getElementById("dataAtual");
+
+
+    if(!campoData.value){
+
+        return;
+
+    }
+
+
+    const dataAtual =
+        new Date(
+            campoData.value + "T00:00:00"
+        );
+
+
+    document.getElementById("dataExibida").innerHTML =
+        "Calculando com a data: <strong>" +
+        formatarData(dataAtual) +
+        "</strong>";
+
+
+
+    HABITOS.forEach(function(habito){
+
+
+        const dias =
+            calcularDias(
+                habito.inicio,
+                dataAtual
+            );
+
+
+        const div =
+            document.createElement("div");
+
+
+        div.className =
+            "habito";
+
+
+        let bloqueioHTML = "";
+
+
+        if(habito.bloqueado){
+
+            bloqueioHTML = `
+
+                <div class="bloqueio">
+
+                    🔒 BLOQUEIO PERMANENTE
+
+                    <br>
+
+                    Este hábito foi encerrado
+                    definitivamente em
+                    ${habito.inicio}.
+
+                </div>
+
+            `;
+
+        }
+
+
+
+        div.innerHTML = `
+
+            <div class="habito-header">
+
+                <div class="habito-nome">
+
+                    ${escaparHTML(habito.nome)}
+
+                </div>
+
+
+                ${
+                    habito.bloqueado
+
+                    ?
+
+                    `<div class="status status-bloqueado">
+                        BLOQUEADO
+                    </div>`
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+
+
+            <div class="contador">
+
+                <div class="numero">
+                    ${dias}
+                </div>
+
+
+                <div class="texto-dias">
+
+                    ${dias === 1 ? "DIA" : "DIAS"}
+
+                    SEM
+
+                    ${escaparHTML(
+                        habito.nome.toUpperCase()
+                    )}
+
+                </div>
+
+            </div>
+
+
+
+            <div class="info-habito">
+
+                Início:
+                ${habito.inicio}
+
+            </div>
+
+
+            ${bloqueioHTML}
+
+        `;
+
+
+        lista.appendChild(div);
+
+
+    });
+
+}
+
+
+
+/* =========================================================
+   RECALCULAR
+   ========================================================= */
+
+function recalcular(){
+
+    const campo =
+        document.getElementById("dataAtual");
+
+
+    if(!campo.value){
+
+        alert(
+            "Informe uma data para realizar o cálculo."
+        );
+
+        return;
+
+    }
+
+
+    renderizarHabitos();
+
+}
+
+
+
+/* =========================================================
+   DATA PADRÃO
+
+   A página abre usando a data atual do aparelho.
+
+   VOCÊ PODE ALTERAR NA TELA.
+
+   ========================================================= */
+
+function definirDataAtual(){
+
+    const hoje =
+        new Date();
+
+
+    const ano =
+        hoje.getFullYear();
+
+
+    const mes =
+        String(
+            hoje.getMonth() + 1
+        ).padStart(2,"0");
+
+
+    const dia =
+        String(
+            hoje.getDate()
+        ).padStart(2,"0");
+
+
+    document.getElementById("dataAtual").value =
+        `${ano}-${mes}-${dia}`;
+
+}
+
+
+
+/* =========================================================
+   ANOTAÇÕES
+
+   Salva no navegador.
+
+   ========================================================= */
+
+function salvarAnotacoes(){
+
+    const texto =
+        document.getElementById("anotacoes").value;
+
+
+    localStorage.setItem(
+        "soberano14_anotacoes",
+        texto
+    );
+
+
+    alert(
+        "Anotação salva com sucesso."
+    );
+
+}
+
+
+
+/* =========================================================
+   CARREGAR ANOTAÇÕES
+   ========================================================= */
+
+function carregarAnotacoes(){
+
+    const texto =
+        localStorage.getItem(
+            "soberano14_anotacoes"
+        );
+
+
+    if(texto !== null){
+
+        document.getElementById(
+            "anotacoes"
+        ).value = texto;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SEGURANÇA BÁSICA
+   ========================================================= */
+
+function escaparHTML(texto){
+
+    return texto
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#039;");
+
+}
+
+
+
+/* =========================================================
+   ENTER NO CAMPO DE DATA
+   ========================================================= */
+
+document
+    .getElementById("dataAtual")
+    .addEventListener(
+        "change",
+        recalcular
+    );
+
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+definirDataAtual();
+
+carregarAnotacoes();
+
+recalcular();
+
+
+</script>
+
+
+</body>
+
+</html>
