@@ -8,7 +8,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1">
 
-<title>RESTRIÇÃO COCA-COLA • 14.7 SOBERANO</title>
+<title>RESTRIÇÃO COCA-COLA • SOBERANO 14.7</title>
 
 <link rel="icon" href="images/logo2.png">
 
@@ -23,17 +23,13 @@
 
     --bg-main:#0f1216;
     --bg-card:#151a21;
-    --bg-item:#0f1216;
-
     --primary:#1f6feb;
-    --primary-dark:#1554b8;
 
     --text:#e6e6e6;
     --muted:#a0a7b4;
 
     --border:rgba(255,255,255,.08);
 
-    --verde:#38ff74;
     --vermelho:#ff4d4d;
 
 }
@@ -237,7 +233,7 @@ h1{
 
 
 /* =========================================================
-   TÍTULOS
+   TÍTULO DA LISTA
    ========================================================= */
 
 .titulo{
@@ -257,9 +253,9 @@ h1{
 
 .aviso{
 
-    background:rgba(31,111,235,.07);
+    background:#0f1216;
 
-    border:1px solid rgba(31,111,235,.2);
+    border:1px solid var(--border);
 
     border-radius:12px;
 
@@ -272,108 +268,6 @@ h1{
     line-height:1.5;
 
     margin-bottom:18px;
-
-}
-
-
-.aviso strong{
-
-    color:var(--text);
-
-}
-
-
-/* =========================================================
-   RESUMO
-   ========================================================= */
-
-.resumo{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:10px;
-
-    margin-bottom:18px;
-
-}
-
-
-.resumo-box{
-
-    background:#0f1216;
-
-    border:1px solid var(--border);
-
-    border-radius:12px;
-
-    padding:14px;
-
-    text-align:center;
-
-}
-
-
-.resumo-numero{
-
-    font-size:27px;
-
-    font-weight:bold;
-
-    color:var(--verde);
-
-}
-
-
-.resumo-label{
-
-    color:var(--muted);
-
-    font-size:11px;
-
-    margin-top:4px;
-
-}
-
-
-/* =========================================================
-   PESQUISA
-   ========================================================= */
-
-.busca{
-
-    width:100%;
-
-    padding:14px 15px;
-
-    background:#0f1216;
-
-    border:1px solid var(--border);
-
-    border-radius:10px;
-
-    color:white;
-
-    font-size:14px;
-
-    outline:none;
-
-    margin-bottom:15px;
-
-}
-
-
-.busca:focus{
-
-    border-color:var(--primary);
-
-}
-
-
-.busca::placeholder{
-
-    color:#737b89;
 
 }
 
@@ -394,7 +288,7 @@ h1{
 
 
 /* =========================================================
-   ITEM
+   ITEM DA MARCA
    ========================================================= */
 
 .marca{
@@ -403,37 +297,55 @@ h1{
 
     align-items:center;
 
-    justify-content:space-between;
+    gap:14px;
 
-    gap:12px;
+    padding:16px;
 
-    padding:15px;
-
-    background:var(--bg-item);
+    background:#0f1216;
 
     border:1px solid var(--border);
 
     border-radius:13px;
 
-    transition:.2s ease;
-
 }
 
 
-.marca:hover{
+/* =========================================================
+   ÍCONE
+   ========================================================= */
 
-    border-color:rgba(31,111,235,.35);
+.marca-icone{
+
+    width:40px;
+
+    height:40px;
+
+    min-width:40px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:rgba(31,111,235,.08);
+
+    border:1px solid rgba(31,111,235,.16);
+
+    color:var(--primary);
+
+    font-size:18px;
 
 }
 
 
 /* =========================================================
-   INFORMAÇÕES DA MARCA
+   INFORMAÇÕES
    ========================================================= */
 
 .marca-info{
-
-    min-width:0;
 
     flex:1;
 
@@ -449,7 +361,7 @@ h1{
 }
 
 
-.marca-categoria{
+.marca-descricao{
 
     color:var(--muted);
 
@@ -464,193 +376,25 @@ h1{
    STATUS
    ========================================================= */
 
-.marca-status{
-
-    font-size:9px;
-
-    font-weight:bold;
-
-    letter-spacing:.7px;
-
-    padding:5px 8px;
-
-    border-radius:20px;
-
-    margin-top:7px;
-
-    display:inline-block;
-
-}
-
-
-.status-restrita{
+.status{
 
     color:var(--vermelho);
 
     background:rgba(255,77,77,.08);
 
-    border:1px solid rgba(255,77,77,.2);
+    border:1px solid rgba(255,77,77,.18);
 
-}
+    padding:6px 9px;
 
+    border-radius:20px;
 
-.status-livre{
-
-    color:var(--muted);
-
-    background:rgba(255,255,255,.04);
-
-    border:1px solid var(--border);
-
-}
-
-
-/* =========================================================
-   CHECKBOX
-   ========================================================= */
-
-.checkbox{
-
-    position:relative;
-
-    width:25px;
-
-    height:25px;
-
-    flex-shrink:0;
-
-}
-
-
-.checkbox input{
-
-    position:absolute;
-
-    opacity:0;
-
-    width:0;
-
-    height:0;
-
-}
-
-
-.checkmark{
-
-    position:absolute;
-
-    inset:0;
-
-    border-radius:8px;
-
-    border:2px solid #414956;
-
-    background:#11151a;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-
-.checkbox input:checked + .checkmark{
-
-    background:var(--primary);
-
-    border-color:var(--primary);
-
-}
-
-
-.checkbox input:checked + .checkmark::after{
-
-    content:"✓";
-
-    position:absolute;
-
-    color:white;
-
-    font-size:16px;
+    font-size:9px;
 
     font-weight:bold;
 
-    left:5px;
+    letter-spacing:.5px;
 
-    top:1px;
-
-}
-
-
-/* =========================================================
-   BOTÕES
-   ========================================================= */
-
-button{
-
-    width:100%;
-
-    padding:14px;
-
-    margin-top:10px;
-
-    background:var(--primary);
-
-    color:white;
-
-    border:none;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-
-button:hover{
-
-    background:var(--primary-dark);
-
-}
-
-
-.botao-secundario{
-
-    background:#0f1216;
-
-    border:1px solid var(--border);
-
-    color:var(--muted);
-
-}
-
-
-.botao-secundario:hover{
-
-    background:#181d24;
-
-    color:white;
-
-}
-
-
-/* =========================================================
-   VAZIO
-   ========================================================= */
-
-.vazio{
-
-    text-align:center;
-
-    padding:25px 10px;
-
-    color:var(--muted);
-
-    font-size:13px;
+    white-space:nowrap;
 
 }
 
@@ -716,18 +460,12 @@ button:hover{
 
     }
 
-}
 
+    .status{
 
-/* =========================================================
-   REDUÇÃO DE MOVIMENTO
-   ========================================================= */
+        font-size:8px;
 
-@media(prefers-reduced-motion:reduce){
-
-    *{
-
-        transition:none !important;
+        padding:5px 7px;
 
     }
 
@@ -802,7 +540,7 @@ button:hover{
 
 
 <!-- ======================================================
-     LISTA DE RESTRIÇÃO
+     LISTA DE MARCAS
      ====================================================== -->
 
 <div class="card">
@@ -817,88 +555,348 @@ button:hover{
 
     <div class="aviso">
 
-        <strong>ATENÇÃO:</strong>
-        esta lista trabalha com
-        <strong>marcas e linhas de bebidas</strong>,
-        e não com cada sabor, tamanho ou produto
-        individualmente.
-
-        A lista pode ser editada diretamente no código.
+        Lista de marcas e submarcas relacionadas ao
+        portfólio da Coca-Cola. A restrição considera
+        a marca, independentemente de sabor, tamanho
+        ou apresentação.
 
     </div>
 
 
-    <!-- RESUMO -->
-
-    <div class="resumo">
+    <div class="lista">
 
 
-        <div class="resumo-box">
+        <!-- =================================================
+             COCA-COLA
+             ================================================= -->
 
-            <div
-                class="resumo-numero"
-                id="totalMarcas">
+        <div class="marca">
 
-                0
+            <div class="marca-icone">
+
+                ✕ 
 
             </div>
 
-            <div class="resumo-label">
+            <div class="marca-info">
 
-                MARCAS
+                <div class="marca-nome">
+
+                    Coca-Cola
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Refrigerantes
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
 
             </div>
 
         </div>
 
 
-        <div class="resumo-box">
+        <!-- =================================================
+             MONSTER
+             ================================================= -->
 
-            <div
-                class="resumo-numero"
-                id="totalRestritas">
+        <div class="marca">
 
-                0
+            <div class="marca-icone">
+
+                ✕
 
             </div>
 
-            <div class="resumo-label">
+            <div class="marca-info">
 
-                RESTRITAS
+                <div class="marca-nome">
+
+                    Monster
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Bebidas energéticas
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
 
             </div>
 
         </div>
 
 
+        <!-- =================================================
+             POWERADE
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Powerade
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Bebidas esportivas
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DEL VALLE
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Del Valle
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Bebidas de frutas
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FANTA
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Fanta
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Refrigerantes
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SPRITE
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Sprite
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Refrigerantes
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SCHWEPPES
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Schweppes
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Refrigerantes e mixers
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             KAPO
+             ================================================= -->
+
+        <div class="marca">
+
+            <div class="marca-icone">
+
+                ✕
+
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+
+                    Kapo
+
+                </div>
+
+                <div class="marca-descricao">
+
+                    Bebidas de frutas
+
+                </div>
+
+            </div>
+
+            <div class="status">
+
+                RESTRITO
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             POWERADE / OUTRAS
+             =================================================
+
+             PARA ADICIONAR UMA NOVA MARCA,
+             COPIE O BLOCO ABAIXO:
+
+        <div class="marca">
+
+            <div class="marca-icone">
+                ✕
+            </div>
+
+            <div class="marca-info">
+
+                <div class="marca-nome">
+                    NOME DA MARCA
+                </div>
+
+                <div class="marca-descricao">
+                    CATEGORIA
+                </div>
+
+            </div>
+
+            <div class="status">
+                RESTRITO
+            </div>
+
+        </div>
+
+        -->
+
+
     </div>
-
-
-    <!-- PESQUISA -->
-
-    <input
-        type="text"
-        id="busca"
-        class="busca"
-        placeholder="Pesquisar marca...">
-
-
-    <!-- LISTA -->
-
-    <div
-        id="listaMarcas"
-        class="lista">
-
-    </div>
-
-
-    <button
-        class="botao-secundario"
-        onclick="restaurarRestricoes()">
-
-        RESTAURAR RESTRIÇÕES
-
-    </button>
 
 
 </div>
@@ -910,7 +908,7 @@ button:hover{
 
 <div class="footer">
 
-    RESTRIÇÃO COCA-COLA • 14.7 SOBERANO<br>
+    RESTRIÇÃO COCA-COLA • SOBERANO 14.7<br>
 
     DOMÍNIO • DISCIPLINA • RECOMEÇO
 
@@ -920,479 +918,6 @@ button:hover{
 </div>
 
 
-<script>
+</body>
 
-
-/* =========================================================
-   MARCAS
-   =========================================================
-
-   IMPORTANTE:
-
-   Aqui são colocadas MARCAS/LINHAS,
-   não cada produto individual.
-
-   "restrita: true" =
-   começa marcada como restrita.
-
-   ========================================================= */
-
-const MARCAS = [
-
-    {
-        nome: "COCA-COLA",
-        categoria: "Refrigerante",
-        restrita: true
-    },
-
-    {
-        nome: "FANTA",
-        categoria: "Refrigerante",
-        restrita: true
-    },
-
-    {
-        nome: "SPRITE",
-        categoria: "Refrigerante",
-        restrita: true
-    },
-
-    {
-        nome: "SCHWEPPES",
-        categoria: "Refrigerante / Mixer",
-        restrita: true
-    },
-
-    {
-        nome: "KUAT",
-        categoria: "Refrigerante",
-        restrita: true
-    },
-
-    {
-        nome: "GUARANÁ JESUS",
-        categoria: "Refrigerante",
-        restrita: true
-    },
-
-    {
-        nome: "DEL VALLE",
-        categoria: "Sucos e bebidas de frutas",
-        restrita: true
-    },
-
-    {
-        nome: "KAPO",
-        categoria: "Bebida de frutas",
-        restrita: true
-    },
-
-    {
-        nome: "ADES",
-        categoria: "Bebida à base vegetal",
-        restrita: true
-    },
-
-    {
-        nome: "POWERADE",
-        categoria: "Bebida esportiva",
-        restrita: true
-    },
-
-    {
-        nome: "MONSTER",
-        categoria: "Bebida energética",
-        restrita: true
-    },
-
-    {
-        nome: "LEÃO",
-        categoria: "Chás",
-        restrita: true
-    },
-
-    {
-        nome: "CRYSTAL",
-        categoria: "Água",
-        restrita: true
-    },
-
-    {
-        nome: "TOPO CHICO",
-        categoria: "Água / Água gaseificada",
-        restrita: true
-    },
-
-    {
-        nome: "VERDE CAMPO",
-        categoria: "Lácteos e bebidas",
-        restrita: true
-    },
-
-    {
-        nome: "MINUTE MAID",
-        categoria: "Bebidas de frutas",
-        restrita: true
-    },
-
-    {
-        nome: "DASANI",
-        categoria: "Água",
-        restrita: true
-    },
-
-    {
-        nome: "SMARTWATER",
-        categoria: "Água",
-        restrita: true
-    },
-
-    {
-        nome: "FUZETEA",
-        categoria: "Chá",
-        restrita: true
-    },
-
-    {
-        nome: "HONEST TEA",
-        categoria: "Chá",
-        restrita: true
-    },
-
-    {
-        nome: "COSTA COFFEE",
-        categoria: "Café",
-        restrita: true
-    }
-
-];
-
-
-/* =========================================================
-   CHAVE DO STORAGE
-   ========================================================= */
-
-const STORAGE_KEY =
-    "soberano_restricao_coca_cola_147";
-
-
-/* =========================================================
-   CARREGAR ESTADO
-   ========================================================= */
-
-function carregarEstado(){
-
-    const salvo =
-        localStorage.getItem(STORAGE_KEY);
-
-
-    if(!salvo){
-
-        return MARCAS.map(
-            marca => marca.restrita
-        );
-
-    }
-
-
-    try{
-
-        const estado =
-            JSON.parse(salvo);
-
-
-        if(
-            Array.isArray(estado) &&
-            estado.length === MARCAS.length
-        ){
-
-            return estado;
-
-        }
-
-    }catch(e){
-
-        console.warn(
-            "Não foi possível carregar as restrições.",
-            e
-        );
-
-    }
-
-
-    return MARCAS.map(
-        marca => marca.restrita
-    );
-
-}
-
-
-/* =========================================================
-   ESTADO ATUAL
-   ========================================================= */
-
-let estadoRestricoes =
-    carregarEstado();
-
-
-/* =========================================================
-   SALVAR ESTADO
-   ========================================================= */
-
-function salvarEstado(){
-
-    localStorage.setItem(
-
-        STORAGE_KEY,
-
-        JSON.stringify(
-            estadoRestricoes
-        )
-
-    );
-
-}
-
-
-/* =========================================================
-   RENDERIZAR
-   ========================================================= */
-
-function renderizarMarcas(filtro = ""){
-
-
-    const lista =
-        document.getElementById(
-            "listaMarcas"
-        );
-
-
-    lista.innerHTML = "";
-
-
-    const termo =
-        filtro
-        .trim()
-        .toLowerCase();
-
-
-    let encontradas = 0;
-
-
-    MARCAS.forEach(
-        function(marca,index){
-
-
-            const corresponde =
-
-                marca.nome
-                    .toLowerCase()
-                    .includes(termo)
-
-                ||
-
-                marca.categoria
-                    .toLowerCase()
-                    .includes(termo);
-
-
-            if(!corresponde){
-
-                return;
-
-            }
-
-
-            encontradas++;
-
-
-            const restrita =
-                estadoRestricoes[index];
-
-
-            const div =
-                document.createElement("div");
-
-
-            div.className =
-                "marca";
-
-
-            div.innerHTML = `
-
-                <div class="marca-info">
-
-                    <div class="marca-nome">
-
-                        ${escaparHTML(
-                            marca.nome
-                        )}
-
-                    </div>
-
-
-                    <div class="marca-categoria">
-
-                        ${escaparHTML(
-                            marca.categoria
-                        )}
-
-                    </div>
-
-
-                    <div class="marca-status
-                        ${
-                            restrita
-                            ?
-                            "status-restrita"
-                            :
-                            "status-livre"
-                        }">
-
-                        ${
-                            restrita
-                            ?
-                            "RESTRITA"
-                            :
-                            "NÃO RESTRITA"
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <label class="checkbox">
-
-                    <input
-                        type="checkbox"
-                        ${
-                            restrita
-                            ?
-                            "checked"
-                            :
-                            ""
-                        }
-                        onchange="
-                            alterarRestricao(
-                                ${index},
-                                this.checked
-                            )
-                        "
-                    >
-
-                    <span
-                        class="checkmark">
-                    </span>
-
-                </label>
-
-            `;
-
-
-            lista.appendChild(div);
-
-        }
-    );
-
-
-    if(encontradas === 0){
-
-        lista.innerHTML = `
-
-            <div class="vazio">
-
-                Nenhuma marca encontrada.
-
-            </div>
-
-        `;
-
-    }
-
-
-    atualizarResumo();
-
-}
-
-
-/* =========================================================
-   ALTERAR RESTRIÇÃO
-   ========================================================= */
-
-function alterarRestricao(
-    index,
-    valor
-){
-
-    estadoRestricoes[index] =
-        valor;
-
-
-    salvarEstado();
-
-
-    renderizarMarcas(
-        document.getElementById(
-            "busca"
-        ).value
-    );
-
-}
-
-
-/* =========================================================
-   RESUMO
-   ========================================================= */
-
-function atualizarResumo(){
-
-
-    const total =
-        MARCAS.length;
-
-
-    const restritas =
-        estadoRestricoes.filter(
-            valor => valor === true
-        ).length;
-
-
-    document.getElementById(
-        "totalMarcas"
-    ).textContent =
-        total;
-
-
-    document.getElementById(
-        "totalRestritas"
-    ).textContent =
-        restritas;
-
-}
-
-
-/* =========================================================
-   RESTAURAR
-   ========================================================= */
-
-function restaurarRestricoes(){
-
-
-    const confirmar =
-        confirm(
-
-            "Deseja restaurar todas as marcas para o estado original?"
-
-        );
-
-
-    if(!confirmar){
-
-        return;
-
-    }
-
-
-    estadoRestricoes =
-        MAR
+</html>
