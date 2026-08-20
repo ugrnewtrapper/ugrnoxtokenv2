@@ -648,10 +648,11 @@ const HABITOS = [
 
 
       {
-        nome: "PRODUTOS COCA-COLA",
-        inicio: "20/08/2026",
-        bloqueado: true
-    },
+    nome: "PRODUTOS COCA-COLA",
+    inicio: "20/08/2026",
+    bloqueado: true,
+    link: "restrito.html"
+},
 
       {
         nome: "FALAR MAL DE ALHEIOS",
@@ -846,10 +847,22 @@ function renderizarHabitos(){
 
                 <div class="habito-nome">
 
-                    ${escaparHTML(habito.nome)}
+    ${
+        habito.link
 
-                </div>
+        ?
 
+        `<a href="${escaparHTML(habito.link)}"
+            style="color:inherit;text-decoration:none;">
+            ${escaparHTML(habito.nome)}
+        </a>`
+
+        :
+
+        escaparHTML(habito.nome)
+    }
+
+</div>
 
                 ${
                     habito.bloqueado
