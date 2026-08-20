@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>RESTRIÇÃO COCA-COLA • 14.7 SOBERANO</title>
+
+<link rel="icon" href="images/logo2.png">
+
+<style>
+
+/* =========================================================
+   RESTRIÇÃO COCA-COLA
+   SOBERANO 14.7
+   ========================================================= */
+
+:root{
+
+    --bg-main:#0f1216;
+    --bg-card:#151a21;
+    --bg-item:#0f1216;
+
+    --primary:#1f6feb;
+    --primary-dark:#1554b8;
+
+    --text:#e6e6e6;
+    --muted:#a0a7b4;
+
+    --border:rgba(255,255,255,.08);
+
+    --verde:#38ff74;
+    --vermelho:#ff4d4d;
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+
+    margin:0;
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+}
+
+
+/* =========================================================
+   CORPO
+   ========================================================= */
+
+body{
+
+    min-height:100vh;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            rgba(31,111,235,.14),
+            transparent 38%
+        ),
+
+        linear-gradient(
+            180deg,
+            #0c0f14,
+            var(--bg-main)
+        );
+
+    color:var(--text);
+
+    padding:20px 14px 40px;
+
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.container{
+
+    width:100%;
+
+    max-width:620px;
+
+    margin:auto;
+
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card{
+
+    width:100%;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35);
+
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.header{
+
+    text-align:center;
+
+    padding:28px 20px;
+
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo{
+
+    width:110px;
+
+    max-width:45%;
+
+    margin-bottom:12px;
+
+}
+
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+h1{
+
+    color:var(--primary);
+
+    font-size:29px;
+
+    letter-spacing:1.5px;
+
+    margin-bottom:6px;
+
+}
+
+
+/* =========================================================
+   VERSÃO
+   ========================================================= */
+
+.version{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+}
+
+
+/* =========================================================
+   FRASE
+   ========================================================= */
+
+.motivacional{
+
+    margin-top:22px;
+
+    padding:20px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+}
+
+
+.frase{
+
+    font-size:19px;
+
+    line-height:1.5;
+
+    font-weight:bold;
+
+}
+
+
+.frase-destaque{
+
+    color:var(--primary);
+
+}
+
+
+.subfrase{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.5;
+
+}
+
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+.titulo{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
+
+/* =========================================================
+   AVISO
+   ========================================================= */
+
+.aviso{
+
+    background:rgba(31,111,235,.07);
+
+    border:1px solid rgba(31,111,235,.2);
+
+    border-radius:12px;
+
+    padding:14px;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    line-height:1.5;
+
+    margin-bottom:18px;
+
+}
+
+
+.aviso strong{
+
+    color:var(--text);
+
+}
+
+
+/* =========================================================
+   RESUMO
+   ========================================================= */
+
+.resumo{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+
+.resumo-box{
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    padding:14px;
+
+    text-align:center;
+
+}
+
+
+.resumo-numero{
+
+    font-size:27px;
+
+    font-weight:bold;
+
+    color:var(--verde);
+
+}
+
+
+.resumo-label{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:4px;
+
+}
+
+
+/* =========================================================
+   PESQUISA
+   ========================================================= */
+
+.busca{
+
+    width:100%;
+
+    padding:14px 15px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    color:white;
+
+    font-size:14px;
+
+    outline:none;
+
+    margin-bottom:15px;
+
+}
+
+
+.busca:focus{
+
+    border-color:var(--primary);
+
+}
+
+
+.busca::placeholder{
+
+    color:#737b89;
+
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.lista{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+/* =========================================================
+   ITEM
+   ========================================================= */
+
+.marca{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    padding:15px;
+
+    background:var(--bg-item);
+
+    border:1px solid var(--border);
+
+    border-radius:13px;
+
+    transition:.2s ease;
+
+}
+
+
+.marca:hover{
+
+    border-color:rgba(31,111,235,.35);
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA MARCA
+   ========================================================= */
+
+.marca-info{
+
+    min-width:0;
+
+    flex:1;
+
+}
+
+
+.marca-nome{
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+
+.marca-categoria{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:4px;
+
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.marca-status{
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:.7px;
+
+    padding:5px 8px;
+
+    border-radius:20px;
+
+    margin-top:7px;
+
+    display:inline-block;
+
+}
+
+
+.status-restrita{
+
+    color:var(--vermelho);
+
+    background:rgba(255,77,77,.08);
+
+    border:1px solid rgba(255,77,77,.2);
+
+}
+
+
+.status-livre{
+
+    color:var(--muted);
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid var(--border);
+
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.checkbox{
+
+    position:relative;
+
+    width:25px;
+
+    height:25px;
+
+    flex-shrink:0;
+
+}
+
+
+.checkbox input{
+
+    position:absolute;
+
+    opacity:0;
+
+    width:0;
+
+    height:0;
+
+}
+
+
+.checkmark{
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:8px;
+
+    border:2px solid #414956;
+
+    background:#11151a;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.checkbox input:checked + .checkmark{
+
+    background:var(--primary);
+
+    border-color:var(--primary);
+
+}
+
+
+.checkbox input:checked + .checkmark::after{
+
+    content:"✓";
+
+    position:absolute;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    left:5px;
+
+    top:1px;
+
+}
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:10px;
+
+    background:var(--primary);
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+button:hover{
+
+    background:var(--primary-dark);
+
+}
+
+
+.botao-secundario{
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    color:var(--muted);
+
+}
+
+
+.botao-secundario:hover{
+
+    background:#181d24;
+
+    color:white;
+
+}
+
+
+/* =========================================================
+   VAZIO
+   ========================================================= */
+
+.vazio{
+
+    text-align:center;
+
+    padding:25px 10px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+}
+
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+
+.footer{
+
+    text-align:center;
+
+    color:#626a77;
+
+    font-size:10px;
+
+    letter-spacing:1px;
+
+    line-height:1.8;
+
+    margin-top:5px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media(max-width:450px){
+
+    .card{
+
+        padding:20px;
+
+    }
+
+
+    h1{
+
+        font-size:24px;
+
+    }
+
+
+    .frase{
+
+        font-size:17px;
+
+    }
+
+
+    .marca{
+
+        padding:13px;
+
+    }
+
+
+    .marca-nome{
+
+        font-size:15px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *{
+
+        transition:none !important;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<!-- ======================================================
+     CABEÇALHO
+     ====================================================== -->
+
+<div class="card header">
+
+
+    <img
+        src="images/logo2.png"
+        class="logo"
+        alt="SOBERANO">
+
+
+    <h1>
+
+        RESTRIÇÃO COCA-COLA
+
+    </h1>
+
+
+    <div class="version">
+
+        14.7 SOBERANO
+
+    </div>
+
+
+    <div class="motivacional">
+
+
+        <div class="frase">
+
+            “Você não precisa vencer
+            <span class="frase-destaque">
+                todos os dias.
+            </span>
+            Precisa apenas continuar no controle.”
+
+        </div>
+
+
+        <div class="subfrase">
+
+            Identifique as marcas que fazem parte
+            da restrição e mantenha sua decisão.
+            Disciplina é manter o comando mesmo
+            quando ninguém está olhando.
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- ======================================================
+     LISTA DE RESTRIÇÃO
+     ====================================================== -->
+
+<div class="card">
+
+
+    <div class="titulo">
+
+        🚫 MARCAS EM RESTRIÇÃO
+
+    </div>
+
+
+    <div class="aviso">
+
+        <strong>ATENÇÃO:</strong>
+        esta lista trabalha com
+        <strong>marcas e linhas de bebidas</strong>,
+        e não com cada sabor, tamanho ou produto
+        individualmente.
+
+        A lista pode ser editada diretamente no código.
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div class="resumo">
+
+
+        <div class="resumo-box">
+
+            <div
+                class="resumo-numero"
+                id="totalMarcas">
+
+                0
+
+            </div>
+
+            <div class="resumo-label">
+
+                MARCAS
+
+            </div>
+
+        </div>
+
+
+        <div class="resumo-box">
+
+            <div
+                class="resumo-numero"
+                id="totalRestritas">
+
+                0
+
+            </div>
+
+            <div class="resumo-label">
+
+                RESTRITAS
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- PESQUISA -->
+
+    <input
+        type="text"
+        id="busca"
+        class="busca"
+        placeholder="Pesquisar marca...">
+
+
+    <!-- LISTA -->
+
+    <div
+        id="listaMarcas"
+        class="lista">
+
+    </div>
+
+
+    <button
+        class="botao-secundario"
+        onclick="restaurarRestricoes()">
+
+        RESTAURAR RESTRIÇÕES
+
+    </button>
+
+
+</div>
+
+
+<!-- ======================================================
+     RODAPÉ
+     ====================================================== -->
+
+<div class="footer">
+
+    RESTRIÇÃO COCA-COLA • 14.7 SOBERANO<br>
+
+    DOMÍNIO • DISCIPLINA • RECOMEÇO
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   MARCAS
+   =========================================================
+
+   IMPORTANTE:
+
+   Aqui são colocadas MARCAS/LINHAS,
+   não cada produto individual.
+
+   "restrita: true" =
+   começa marcada como restrita.
+
+   ========================================================= */
+
+const MARCAS = [
+
+    {
+        nome: "COCA-COLA",
+        categoria: "Refrigerante",
+        restrita: true
+    },
+
+    {
+        nome: "FANTA",
+        categoria: "Refrigerante",
+        restrita: true
+    },
+
+    {
+        nome: "SPRITE",
+        categoria: "Refrigerante",
+        restrita: true
+    },
+
+    {
+        nome: "SCHWEPPES",
+        categoria: "Refrigerante / Mixer",
+        restrita: true
+    },
+
+    {
+        nome: "KUAT",
+        categoria: "Refrigerante",
+        restrita: true
+    },
+
+    {
+        nome: "GUARANÁ JESUS",
+        categoria: "Refrigerante",
+        restrita: true
+    },
+
+    {
+        nome: "DEL VALLE",
+        categoria: "Sucos e bebidas de frutas",
+        restrita: true
+    },
+
+    {
+        nome: "KAPO",
+        categoria: "Bebida de frutas",
+        restrita: true
+    },
+
+    {
+        nome: "ADES",
+        categoria: "Bebida à base vegetal",
+        restrita: true
+    },
+
+    {
+        nome: "POWERADE",
+        categoria: "Bebida esportiva",
+        restrita: true
+    },
+
+    {
+        nome: "MONSTER",
+        categoria: "Bebida energética",
+        restrita: true
+    },
+
+    {
+        nome: "LEÃO",
+        categoria: "Chás",
+        restrita: true
+    },
+
+    {
+        nome: "CRYSTAL",
+        categoria: "Água",
+        restrita: true
+    },
+
+    {
+        nome: "TOPO CHICO",
+        categoria: "Água / Água gaseificada",
+        restrita: true
+    },
+
+    {
+        nome: "VERDE CAMPO",
+        categoria: "Lácteos e bebidas",
+        restrita: true
+    },
+
+    {
+        nome: "MINUTE MAID",
+        categoria: "Bebidas de frutas",
+        restrita: true
+    },
+
+    {
+        nome: "DASANI",
+        categoria: "Água",
+        restrita: true
+    },
+
+    {
+        nome: "SMARTWATER",
+        categoria: "Água",
+        restrita: true
+    },
+
+    {
+        nome: "FUZETEA",
+        categoria: "Chá",
+        restrita: true
+    },
+
+    {
+        nome: "HONEST TEA",
+        categoria: "Chá",
+        restrita: true
+    },
+
+    {
+        nome: "COSTA COFFEE",
+        categoria: "Café",
+        restrita: true
+    }
+
+];
+
+
+/* =========================================================
+   CHAVE DO STORAGE
+   ========================================================= */
+
+const STORAGE_KEY =
+    "soberano_restricao_coca_cola_147";
+
+
+/* =========================================================
+   CARREGAR ESTADO
+   ========================================================= */
+
+function carregarEstado(){
+
+    const salvo =
+        localStorage.getItem(STORAGE_KEY);
+
+
+    if(!salvo){
+
+        return MARCAS.map(
+            marca => marca.restrita
+        );
+
+    }
+
+
+    try{
+
+        const estado =
+            JSON.parse(salvo);
+
+
+        if(
+            Array.isArray(estado) &&
+            estado.length === MARCAS.length
+        ){
+
+            return estado;
+
+        }
+
+    }catch(e){
+
+        console.warn(
+            "Não foi possível carregar as restrições.",
+            e
+        );
+
+    }
+
+
+    return MARCAS.map(
+        marca => marca.restrita
+    );
+
+}
+
+
+/* =========================================================
+   ESTADO ATUAL
+   ========================================================= */
+
+let estadoRestricoes =
+    carregarEstado();
+
+
+/* =========================================================
+   SALVAR ESTADO
+   ========================================================= */
+
+function salvarEstado(){
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(
+            estadoRestricoes
+        )
+
+    );
+
+}
+
+
+/* =========================================================
+   RENDERIZAR
+   ========================================================= */
+
+function renderizarMarcas(filtro = ""){
+
+
+    const lista =
+        document.getElementById(
+            "listaMarcas"
+        );
+
+
+    lista.innerHTML = "";
+
+
+    const termo =
+        filtro
+        .trim()
+        .toLowerCase();
+
+
+    let encontradas = 0;
+
+
+    MARCAS.forEach(
+        function(marca,index){
+
+
+            const corresponde =
+
+                marca.nome
+                    .toLowerCase()
+                    .includes(termo)
+
+                ||
+
+                marca.categoria
+                    .toLowerCase()
+                    .includes(termo);
+
+
+            if(!corresponde){
+
+                return;
+
+            }
+
+
+            encontradas++;
+
+
+            const restrita =
+                estadoRestricoes[index];
+
+
+            const div =
+                document.createElement("div");
+
+
+            div.className =
+                "marca";
+
+
+            div.innerHTML = `
+
+                <div class="marca-info">
+
+                    <div class="marca-nome">
+
+                        ${escaparHTML(
+                            marca.nome
+                        )}
+
+                    </div>
+
+
+                    <div class="marca-categoria">
+
+                        ${escaparHTML(
+                            marca.categoria
+                        )}
+
+                    </div>
+
+
+                    <div class="marca-status
+                        ${
+                            restrita
+                            ?
+                            "status-restrita"
+                            :
+                            "status-livre"
+                        }">
+
+                        ${
+                            restrita
+                            ?
+                            "RESTRITA"
+                            :
+                            "NÃO RESTRITA"
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <label class="checkbox">
+
+                    <input
+                        type="checkbox"
+                        ${
+                            restrita
+                            ?
+                            "checked"
+                            :
+                            ""
+                        }
+                        onchange="
+                            alterarRestricao(
+                                ${index},
+                                this.checked
+                            )
+                        "
+                    >
+
+                    <span
+                        class="checkmark">
+                    </span>
+
+                </label>
+
+            `;
+
+
+            lista.appendChild(div);
+
+        }
+    );
+
+
+    if(encontradas === 0){
+
+        lista.innerHTML = `
+
+            <div class="vazio">
+
+                Nenhuma marca encontrada.
+
+            </div>
+
+        `;
+
+    }
+
+
+    atualizarResumo();
+
+}
+
+
+/* =========================================================
+   ALTERAR RESTRIÇÃO
+   ========================================================= */
+
+function alterarRestricao(
+    index,
+    valor
+){
+
+    estadoRestricoes[index] =
+        valor;
+
+
+    salvarEstado();
+
+
+    renderizarMarcas(
+        document.getElementById(
+            "busca"
+        ).value
+    );
+
+}
+
+
+/* =========================================================
+   RESUMO
+   ========================================================= */
+
+function atualizarResumo(){
+
+
+    const total =
+        MARCAS.length;
+
+
+    const restritas =
+        estadoRestricoes.filter(
+            valor => valor === true
+        ).length;
+
+
+    document.getElementById(
+        "totalMarcas"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "totalRestritas"
+    ).textContent =
+        restritas;
+
+}
+
+
+/* =========================================================
+   RESTAURAR
+   ========================================================= */
+
+function restaurarRestricoes(){
+
+
+    const confirmar =
+        confirm(
+
+            "Deseja restaurar todas as marcas para o estado original?"
+
+        );
+
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+
+    estadoRestricoes =
+        MAR
