@@ -833,7 +833,15 @@ function renderizarHabitos(){
                 dataAtual
             );
 
+const dias =
+    calcularDias(
+        habito.inicio,
+        dataAtual
+    );
 
+const estrelas =
+    obterEstrelas(dias);
+          
         const div =
             document.createElement("div");
 
