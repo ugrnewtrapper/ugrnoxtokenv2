@@ -799,7 +799,15 @@ function renderizarHabitos(){
         "</strong>";
 
 
-    HABITOS.forEach(function(habito){
+    HABITOS
+    .slice()
+    .sort(function(a, b){
+
+        return calcularDias(a.inicio, dataAtual) -
+               calcularDias(b.inicio, dataAtual);
+
+    })
+    .forEach(function(habito){
 
 
         const dias =
