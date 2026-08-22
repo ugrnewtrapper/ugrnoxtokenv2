@@ -1256,75 +1256,6 @@ function mostrarOracao(){
 }
 
 
-/* =========================================================
-   HORA ONLINE
-   API DE HORÁRIO
-   ========================================================= */
-
-let diferencaServidor = 0;
-
-async function buscarHoraOnline(){
-
-    try{
-
-        const inicio =
-            Date.now();
-
-        const resposta =
-            await fetch(
-                "https://timeapi.io/api/Time/current/zone?timeZone=America%2FSao_Paulo",
-                {
-                    cache:"no-store"
-                }
-            );
-
-        if(!resposta.ok){
-
-            throw new Error(
-                "Falha ao consultar horário"
-            );
-
-        }
-
-        const dados =
-            await resposta.json();
-
-        const fim =
-            Date.now();
-
-        const horaServidor =
-            new Date(dados.dateTime).getTime();
-
-        const meio =
-            inicio + ((fim - inicio) / 2);
-
-        diferencaServidor =
-            horaServidor - meio;
-
-        atualizarHorario();
-
-    }
-
-    catch(erro){
-
-        console.log(
-            "Não foi possível consultar a hora online.",
-            erro
-        );
-
-        /*
-           Se a internet não responder,
-           utiliza temporariamente o relógio
-           do aparelho.
-        */
-
-        diferencaServidor = 0;
-
-        atualizarHorario();
-
-    }
-
-}
 
 
 /* =========================================================
@@ -1333,9 +1264,7 @@ async function buscarHoraOnline(){
 
 function obterHoraAtual(){
 
-    return new Date(
-        Date.now() + diferencaServidor
-    );
+    return new Date();
 
 }
 
