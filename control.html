@@ -1259,6 +1259,8 @@ function mostrarOracao(){
     const oracao =
         ORACOES[selecao];
 
+    if(!oracao) return;
+
     document.getElementById("oracaoTitulo").textContent =
         oracao.titulo;
 
