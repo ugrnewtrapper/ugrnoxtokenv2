@@ -738,10 +738,31 @@ h1{
     </div>
 
 
+    <!-- SELETOR AUTOMÁTICO / MANUAL -->
+
+    <select
+        class="seletor"
+        id="modoOracao"
+        onchange="alterarModoOracao()">
+
+        <option value="automatico">
+            AUTOMÁTICO
+        </option>
+
+        <option value="manual">
+            MANUAL
+        </option>
+
+    </select>
+
+
+    <!-- SELEÇÃO MANUAL -->
+
     <select
         class="seletor"
         id="selecaoOracao"
-        onchange="mostrarOracao()">
+        onchange="mostrarOracao()"
+        style="display:none; margin-top:10px;">
 
         <option value="1">
             AO ACORDAR
@@ -774,19 +795,19 @@ h1{
     </select>
 
 
-    <!-- HORA BUSCADA ONLINE -->
+    <!-- HORA BUSCADA DO DISPOSITIVO -->
 
     <div class="hora-online">
 
-    RELÓGIO DIGITAL
+        RELÓGIO DIGITAL
 
-    <br>
+        <br>
 
-    <strong id="horaAtual">
-        00:00:00
-    </strong>
+        <strong id="horaAtual">
+            00:00:00
+        </strong>
 
-</div>
+    </div>
 
 
     <!-- PRÓXIMA ORAÇÃO -->
@@ -821,6 +842,8 @@ h1{
 
     </div>
 
+
+    <!-- ORAÇÃO SELECIONADA -->
 
     <div class="oracao">
 
@@ -1270,10 +1293,37 @@ function mostrarOracao(){
 }
 
 
+/* =========================================================
+   ALTERAR AUTOMÁTICO / MANUAL
+   ========================================================= */
+
+function alterarModoOracao(){
+
+    const modo =
+        document.getElementById("modoOracao").value;
+
+    const seletorManual =
+        document.getElementById("selecaoOracao");
+
+    if(modo === "manual"){
+
+        seletorManual.style.display = "block";
+
+        mostrarOracao();
+
+    }else{
+
+        seletorManual.style.display = "none";
+
+        atualizarOracaoAutomatica();
+
+    }
+
+}
 
 
 /* =========================================================
-   OBTER HORA ATUAL
+   OBTER HORA ATUAL DO DISPOSITIVO
    ========================================================= */
 
 function obterHoraAtual(){
@@ -1360,6 +1410,69 @@ function obterProximaOracao(agora){
 
 
 /* =========================================================
+   ORAÇÃO AUTOMÁTICA
+   ========================================================= */
+
+function atualizarOracaoAutomatica(){
+
+    const agora =
+        obterHoraAtual();
+
+    const minutosAgora =
+        agora.getHours() * 60 +
+        agora.getMinutes();
+
+    let selecionada =
+        HORARIOS[0];
+
+
+    /*
+       Procura o último horário que já começou.
+    */
+
+    for(let i = HORARIOS.length - 1; i >= 0; i--){
+
+        const item =
+            HORARIOS[i];
+
+        const minutosHorario =
+            item.hora * 60 +
+            item.minuto;
+
+
+        if(minutosAgora >= minutosHorario){
+
+            selecionada = item;
+
+            break;
+
+        }
+
+    }
+
+
+    /*
+       Depois das 22H00,
+       volta para AO ACORDAR.
+    */
+
+    if(minutosAgora >= 22 * 60){
+
+        selecionada = HORARIOS[0];
+
+    }
+
+
+    document.getElementById("oracaoTitulo").textContent =
+        ORACOES[selecionada.id].titulo;
+
+    document.getElementById("oracaoTexto").textContent =
+        ORACOES[selecionada.id].texto;
+
+}
+
+
+/* =========================================================
    ATUALIZAR CONTADOR DA PRÓXIMA ORAÇÃO
    ========================================================= */
 
@@ -1389,16 +1502,129 @@ function atualizarProximaOracao(agora){
     if(destino <= agora){
 
         destino.setDate(
-   
+            destino.getDate() + 1
+        );
+
+    }
+
+
+    const diferenca =
+        destino.getTime() -
+        agora.getTime();
+
+
+    const totalSegundos =
+        Math.max(
+            0,
+            Math.floor(
+                diferenca / 1000
+            )
+        );
+
+
+    const horas =
+        Math.floor(
+            totalSegundos / 3600
+        );
+
+
+    const minutos =
+        Math.floor(
+            (totalSegundos % 3600) / 60
+        );
+
+
+    const segundos =
+        totalSegundos % 60;
+
+
+    document.getElementById("proximaTitulo").textContent =
+        proxima.titulo;
+
+
+    document.getElementById("proximaHora").textContent =
+        `HORÁRIO: ${String(proxima.hora).padStart(2,"0")}:${String(proxima.minuto).padStart(2,"0")}`;
+
+
+    document.getElementById("proximaContagem").textContent =
+        `FALTAM ${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
+
+}
+
+
+/* =========================================================
+   ATUALIZAR RELÓGIO
+   ========================================================= */
+
 function atualizarRelogio(){
 
-    const agora = obterHoraAtual();
+    const agora =
+        obterHoraAtual();
+
+
+    /*
+       Hora diretamente do dispositivo
+    */
 
     document.getElementById("horaAtual").textContent =
         formatarHora(agora);
 
+
+    /*
+       Atualiza próxima oração
+    */
+
     atualizarProximaOracao(agora);
+
+
+    /*
+       Atualiza oração automaticamente
+       somente quando estiver em AUTOMÁTICO.
+    */
+
+    const modo =
+        document.getElementById("modoOracao").value;
+
+
+    if(modo === "automatico"){
+
+        atualizarOracaoAutomatica();
+
+    }
 
 }
 
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+/*
+   Mostra a oração inicial
+*/
+
+mostrarOracao();
+
+
+/*
+   Atualiza imediatamente,
+   sem esperar 1 segundo.
+*/
+
 atualizarRelogio();
+
+
+/*
+   Atualiza o relógio a cada segundo.
+*/
+
+setInterval(
+    atualizarRelogio,
+    1000
+);
+
+</script>
+
+</body>
+
+</html>
