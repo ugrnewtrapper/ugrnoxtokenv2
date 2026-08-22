@@ -1388,3 +1388,15 @@ function atualizarProximaOracao(agora){
 
         destino.setDate(
    
+function atualizarRelogio(){
+
+    const agora = obterHoraAtual();
+
+    document.getElementById("horaAtual").textContent =
+        formatarHora(agora);
+
+    atualizarProximaOracao(agora);
+
+}
+
+atualizarRelogio();
