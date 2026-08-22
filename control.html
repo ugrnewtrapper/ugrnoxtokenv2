@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>SOBERANO 14.7</title>
+
+<link rel="icon" href="images/logo2.png">
+
+<style>
+
+/* =========================================================
+   SOBERANO 14.7
+   CONTROLE DE ALIMENTAÇÃO
+   IDENTIDADE VISUAL SOBERANO
+   ========================================================= */
+
+:root{
+
+    --bg-main:#0f1216;
+    --bg-card:#151a21;
+    --primary:#1f6feb;
+
+    --text:#e6e6e6;
+    --muted:#a0a7b4;
+
+    --border:rgba(255,255,255,.08);
+
+    --verde:#38ff74;
+    --vermelho:#ff4d4d;
+    --amarelo:#ffd84d;
+
+}
+
+/* RESET */
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+}
+
+/* CORPO */
+
+body{
+
+    min-height:100vh;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            rgba(31,111,235,.14),
+            transparent 38%
+        ),
+
+        linear-gradient(
+            180deg,
+            #0c0f14,
+            var(--bg-main)
+        );
+
+    color:var(--text);
+
+    padding:20px 14px;
+
+}
+
+/* CONTAINER */
+
+.container{
+
+    width:100%;
+    max-width:620px;
+    margin:auto;
+
+}
+
+/* CARD */
+
+.card{
+
+    width:100%;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35);
+
+}
+
+/* CABEÇALHO */
+
+.header{
+
+    text-align:center;
+
+    padding:28px 20px;
+
+}
+
+/* LOGO */
+
+.logo{
+
+    width:110px;
+
+    max-width:45%;
+
+    margin-bottom:12px;
+
+}
+
+/* NOME */
+
+h1{
+
+    color:var(--primary);
+
+    font-size:30px;
+
+    letter-spacing:3px;
+
+    margin-bottom:5px;
+
+}
+
+/* VERSÃO */
+
+.version{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    letter-spacing:2px;
+
+}
+
+/* FRASE */
+
+.motivacional{
+
+    margin-top:22px;
+
+    padding:20px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+}
+
+.frase{
+
+    font-size:20px;
+
+    line-height:1.5;
+
+    font-weight:bold;
+
+}
+
+.frase-destaque{
+
+    color:var(--primary);
+
+}
+
+.subfrase{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.5;
+
+}
+
+/* TÍTULOS */
+
+.titulo{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
+/* JANELA INTELIGENTE */
+
+.seletor{
+
+    width:100%;
+
+    padding:15px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    color:white;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+.seletor:focus{
+
+    border-color:var(--primary);
+
+}
+
+/* ORAÇÃO */
+
+.oracao{
+
+    margin-top:15px;
+
+    padding:18px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    text-align:center;
+
+}
+
+.oracao-label{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    letter-spacing:1.5px;
+
+    margin-bottom:9px;
+
+}
+
+.oracao-titulo{
+
+    color:var(--primary);
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    line-height:1.4;
+
+}
+
+.oracao-texto{
+
+    margin-top:13px;
+
+    color:var(--text);
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+/* HORÁRIOS */
+
+.horarios{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+/* ITEM DE HORÁRIO */
+
+.horario{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:15px;
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:13px;
+
+}
+
+.horario-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.horario-nome{
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.horario-desc{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+}
+
+.hora{
+
+    color:var(--primary);
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+}
+
+/* DESTAQUE DO PRIMEIRO */
+
+.horario:first-child{
+
+    border-color:rgba(31,111,235,.28);
+
+}
+
+/* PRODUTOS */
+
+.produtos{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+/* CAIXA DE PRODUTO */
+
+.produto{
+
+    background:#0f1216;
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:18px;
+
+}
+
+.produto-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.produto-nome{
+
+    font-size:17px;
+
+    font-weight:bold;
+
+}
+
+.produto-status{
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    letter-spacing:.5px;
+
+    padding:6px 9px;
+
+    border-radius:20px;
+
+}
+
+/* REDBULL */
+
+.status-atencao{
+
+    color:var(--amarelo);
+
+    background:rgba(255,216,77,.08);
+
+    border:1px solid rgba(255,216,77,.18);
+
+}
+
+.produto-info{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    line-height:1.6;
+
+}
+
+/* ALERTA */
+
+.alerta{
+
+    margin-top:14px;
+
+    padding:13px;
+
+    border-radius:10px;
+
+    background:rgba(255,77,77,.06);
+
+    border:1px solid rgba(255,77,77,.15);
+
+    color:var(--vermelho);
+
+    text-align:center;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    line-height:1.5;
+
+}
+
+/* LIMITE */
+
+.limite{
+
+    margin-top:10px;
+
+    padding:11px;
+
+    border-radius:10px;
+
+    background:rgba(56,255,116,.05);
+
+    border:1px solid rgba(56,255,116,.12);
+
+    color:var(--verde);
+
+    text-align:center;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+/* RODAPÉ */
+
+.footer{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:10px;
+
+    letter-spacing:1.5px;
+
+    line-height:1.7;
+
+    padding:10px 0 20px;
+
+}
+
+/* RESPONSIVO */
+
+@media(max-width:450px){
+
+    .card{
+
+        padding:20px;
+
+    }
+
+    h1{
+
+        font-size:26px;
+
+    }
+
+    .frase{
+
+        font-size:18px;
+
+    }
+
+    .horario{
+
+        padding:13px;
+
+    }
+
+    .horario-nome{
+
+        font-size:12px;
+
+    }
+
+    .hora{
+
+        font-size:16px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- ======================================================
+     CABEÇALHO
+     ====================================================== -->
+
+<div class="card header">
+
+    <img
+        src="images/logo2.png"
+        class="logo"
+        alt="SOBERANO">
+
+    <h1>SOBERANO</h1>
+
+    <div class="version">
+        14.7 • CONTROLE DE ALIMENTAÇÃO
+    </div>
+
+    <div class="motivacional">
+
+        <div class="frase">
+
+            “Quem governa o próprio tempo
+            <span class="frase-destaque">
+                governa o próprio dia.
+            </span>”
+
+        </div>
+
+        <div class="subfrase">
+
+            Disciplina não é fazer mais.
+            É fazer cada coisa no momento certo.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     JANELA INTELIGENTE DE ORAÇÃO
+     ====================================================== -->
+
+<div class="card">
+
+    <div class="titulo">
+
+        👑 JANELA INTELIGENTE
+
+    </div>
+
+    <select
+        class="seletor"
+        id="selecaoOracao"
+        onchange="mostrarOracao()">
+
+        <option value="1">
+            1 AO ACORDAR
+        </option>
+
+        <option value="2">
+            2 DESJEJUM 5H20
+        </option>
+
+        <option value="3">
+            3 ALIMENTAÇÃO 1 8H20
+        </option>
+
+        <option value="4">
+            4 ALIMENTAÇÃO 2 11H20
+        </option>
+
+        <option value="5">
+            5 ALIMENTAÇÃO 3 14H20
+        </option>
+
+        <option value="6">
+            6 ALIMENTAÇÃO 4 17H20
+        </option>
+
+        <option value="7">
+            7 ANTES DO DESCANSO
+        </option>
+
+    </select>
+
+
+    <div class="oracao">
+
+        <div class="oracao-label">
+            ORAÇÃO DO MOMENTO
+        </div>
+
+        <div
+            class="oracao-titulo"
+            id="oracaoTitulo">
+
+            1 AO ACORDAR
+
+        </div>
+
+        <div
+            class="oracao-texto"
+            id="oracaoTexto">
+
+            “1 AO ACORDAR”
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     HORÁRIOS DE ALIMENTAÇÃO
+     ====================================================== -->
+
+<div class="card">
+
+    <div class="titulo">
+
+        🍽️ HORÁRIOS DO REINADO
+
+    </div>
+
+
+    <div class="horarios">
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    1 AO ACORDAR
+                </div>
+
+                <div class="horario-desc">
+                    INÍCIO DO DIA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                ACORDAR
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    2 DESJEJUM
+                </div>
+
+                <div class="horario-desc">
+                    PRIMEIRA ALIMENTAÇÃO
+                </div>
+
+            </div>
+
+            <div class="hora">
+                05H20
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    3 ALIMENTAÇÃO 1
+                </div>
+
+                <div class="horario-desc">
+                    SEGUNDA JANELA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                08H20
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    4 ALIMENTAÇÃO 2
+                </div>
+
+                <div class="horario-desc">
+                    TERCEIRA JANELA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                11H20
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    5 ALIMENTAÇÃO 3
+                </div>
+
+                <div class="horario-desc">
+                    QUARTA JANELA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                14H20
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    6 ALIMENTAÇÃO 4
+                </div>
+
+                <div class="horario-desc">
+                    QUINTA JANELA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                17H20
+            </div>
+
+        </div>
+
+
+        <div class="horario">
+
+            <div class="horario-info">
+
+                <div class="horario-nome">
+                    7 ANTES DO DESCANSO
+                </div>
+
+                <div class="horario-desc">
+                    ENCERRAMENTO DO DIA
+                </div>
+
+            </div>
+
+            <div class="hora">
+                21H00
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     PRODUTOS
+     ====================================================== -->
+
+<div class="card">
+
+    <div class="titulo">
+
+        🛡️ CONTROLE DE PRODUTOS
+
+    </div>
+
+
+    <div class="produtos">
+
+
+        <!-- REDBULL -->
+
+        <div class="produto">
+
+            <div class="produto-header">
+
+                <div class="produto-nome">
+
+                    REDBULL
+
+                </div>
+
+                <div class="produto-status status-atencao">
+
+                    JANELA DE ALERTA
+
+                </div>
+
+            </div>
+
+
+            <div class="produto-info">
+
+                Limite diário definido:
+                <strong>500 ML</strong>.
+
+                <br><br>
+
+                Descanso programado:
+                <strong>21H00</strong>.
+
+                <br>
+
+                A janela de alerta começa às:
+                <strong>13H00</strong>.
+
+            </div>
+
+
+            <div class="limite">
+
+                LIMITE MÁXIMO: 500 ML POR DIA
+
+            </div>
+
+
+            <div class="alerta">
+
+                ⚠️ 8 HORAS ANTES DO DESCANSO
+
+                <br>
+
+                APÓS 13H00: JANELA DE ALERTA
+
+            </div>
+
+        </div>
+
+
+        <!-- ESPAÇO PARA FUTUROS PRODUTOS -->
+
+        <div class="produto">
+
+            <div class="produto-header">
+
+                <div class="produto-nome">
+
+                    PRÓXIMO PRODUTO
+
+                </div>
+
+                <div class="produto-status status-atencao">
+
+                    EM BREVE
+
+                </div>
+
+            </div>
+
+            <div class="produto-info">
+
+                Espaço reservado para adicionar
+                novos produtos e regras de controle.
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     RODAPÉ
+     ====================================================== -->
+
+<div class="footer">
+
+    SOBERANO • 14.7<br>
+
+    DOMÍNIO • DISCIPLINA • ALIMENTAÇÃO • DESCANSO
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ORAÇÕES
+   Por enquanto o título é repetido.
+   Você poderá substituir o texto posteriormente.
+   ========================================================= */
+
+const ORACOES = {
+
+    1: {
+        titulo: "1 AO ACORDAR",
+        texto: "“1 AO ACORDAR”"
+    },
+
+    2: {
+        titulo: "2 DESJEJUM 5H20",
+        texto: "“2 DESJEJUM 5H20”"
+    },
+
+    3: {
+        titulo: "3 ALIMENTAÇÃO 1 8H20",
+        texto: "“3 ALIMENTAÇÃO 1 8H20”"
+    },
+
+    4: {
+        titulo: "4 ALIMENTAÇÃO 2 11H20",
+        texto: "“4 ALIMENTAÇÃO 2 11H20”"
+    },
+
+    5: {
+        titulo: "5 ALIMENTAÇÃO 3 14H20",
+        texto: "“5 ALIMENTAÇÃO 3 14H20”"
+    },
+
+    6: {
+        titulo: "6 ALIMENTAÇÃO 4 17H20",
+        texto: "“6 ALIMENTAÇÃO 4 17H20”"
+    },
+
+    7: {
+        titulo: "7 ANTES DO DESCANSO",
+        texto: "“7 ANTES DO DESCANSO”"
+    }
+
+};
+
+
+/* =========================================================
+   MOSTRAR ORAÇÃO SELECIONADA
+   ========================================================= */
+
+function mostrarOracao(){
+
+    const selecao =
+        document.getElementById("selecaoOracao").value;
+
+    const oracao =
+        ORACOES[selecao];
+
+    document.getElementById("oracaoTitulo").textContent =
+        oracao.titulo;
+
+    document.getElementById("oracaoTexto").textContent =
+        oracao.texto;
+
+}
+
+</script>
+
+
+</body>
+
+  </html>
