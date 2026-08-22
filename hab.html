@@ -759,7 +759,24 @@ function calcularDias(inicio, atual){
 
 }
 
+/* =========================================================
+   CALCULAR ESTRELAS
+   ========================================================= */
 
+function obterEstrelas(dias){
+
+    let estrelas = 0;
+
+    if(dias >= 7) estrelas = 1;
+    if(dias >= 30) estrelas = 2;
+    if(dias >= 180) estrelas = 3;
+    if(dias >= 365) estrelas = 4;
+    if(dias >= 1825) estrelas = 6;
+
+    return "⭐".repeat(estrelas);
+
+}
+      
 /* =========================================================
    RENDERIZAR HÁBITOS
    ========================================================= */
