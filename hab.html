@@ -905,30 +905,30 @@ const estrelas =
 
     ${estrelas}
 
+<div class="estrelas">
+
+    ${estrelas}
+
 </div>
 
-                ${
-                    habito.bloqueado
-      
+${
+    habito.bloqueado
 
-                ${
-                    habito.bloqueado
+    ?
 
-                    ?
+    `<div class="status status-bloqueado">
 
-                    `<div class="status status-bloqueado">
+        BLOQUEADO
 
-                        BLOQUEADO
+    </div>`
 
-                    </div>`
+    :
 
-                    :
+    ""
 
-                    ""
+}
 
-                }
-
-            </div>
+</div>
 
 
             <div class="contador">
