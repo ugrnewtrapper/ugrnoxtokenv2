@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOBERANO 14.0 PREMIUM • CICLO DE RIQUEZA</title>
+<link rel="icon" href="images/logo2.png">
+<style>
+:root{
+    --bg-main:#0f1216;
+    --bg-card:#151a21;
+    --bg-dark:#0b0e12;
+    --primary:#1f6feb;
+    --gold:#d4af37;
+    --gold-light:#f3d675;
+    --text:#e6e6e6;
+    --muted:#a0a7b4;
+    --border:rgba(255,255,255,.08);
+    --verde:#38ff74;
+    --vermelho:#ff4d4d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg-main);
+    color:var(--text);
+    min-height:100vh;
+}
+.container{
+    width:min(960px,92%);
+    margin:auto;
+}
+header{
+    text-align:center;
+    padding:30px 0 20px;
+}
+.logo{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    margin-bottom:10px;
+}
+h1{
+    font-size:clamp(26px,5vw,42px);
+    letter-spacing:2px;
+}
+.version{
+    color:var(--gold-light);
+    font-weight:700;
+    margin-top:6px;
+}
+.hero{
+    background:linear-gradient(145deg,var(--bg-card),var(--bg-dark));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:24px;
+    text-align:center;
+    margin-bottom:18px;
+}
+.hero h2{
+    color:var(--gold-light);
+    margin-bottom:12px;
+}
+.hero p{
+    color:var(--muted);
+    line-height:1.6;
+}
+.card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:18px;
+}
+.card h2{
+    margin-bottom:18px;
+    color:var(--gold-light);
+}
+.cycle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+    text-align:center;
+}
+.day{
+    min-width:130px;
+    padding:18px;
+    border:1px solid var(--gold);
+    border-radius:14px;
+    background:var(--bg-dark);
+}
+.day strong{
+    display:block;
+    font-size:28px;
+    color:var(--gold-light);
+}
+.arrow{
+    font-size:28px;
+    color:var(--gold-light);
+}
+.info{
+    color:var(--muted);
+    margin-top:14px;
+    text-align:center;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+.campo{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+label{
+    color:var(--muted);
+    font-size:14px;
+}
+input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg-dark);
+    color:var(--text);
+    font-size:17px;
+    outline:none;
+}
+input:focus{
+    border-color:var(--primary);
+}
+button{
+    width:100%;
+    margin-top:18px;
+    padding:15px;
+    border:0;
+    border-radius:10px;
+    background:var(--primary);
+    color:white;
+    font-size:16px;
+    font-weight:800;
+    cursor:pointer;
+}
+button:hover{
+    filter:brightness(1.12);
+}
+.results{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    margin-top:18px;
+}
+.result{
+    background:var(--bg-dark);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+}
+.result span{
+    display:block;
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:7px;
+}
+.result strong{
+    font-size:23px;
+}
+.alert{
+    margin-top:18px;
+    padding:15px;
+    border-left:4px solid var(--gold);
+    background:rgba(212,175,55,.08);
+    color:var(--muted);
+    line-height:1.5;
+    border-radius:8px;
+}
+.positive{color:var(--verde)}
+.negative{color:var(--vermelho)}
+footer{
+    text-align:center;
+    color:var(--muted);
+    padding:15px 0 30px;
+    font-size:13px;
+}
+@media(max-width:650px){
+    .grid,.results{grid-template-columns:1fr}
+    .card,.hero{padding:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+    <img class="logo" src="images/logo2.png" alt="SOBERANO">
+    <h1>SOBERANO</h1>
+    <div class="version">14.0 PREMIUM • CICLO DE RIQUEZA</div>
+</header>
+
+<section class="hero">
+    <h2>O patrimônio cresce quando o capital é governado com disciplina.</h2>
+    <p>
+        Proteja o capital, assuma riscos calculados e respeite o ciclo.
+        O objetivo não é apenas ganhar: é construir riqueza sem perder o controle.
+    </p>
+</section>
+
+<section class="card">
+    <h2>👑 CICLO DE INVESTIMENTO</h2>
+    <div class="cycle">
+        <div class="day">
+            <strong>DIA 14</strong>
+            INÍCIO
+        </div>
+        <div class="arrow">→</div>
+        <div class="day">
+            <strong>DIA 13</strong>
+            FECHAMENTO
+        </div>
+    </div>
+    <p class="info">
+        O ciclo começa no dia 14 e termina no dia 13 do mês seguinte.
+    </p>
+</section>
+
+<section class="card">
+    <h2>💰 CAPITAL DO CICLO</h2>
+
+    <div class="grid">
+        <div class="campo">
+            <label for="saldoInicial">Capital inicial do ciclo • Dia 14</label>
+            <input type="number" id="saldoInicial" min="0" step="0.01" value="1000">
+        </div>
+
+        <div class="campo">
+            <label for="saldoFinal">Saldo final do ciclo • Dia 13</label>
+            <input type="number" id="saldoFinal" min="0" step="0.01" value="1000">
+        </div>
+    </div>
+
+    <button onclick="calcular()">CALCULAR CICLO</button>
+
+    <div class="results">
+        <div class="result">
+            <span>CAPITAL INICIAL DO CICLO</span>
+            <strong id="capitalInicial">R$ 0,00</strong>
+        </div>
+
+        <div class="result">
+            <span>LIMITE DE PERDA • 50%</span>
+            <strong id="limitePerda">R$ 0,00</strong>
+        </div>
+
+        <div class="result">
+            <span>SALDO FINAL • DIA 13</span>
+            <strong id="capitalFinal">R$ 0,00</strong>
+        </div>
+
+        <div class="result">
+            <span>VALOR DISPONÍVEL PARA SAQUE • 25%</span>
+            <strong id="saque">R$ 0,00</strong>
+        </div>
+    </div>
+
+    <div class="alert">
+        <strong>DISCIPLINA DO CICLO:</strong><br>
+        O limite de perda é de 50% do capital inicial.
+        O saque corresponde a 25% do saldo final e deve ser realizado no fechamento do ciclo, no dia 13.
+    </div>
+</section>
+
+<section class="card">
+    <h2>📊 LEITURA DO CICLO</h2>
+
+    <div class="results">
+        <div class="result">
+            <span>RESULTADO DO CICLO</span>
+            <strong id="resultado">R$ 0,00</strong>
+        </div>
+
+        <div class="result">
+            <span>VARIAÇÃO</span>
+            <strong id="variacao">0,00%</strong>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div>SOBERANO • 14.0 PREMIUM</div>
+    <div>RIQUEZA • CAPITAL • DISCIPLINA • CONTROLE</div>
+</footer>
+
+</div>
+
+<script>
+function moeda(valor){
+    return valor.toLocaleString('pt-BR',{
+        style:'currency',
+        currency:'BRL'
+    });
+}
+
+function percentual(valor){
+    return valor.toLocaleString('pt-BR',{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    }) + '%';
+}
+
+function calcular(){
+    const inicial = Number(document.getElementById('saldoInicial').value) || 0;
+    const final = Number(document.getElementById('saldoFinal').value) || 0;
+
+    const limitePerda = inicial * 0.50;
+    const saque = final * 0.25;
+    const resultado = final - inicial;
+    const variacao = inicial > 0 ? (resultado / inicial) * 100 : 0;
+
+    document.getElementById('capitalInicial').textContent = moeda(inicial);
+    document.getElementById('limitePerda').textContent = moeda(limitePerda);
+    document.getElementById('capitalFinal').textContent = moeda(final);
+    document.getElementById('saque').textContent = moeda(saque);
+
+    const resultadoEl = document.getElementById('resultado');
+    resultadoEl.textContent = moeda(resultado);
+    resultadoEl.className = resultado > 0 ? 'positive' : resultado < 0 ? 'negative' : '';
+
+    const variacaoEl = document.getElementById('variacao');
+    variacaoEl.textContent = percentual(variacao);
+    variacaoEl.className = variacao > 0 ? 'positive' : variacao < 0 ? 'negative' : '';
+}
+
+document.getElementById('saldoInicial').addEventListener('input', calcular);
+document.getElementById('saldoFinal').addEventListener('input', calcular);
+
+calcular();
+</script>
+
+</body>
+</html>
