@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASCEND — Airdrop V1.0</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fff;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(255, 80, 0, .28), transparent 25%),
+        radial-gradient(circle at 20% 50%, rgba(0, 100, 255, .22), transparent 30%),
+        linear-gradient(180deg, #020712 0%, #071426 45%, #180603 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ATMOSFERA */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 100%, rgba(255, 55, 0, .30), transparent 35%),
+        radial-gradient(circle at 10% 20%, rgba(0, 110, 255, .18), transparent 30%),
+        radial-gradient(circle at 90% 25%, rgba(0, 130, 255, .15), transparent 30%);
+    z-index: -2;
+}
+
+/* RAIOS */
+
+.lightning {
+    position: fixed;
+    width: 3px;
+    height: 300px;
+    background: linear-gradient(
+        transparent,
+        #8edcff,
+        white,
+        #168cff,
+        transparent
+    );
+    filter: blur(.5px);
+    opacity: .7;
+    transform: rotate(28deg);
+    animation: lightning 4s infinite;
+    z-index: -1;
+}
+
+.lightning.one {
+    left: 8%;
+    top: 5%;
+}
+
+.lightning.two {
+    right: 10%;
+    top: 15%;
+    transform: rotate(-25deg);
+    animation-delay: 2s;
+}
+
+@keyframes lightning {
+    0%, 88%, 100% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: .9;
+    }
+
+    92% {
+        opacity: .1;
+    }
+
+    94% {
+        opacity: .8;
+    }
+}
+
+/* CONTAINER */
+
+.container {
+    width: min(1000px, 92%);
+    margin: auto;
+    text-align: center;
+}
+
+/* TOPO */
+
+header {
+    padding: 55px 20px 20px;
+}
+
+.badge {
+    display: inline-block;
+    letter-spacing: 7px;
+    font-size: 13px;
+    color: #ddd;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
+    padding: 9px 25px;
+    margin-bottom: 25px;
+}
+
+.welcome {
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: #ddd;
+}
+
+/* LOGO */
+
+.logo {
+    margin: 35px auto 15px;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img {
+    max-width: 100%;
+    max-height: 100%;
+    filter:
+        drop-shadow(0 0 10px #ff6a00)
+        drop-shadow(0 0 30px rgba(255, 42, 0, .5));
+}
+
+/* TITULO */
+
+h1 {
+    font-size: clamp(55px, 10vw, 110px);
+    font-weight: 900;
+    letter-spacing: 10px;
+
+    background: linear-gradient(
+        180deg,
+        #fff8c7 0%,
+        #ffc928 35%,
+        #ff7000 65%,
+        #ff2500 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    text-shadow:
+        0 0 15px rgba(255, 100, 0, .7),
+        0 0 45px rgba(255, 50, 0, .4);
+}
+
+.subtitle {
+    margin-top: 8px;
+    font-size: 18px;
+    letter-spacing: 6px;
+    color: #ddd;
+}
+
+/* DIVISOR */
+
+.divider {
+    width: 450px;
+    max-width: 80%;
+    height: 2px;
+    margin: 35px auto;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #ff4d00,
+        #ffbd00,
+        #ff4d00,
+        transparent
+    );
+
+    box-shadow: 0 0 15px #ff4500;
+}
+
+/* HERO */
+
+.hero {
+    padding: 40px 20px 70px;
+}
+
+.hero h2 {
+    font-size: clamp(30px, 6vw, 55px);
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+.hero h2 span {
+    color: #ff7100;
+    text-shadow: 0 0 20px #ff3c00;
+}
+
+.hero p {
+    max-width: 700px;
+    margin: auto;
+    color: #d8dce5;
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+/* STATUS DO AIRDROP */
+
+.status-panel {
+    max-width: 560px;
+    margin: 35px auto 0;
+    padding: 16px 20px;
+    border: 1px solid rgba(255, 105, 0, .3);
+    background: rgba(3, 9, 20, .55);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    font-size: 13px;
+    color: #aeb6c7;
+}
+
+.status-panel div span {
+    display: block;
+    color: #ffae00;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 3px;
+}
+
+/* SELETOR DE TOKEN */
+
+.token-select-wrap {
+    margin: 30px auto 0;
+    max-width: 320px;
+}
+
+.token-select-wrap label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #ddd;
+    margin-bottom: 8px;
+}
+
+#paymentToken {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 105, 0, .45);
+    background: rgba(3, 9, 20, .8);
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* BOTÕES */
+
+.airdrop-button,
+.share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    padding: 19px 45px;
+
+    border-radius: 50px;
+    border: 2px solid #ff6a00;
+
+    color: white;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+.share-button {
+    margin-top: 40px;
+    background:
+        linear-gradient(
+            90deg,
+            #0064ff,
+            #00b3ff,
+            #0064ff
+        );
+    border-color: #00b3ff;
+    box-shadow:
+        0 0 10px #0084ff,
+        0 0 30px rgba(0, 130, 255, .5);
+}
+
+.share-button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow:
+        0 0 20px #00a2ff,
+        0 0 55px rgba(0, 130, 255, .8);
+}
+
+.airdrop-button {
+    margin-top: 22px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff2700,
+            #ff7200,
+            #ff2700
+        );
+
+    box-shadow:
+        0 0 10px #ff4500,
+        0 0 30px rgba(255, 60, 0, .6);
+}
+
+.airdrop-button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow:
+        0 0 20px #ff7300,
+        0 0 55px rgba(255, 60, 0, .8);
+}
+
+.airdrop-button:disabled,
+.share-button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    filter: grayscale(.4);
+    transform: none !important;
+}
+
+.wallet-icon {
+    font-size: 24px;
+}
+
+/* AVISO DE CARTEIRA NÃO DETECTADA */
+
+.wallet-notice {
+    display: none;
+    margin: 24px auto 0;
+    max-width: 560px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 174, 0, .5);
+    background: rgba(60, 30, 0, .45);
+    border-radius: 10px;
+    text-align: left;
+}
+
+.wallet-notice p {
+    font-size: 13px;
+    color: #ffd68a;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.wallet-notice-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wallet-notice-links a {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ffae00;
+    color: #ffd68a;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: .5px;
+    transition: .2s;
+}
+
+.wallet-notice-links a:hover {
+    background: rgba(255, 174, 0, .15);
+}
+
+/* CRONÔMETRO */
+
+.countdown {
+    margin-top: 18px;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #8ec9ff;
+    min-height: 20px;
+}
+
+.countdown strong {
+    color: #fff;
+    font-size: 16px;
+}
+
+/* MENSAGEM DE STATUS DA TRANSAÇÃO */
+
+.tx-status {
+    margin-top: 22px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 20px;
+    word-break: break-word;
+}
+
+.tx-status.error {
+    color: #ff6a6a;
+}
+
+.tx-status.success {
+    color: #58ffb0;
+}
+
+.tx-status.info {
+    color: #ddd;
+}
+
+.tx-status a {
+    color: #8ec9ff;
+    text-decoration: underline;
+}
+
+/* FRASE */
+
+.engagement {
+    margin: 25px auto 60px;
+    color: #ffae00;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    line-height: 1.7;
+}
+
+/* CARDS */
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 40px 0 80px;
+}
+
+.feature {
+    padding: 25px 15px;
+    border: 1px solid rgba(255, 105, 0, .35);
+    background: rgba(3, 9, 20, .65);
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.feature:hover {
+    transform: translateY(-6px);
+    border-color: #ff6a00;
+    box-shadow: 0 0 25px rgba(255, 70, 0, .25);
+}
+
+.feature-icon {
+    font-size: 35px;
+    margin-bottom: 12px;
+}
+
+.feature h3 {
+    color: #ff9d00;
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    color: #aeb6c7;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* CTA */
+
+.cta {
+    padding: 55px 20px;
+    margin-bottom: 50px;
+
+    border-top: 1px solid rgba(255, 90, 0, .4);
+    border-bottom: 1px solid rgba(255, 90, 0, .4);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 60, 0, .16),
+            transparent 65%
+        );
+}
+
+.cta h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.cta h2 span {
+    color: #ff6b00;
+}
+
+.cta p {
+    color: #bfc6d5;
+    line-height: 1.7;
+}
+
+/* FOOTER */
+
+footer {
+    padding: 35px 20px 55px;
+    color: #777f91;
+}
+
+.version {
+    color: #ff8a00;
+    letter-spacing: 5px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.footer-title {
+    letter-spacing: 3px;
+    color: #ddd;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 700px) {
+
+    header {
+        padding-top: 35px;
+    }
+
+    h1 {
+        letter-spacing: 5px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        letter-spacing: 3px;
+    }
+
+    .features {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .airdrop-button,
+    .share-button {
+        width: 100%;
+        padding: 18px 15px;
+    }
+
+    .status-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="lightning one"></div>
+<div class="lightning two"></div>
+
+<div class="container">
+
+    <!-- CABEÇALHO -->
+
+    <header>
+
+        <div class="badge">
+            AIRDROP
+        </div>
+
+        <div class="welcome">
+            BEM-VINDO AO ECOSSISTEMA
+        </div>
+
+        <div class="logo">
+            <img src="images/logo.png" alt="ASCEND">
+        </div>
+
+        <h1>ASCEND</h1>
+
+        <div class="subtitle">
+            MAIS QUE UM TOKEN • UM MOVIMENTO
+        </div>
+
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="divider"></div>
+
+        <h2>
+            FAÇA PARTE DESTA
+            <span>JORNADA ÉPICA!</span>
+        </h2>
+
+        <p>
+            O ASCEND está começando uma nova jornada.
+            Entre para a comunidade, conecte sua carteira
+            e participe do nosso airdrop.
+        </p>
+
+        <p style="margin-top:15px;">
+            <strong>
+                O primeiro passo é simples.
+                Sua jornada começa aqui.
+            </strong>
+        </p>
+
+        <!-- STATUS AO VIVO DO CONTRATO -->
+        <div class="status-panel" id="statusPanel">
+            <div>ACD restantes<span id="statRemaining">carregando...</span></div>
+            <div>Claims concluídas<span id="statClaims">carregando...</span></div>
+        </div>
+
+        <!-- SELETOR DE TOKEN DE PAGAMENTO -->
+        <div class="token-select-wrap">
+            <label for="paymentToken">PAGAR TAXA EM</label>
+            <select id="paymentToken">
+                <option value="0x55d398326f99059fF775485246999027B3197955">USDT</option>
+                <option value="0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d">USDC</option>
+                <option value="0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409">FDUSD</option>
+                <option value="0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3">DAI</option>
+                <option value="0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c">WBNB</option>
+            </select>
+        </div>
+
+        <!-- PASSO 1: COMPARTILHAR -->
+        <button
+            id="shareBtn"
+            class="share-button"
+        >
+            <span class="wallet-icon">🔗</span>
+            COMPARTILHAR COM AMIGOS
+            <span>→</span>
+        </button>
+
+        <div class="countdown" id="countdownText"></div>
+
+        <!-- PASSO 2: AIRDROP (bloqueado até compartilhar) -->
+        <br>
+        <button
+            id="airdropBtn"
+            class="airdrop-button"
+            disabled
+        >
+            <span class="wallet-icon">👛</span>
+            PARTICIPAR DO AIRDROP
+            <span>→</span>
+        </button>
+
+        <div class="tx-status info" id="txStatus">
+            Compartilhe primeiro para liberar o airdrop.
+        </div>
+
+        <!-- AVISO: aparece só quando o navegador não tem carteira Web3 injetada
+             (ex: Chrome/Safari comuns no celular, sem app de carteira) -->
+        <div class="wallet-notice" id="walletNotice">
+            <p>
+                ⚠️ Não detectamos uma carteira neste navegador.
+                Para conectar, abra este site pelo navegador
+                <strong>dentro do app</strong> da sua carteira (MetaMask,
+                Trust Wallet, etc.) — não pelo Chrome ou Safari comuns.
+            </p>
+            <div class="wallet-notice-links">
+                <a id="metamaskLink" href="#" target="_blank" rel="noopener">Abrir na MetaMask</a>
+                <a id="trustWalletLink" href="#" target="_blank" rel="noopener">Abrir na Trust Wallet</a>
+            </div>
+        </div>
+
+        <!-- AVISO: aparece quando a carteira está conectada em outra rede
+             que não a BNB Smart Chain (56), onde o contrato do ASCEND vive -->
+        <div class="wallet-notice" id="networkNotice">
+            <p>
+                ⚠️ Sua carteira está em outra rede. O airdrop do ASCEND
+                só funciona na <strong>BNB Smart Chain</strong>.
+            </p>
+            <div class="wallet-notice-links">
+                <a href="#" id="switchNetworkBtn">Trocar para BNB Smart Chain</a>
+            </div>
+        </div>
+
+        <div class="engagement">
+
+            JUNTOS SOMOS MAIS FORTES.<br>
+            ASCEND É O SEU PRÓXIMO PASSO.
+
+        </div>
+
+    </section>
+
+
+    <!-- BENEFÍCIOS -->
+
+    <section class="features">
+
+        <div class="feature">
+
+            <div class="feature-icon">🛡️</div>
+
+            <h3>SEGURO</h3>
+
+            <p>
+                Construído com foco em
+                transparência e segurança.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">👥</div>
+
+            <h3>COMUNIDADE</h3>
+
+            <p>
+                Um ecossistema criado
+                para crescer junto.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">📈</div>
+
+            <h3>CRESCIMENTO</h3>
+
+            <p>
+                Uma jornada construída
+                passo a passo.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">🔥</div>
+
+            <h3>ASCEND</h3>
+
+            <p>
+                O próximo nível começa
+                com você.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+
+    <section class="cta">
+
+        <h2>
+            O MOMENTO DE <span>ASCENDER</span>
+            COMEÇA AGORA.
+        </h2>
+
+        <p>
+            Conecte sua carteira e descubra
+            como participar do ecossistema ASCEND.
+        </p>
+
+    </section>
+
+
+    <!-- RODAPÉ -->
+
+    <footer>
+
+        <div class="version">
+            VERSÃO 1.0
+        </div>
+
+        <div class="footer-title">
+            O COMEÇO DE ALGO GIGANTE.
+        </div>
+
+    </footer>
+
+</div>
+<script type="module" src="libs/airdrop.js"></script>
+
+</body>
+</html>
