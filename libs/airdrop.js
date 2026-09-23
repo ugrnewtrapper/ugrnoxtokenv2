@@ -5,7 +5,7 @@ import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.4/+esm";
    ============================================================= */
 
 const CFG = {
-    backend: "https://backendacd.tokenascend2026.workers.dev",
+    backend: "https://airdrop.ugr.app.br",
     chainId: 56,
     chainHex: "0x38",
     contract: "0x420DBe8B8130b86F9707afE2b2fA2FBBD9eF3060"
