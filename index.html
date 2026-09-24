@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOBERANO • Portal Oficial</title>
+  <link rel="icon" type="image/png" href="images/logo2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #05070b;
+      --bg-card: #0d1117;
+      --bg-card-hover: #121926;
+      --gold: #c9a24b;
+      --gold-soft: #e7cd8c;
+      --primary: #1b2740;
+      --text-main: #eef1f6;
+      --text-muted: #97a1b3;
+      --border-soft: rgba(201,162,75,0.18);
+      --border-strong: rgba(201,162,75,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, #0b1220 0%, #05070b 55%),
+        linear-gradient(180deg, #05070b, #030406);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    main {
+      max-width: 920px;
+      width: 100%;
+      padding: 56px 24px 32px;
+      text-align: center;
+      animation: fadeIn 0.9s ease;
+    }
+
+    .crest {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 0 18px rgba(201,162,75,0.25));
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .divider {
+      width: 64px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 14px auto 18px;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+      margin-bottom: 36px;
+    }
+
+    p {
+      font-size: 1.03rem;
+      line-height: 1.9;
+      color: var(--text-main);
+      max-width: 740px;
+      margin: 0 auto 44px;
+    }
+
+    p strong {
+      color: var(--gold-soft);
+      font-weight: 600;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 22px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .btn .icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+
+    .btn .label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
+    }
+
+    .btn .label span.title {
+      font-size: 0.98rem;
+      color: var(--text-main);
+    }
+
+    .btn .label span.sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .trust-strip {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding: 20px 0 40px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      margin-bottom: 32px;
+    }
+
+    .trust-strip span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trust-strip svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gold);
+    }
+
+    footer {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding-top: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .since {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+    }
+
+    .admin-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border-soft);
+      opacity: 0.5;
+      display: block;
+      transition: opacity 0.3s ease, border-color 0.3s ease;
+      filter: grayscale(1);
+    }
+
+    .admin-mark:hover {
+      opacity: 0.9;
+      border-color: var(--border-strong);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .brand { font-size: 2.1rem; }
+      .buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <div class="crest">
+      <img src="images/logo2.png" alt="SOBERANO" class="logo">
+      <div class="brand">SOBERANO</div>
+      <div class="divider"></div>
+      <h2>Estratégia patrimonial, disciplina e visão de longo prazo</h2>
+    </div>
+
+    <p>
+      A <strong>SOBERANO</strong> é uma plataforma dedicada a quem pensa em patrimônio
+      de forma estruturada, disciplinada e orientada por dados.
+      <br><br>
+      Nosso ecossistema reúne ferramentas de análise, planejamento e acompanhamento
+      para apoiar decisões financeiras mais sólidas, com foco em consistência,
+      clareza e construção de valor ao longo do tempo.
+      <br><br>
+      Mais do que uma plataforma, a SOBERANO é um projeto pensado para durar —
+      uma base construída com rigor para ser transmitida através das gerações.
+    </p>
+
+    <div class="buttons">
+      <a href="pagina2.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span class="label"><span class="title">Adquirir Ativo Digital</span><span class="sub">Participação no ecossistema</span></span>
+      </a>
+      <a href="pagina3.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg>
+        <span class="label"><span class="title">Relatórios Gratuitos</span><span class="sub">Análises e conteúdo aberto</span></span>
+      </a>
+      <a href="pagina4.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h3M13 11h3M8 15h3M13 15h3"/></svg>
+        <span class="label"><span class="title">Calculadora de Retorno</span><span class="sub">Simulações e projeções</span></span>
+      </a>
+      <a href="pagina5.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        <span class="label"><span class="title">Programa de Distribuição</span><span class="sub">Benefícios exclusivos</span></span>
+      </a>
+      <a href="pagina6.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <span class="label"><span class="title">Bônus Exclusivo</span><span class="sub">Área de vantagens</span></span>
+      </a>
+      <a href="mystikon.html" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6"/></svg>
+        <span class="label"><span class="title">Calculadora Estatística</span><span class="sub">Modelagem probabilística</span></span>
+      </a>
+    </div>
+
+    <div class="trust-strip">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>Segurança</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Transparência</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Consistência</span>
+    </div>
+
+    <footer>
+      <p>SOBERANO 14.7</p>
+      <p class="since">Desde 2025</p>
+      <a href="UGROFC.html" class="admin-mark" aria-hidden="true" tabindex="-1">
+        <img src="images/logo2.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      </a>
+    </footer>
+
+  </main>
+</body>
+</html>
