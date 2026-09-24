@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOBERANO 14.0 • FORTALEZA</title>
+
+<style>
+:root{
+    --bg:#0b0e12;
+    --card:#151a21;
+    --card2:#101419;
+    --gold:#d6a84f;
+    --gold2:#f0c96a;
+    --text:#eeeeee;
+    --muted:#9da5b2;
+    --green:#35e878;
+    --red:#ff5050;
+    --orange:#ffb84d;
+    --border:rgba(214,168,79,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif}
+body{
+    min-height:100vh;
+    background:radial-gradient(circle at top,rgba(214,168,79,.14),transparent 35%),linear-gradient(180deg,#090b0f,#11151b);
+    color:var(--text);
+    padding:18px 12px 40px;
+}
+.container{width:100%;max-width:700px;margin:auto}
+.card{
+    background:linear-gradient(145deg,#171c23,#11151b);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+.header{text-align:center;padding:30px 20px}
+.coroa{font-size:46px;margin-bottom:8px}
+h1{color:var(--gold2);font-size:29px;letter-spacing:2px}
+.subtitulo{color:var(--muted);font-size:12px;letter-spacing:2px;margin-top:5px}
+.lema{margin-top:22px;padding:18px;border-radius:15px;background:#0c1015;border:1px solid var(--border);color:#ddd;line-height:1.6}
+.lema strong{color:var(--gold2)}
+.titulo{font-size:18px;font-weight:bold;color:var(--gold2);margin-bottom:15px}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}
+select,input{width:100%;background:#0c1015;color:white;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:14px;font-size:15px;outline:none}
+select:focus,input:focus{border-color:var(--gold)}
+.campo{margin-bottom:15px}.campo:last-child{margin-bottom:0}
+.protocol-box{margin-top:18px;padding:17px;border-radius:14px;background:#0c1015;border:1px solid var(--border)}
+.protocol-titulo{color:var(--gold2);font-weight:bold;margin-bottom:8px}
+.protocol-text{color:#d5d5d5;font-size:14px;line-height:1.55}
+button{width:100%;padding:15px;border:0;border-radius:12px;background:linear-gradient(135deg,#b9872f,#edc15e);color:#16120a;font-weight:bold;cursor:pointer;margin-top:12px;font-size:15px}
+button:hover{filter:brightness(1.08)}
+.btn-secundario{background:#242b34;color:#ddd;border:1px solid rgba(255,255,255,.1)}
+.hidden{display:none}
+.resultado{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;padding:20px;align-items:center;justify-content:center}
+.modal{width:100%;max-width:520px;background:#151a21;border:1px solid var(--border);border-radius:22px;padding:25px;box-shadow:0 25px 80px rgba(0,0,0,.65);animation:entrada .2s ease}
+@keyframes entrada{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.resultado-icone{font-size:52px;text-align:center;margin-bottom:10px}
+.resultado-titulo{text-align:center;font-size:25px;font-weight:bold;margin-bottom:15px}
+.permitido{color:var(--green)}.bloqueado{color:var(--red)}.ressalva{color:var(--orange)}
+.resultado-habito{text-align:center;color:var(--gold2);font-weight:bold;font-size:17px;margin-bottom:15px}
+.resultado-motivo{background:#0c1015;border-radius:14px;padding:16px;color:#ddd;line-height:1.6;font-size:14px}
+.resultado-protocolo{margin-top:12px;padding:13px;border-left:3px solid var(--gold);background:rgba(214,168,79,.06);color:var(--muted);font-size:13px;line-height:1.5}
+.modal button{margin-top:18px}
+.historico-item{padding:14px;background:#0d1116;border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:10px}
+.historico-item:last-child{margin-bottom:0}
+.historico-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px}
+.historico-habito{font-weight:bold;color:#eee}
+.historico-status{font-size:10px;font-weight:bold;padding:5px 8px;border-radius:20px}
+.hs-ok{color:var(--green);background:rgba(53,232,120,.08)}
+.hs-no{color:var(--red);background:rgba(255,80,80,.08)}
+.hs-warning{color:var(--orange);background:rgba(255,184,77,.08)}
+.historico-data{color:var(--muted);font-size:11px}
+.vazio{color:var(--muted);text-align:center;padding:15px}
+.rodape{text-align:center;color:#707986;font-size:11px;line-height:1.7;margin-top:20px}
+@media(max-width:450px){h1{font-size:25px}.card{padding:18px}}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="card header">
+    <div class="coroa">♛</div>
+    <h1>SOBERANO 14.0</h1>
+    <div class="subtitulo">FORTALEZA • SISTEMA DE CONTROLE</div>
+    <div class="lema">
+        <strong>CADA HÁBITO POSSUI UM MURO.</strong><br>
+        CADA MURO POSSUI UMA REGRA.<br>
+        A pergunta não é apenas <strong>"eu quero?"</strong><br>
+        A pergunta é: <strong>"O PROTOCOLO PERMITE?"</strong>
+    </div>
+</div>
+
+<div class="card">
+    <div class="titulo">🏰 CONSULTAR A FORTALEZA</div>
+    <div class="campo">
+        <label>Qual hábito você deseja consultar?</label>
+        <select id="habito" onchange="carregarProtocolo()">
+            <option value="">— Escolha um hábito —</option>
+        </select>
+    </div>
+    <div id="protocolo" class="protocol-box hidden">
+        <div id="protocoloTitulo" class="protocol-titulo"></div>
+        <div id="protocoloTexto" class="protocol-text"></div>
+    </div>
+</div>
+
+<div id="perguntasCard" class="card hidden">
+    <div class="titulo">⚔️ ANÁLISE DA SITUAÇÃO</div>
+    <div id="perguntas"></div>
+    <button onclick="analisar()">VERIFICAR SE É PERMITIDO</button>
+</div>
+
+<div class="card">
+    <div class="titulo">📜 LIVRO DOS REGISTROS</div>
+    <div id="historico"></div>
+    <button class="btn-secundario" onclick="limparHistorico()">LIMPAR HISTÓRICO</button>
+</div>
+
+<div class="rodape">
+    SOBERANO 14.0 • FORTALEZA<br>
+    DOMÍNIO • DISCIPLINA • RECOMEÇO
+</div>
+
+</div>
+
+<div id="resultadoModal" class="resultado">
+    <div class="modal">
+        <div id="resultadoIcone" class="resultado-icone"></div>
+        <div id="resultadoTitulo" class="resultado-titulo"></div>
+        <div id="resultadoHabito" class="resultado-habito"></div>
+        <div id="resultadoMotivo" class="resultado-motivo"></div>
+        <div id="resultadoProtocolo" class="resultado-protocolo"></div>
+        <button onclick="fecharModal()">FECHAR</button>
+    </div>
+</div>
+
+<script>
+/*
+  QUEBRAR PROTOCOLO DOS 8 foi removido conforme solicitado.
+  Mantidos os 22 hábitos restantes, com a numeração original.
+*/
+
+const HABITOS = [
+{ id:1, nome:"ÁLCOOL", protocolo:"BLOQUEIO TOTAL EM RAIO MENOR QUE 60 KM OU 24 HORAS DE DISTÂNCIA DA FAMÍLIA.", tipo:"alcool" },
+{ id:2, nome:"CAFÉ", protocolo:"CAFÉ NÃO TEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:3, nome:"TRANSGRESSÃO", protocolo:"ACEITO FORA DE CASA COMO ATO DE EDUCAÇÃO, MAS QUANDO POSSÍVEL RECUSAR.", tipo:"educacao" },
+{ id:4, nome:"MURMÚRIO", protocolo:"MURMÚRIO SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:5, nome:"REQUISIÇÕES", protocolo:"SOMENTE EMERGÊNCIA (SAÚDE).", tipo:"emergencia" },
+{ id:6, nome:"EXTRAÇÕES ORDINÁRIAS", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:7, nome:"ANTECIPAÇÃO", protocolo:"SOMENTE EMERGÊNCIA (SAÚDE).", tipo:"emergencia" },
+{ id:8, nome:"PROCRASTINAÇÃO E MÍDIAS", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:9, nome:"DEPENDÊNCIA", protocolo:"SOMENTE EMERGÊNCIA (SAÚDE).", tipo:"emergencia" },
+{ id:10, nome:"PRODUTOS COCA-COLA", protocolo:"POR DESCONHECER OU EDUCAÇÃO, IGUAL AO PROTOCOLO 3.", tipo:"educacao" },
+{ id:11, nome:"POLUIÇÃO SONORA", protocolo:"MESMO BLOQUEIO DO 1, COM DISTÂNCIA DE 5 KM E 10 MINUTOS.", tipo:"poluicao" },
+{ id:12, nome:"CORRE DE RISCO MÁXIMO", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:13, nome:"INCURSÕES", protocolo:"APENAS EM CASO DE VIAGEM.", tipo:"viagem" },
+{ id:14, nome:"DISPERSÃO", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:15, nome:"DETRAÇÃO", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:16, nome:"DOLUS", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:17, nome:"EXTRAÇÕES ORDINÁRIAS", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:18, nome:"DESVIO ORÇAMENTÁRIO", protocolo:"NUNCA COM MAIS DE 10% DO PATRIMÔNIO EM DINHEIRO LÍQUIDO.", tipo:"bets" },
+{ id:19, nome:"VIOLAÇÃO DE PROTOCOLO", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:20, nome:"PRODUTOS META", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" },
+{ id:21, nome:"ONICOFAGIA", protocolo:"SEM NEGOCIAÇÃO DENTRO DOS PADRÕES DEFINIDOS PELOS PROTOCOLOS CRIADOS AQUI.", tipo:"protocolo" },
+{ id:22, nome:"ATUALIZAR DADOS", protocolo:"SEM NEGOCIAÇÃO.", tipo:"bloqueado" }
+];
+
+/*
+  O protocolo 13 foi associado a INCURSÕES porque, na lista original,
+  INCURSÕES é o hábito de 24/09 e o texto informado pelo usuário foi
+  "apenas em caso de viagem" para o item 13.
+  Caso queira preservar a ordem da mensagem original exatamente,
+  basta alterar os objetos acima.
+*/
+
+const selectHabito = document.getElementById("habito");
+const perguntasCard = document.getElementById("perguntasCard");
+const perguntas = document.getElementById("perguntas");
+const protocolo = document.getElementById("protocolo");
+const protocoloTitulo = document.getElementById("protocoloTitulo");
+const protocoloTexto = document.getElementById("protocoloTexto");
+
+HABITOS.forEach(function(habito){
+    const option = document.createElement("option");
+    option.value = habito.id;
+    option.textContent = habito.id + ". " + habito.nome;
+    selectHabito.appendChild(option);
+});
+
+function carregarProtocolo(){
+    const id = Number(selectHabito.value);
+    const habito = HABITOS.find(h => h.id === id);
+    perguntas.innerHTML = "";
+
+    if(!habito){
+        protocolo.classList.add("hidden");
+        perguntasCard.classList.add("hidden");
+        return;
+    }
+
+    protocolo.classList.remove("hidden");
+    perguntasCard.classList.remove("hidden");
+    protocoloTitulo.textContent = "⚔️ MURO " + habito.id + " • " + habito.nome;
+    protocoloTexto.textContent = habito.protocolo;
+    criarPerguntas(habito);
+}
+
+function criarPerguntas(habito){
+    let html = "";
+
+    switch(habito.tipo){
+        case "bloqueado":
+            html = `
+                <div class="protocol-box">
+                    <div class="protocol-text">
+                        Este hábito está sob <strong>bloqueio absoluto</strong>.<br><br>
+                        Não existe exceção cadastrada neste protocolo.
+                    </div>
+                </div>`;
+            break;
+
+        case "emergencia":
+            html = `
+                <div class="campo">
+                    <label>É uma emergência de saúde?</label>
+                    <select id="emergencia">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "educacao":
+            html = `
+                <div class="campo">
+                    <label>A situação ocorre fora de casa?</label>
+                    <select id="foraCasa">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>É uma situação de educação ou você desconhecia previamente?</label>
+                    <select id="educacao">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label>Era possível recusar?</label>
+                    <select id="poderiaRecusar">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "viagem":
+            html = `
+                <div class="campo">
+                    <label>Você está em uma viagem?</label>
+                    <select id="viagem">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "alcool":
+            html = `
+                <div class="campo">
+                    <label>Distância até a família (km)</label>
+                    <input type="number" id="distanciaFamilia" min="0" step="0.1" placeholder="Ex.: 80">
+                </div>
+                <div class="campo">
+                    <label>Tempo de distância da família (horas)</label>
+                    <input type="number" id="tempoFamilia" min="0" step="0.1" placeholder="Ex.: 25">
+                </div>`;
+            break;
+
+        case "poluicao":
+            html = `
+                <div class="campo">
+                    <label>Distância do local (km)</label>
+                    <input type="number" id="distanciaLocal" min="0" step="0.1" placeholder="Ex.: 3">
+                </div>
+                <div class="campo">
+                    <label>Tempo para chegar (minutos)</label>
+                    <input type="number" id="tempoLocal" min="0" step="1" placeholder="Ex.: 8">
+                </div>`;
+            break;
+
+        case "bets":
+            html = `
+                <div class="campo">
+                    <label>Patrimônio em dinheiro líquido (R$)</label>
+                    <input type="number" id="patrimonio" min="0" step="0.01" placeholder="Ex.: 10000">
+                </div>
+                <div class="campo">
+                    <label>Valor que pretende utilizar (R$)</label>
+                    <input type="number" id="valorAposta" min="0" step="0.01" placeholder="Ex.: 500">
+                </div>
+                <div id="limiteBets" class="protocol-box hidden"></div>`;
+            break;
+
+        case "protocolo":
+            html = `
+                <div class="campo">
+                    <label>A situação está dentro dos protocolos definidos pela Fortaleza?</label>
+                    <select id="dentroProtocolo">
+                        <option value="">— Escolha —</option>
+                        <option value="sim">SIM</option>
+                        <option value="nao">NÃO</option>
+                    </select>
+                </div>`;
+            break;
+    }
+
+    perguntas.innerHTML = html;
+
+    const patrimonio = document.getElementById("patrimonio");
+    const valorAposta = document.getElementById("valorAposta");
+
+    if(patrimonio && valorAposta){
+        patrimonio.addEventListener("input", atualizarLimiteBets);
+        valorAposta.addEventListener("input", atualizarLimiteBets);
+    }
+}
+
+function atualizarLimiteBets(){
+    const patrimonio = Number(document.getElementById("patrimonio")?.value);
+    const limite = patrimonio * 0.10;
+    const caixa = document.getElementById("limiteBets");
+
+    if(!caixa) return;
+
+    if(!patrimonio){
+        caixa.classList.add("hidden");
+        return;
+    }
+
+    caixa.classList.remove("hidden");
+    caixa.innerHTML = `<div class="protocol-text">Limite máximo definido pelo protocolo: <strong>R$ ${limite.toFixed(2)}</strong></div>`;
+}
+
+function analisar(){
+    const id = Number(selectHabito.value);
+    const habito = HABITOS.find(h => h.id === id);
+    if(!habito) return;
+
+    let resultado = {
+        status:"BLOQUEADO",
+        classe:"bloqueado",
+        icone:"🔒",
+        motivo:"",
+        protocolo:habito.protocolo
+    };
+
+    if(habito.tipo === "bloqueado"){
+        resultado.motivo = "O protocolo deste hábito não possui exceções cadastradas. A fortaleza permanece fechada.";
+    }
+
+    else if(habito.tipo === "emergencia"){
+        const resposta = document.getElementById("emergencia")?.value;
+
+        if(resposta === "sim"){
+            resultado.status = "PERMITIDO — EMERGÊNCIA";
+            resultado.classe = "permitido";
+            resultado.icone = "🏥";
+            resultado.motivo = "O protocolo possui uma exceção exclusivamente para emergência de saúde.";
+        }else{
+            resultado.motivo = "O protocolo permite somente uma emergência de saúde. Fora dessa condição, permanece bloqueado.";
+        }
+    }
+
+    else if(habito.tipo === "educacao"){
+        const fora = document.getElementById("foraCasa")?.value;
+        const educacao = document.getElementById("educacao")?.value;
+        const recusar = document.getElementById("poderiaRecusar")?.value;
+
+        if(fora === "sim" && educacao === "sim" && recusar === "nao"){
+            resultado.status = "PERMITIDO";
+            resultado.classe = "permitido";
+            resultado.icone = "🛡️";
+            resultado.motivo = "A situação se enquadra na exceção de educação/desconhecimento e não havia possibilidade razoável de recusa.";
+        }else if(fora === "sim" && educacao === "sim"){
+            resultado.status = "PERMITIDO COM RESSALVA";
+            resultado.classe = "ressalva";
+            resultado.icone = "⚠️";
+            resultado.motivo = "A situação se enquadra na exceção prevista, porém o protocolo determina que, quando possível, seja recusada.";
+        }else{
+            resultado.motivo = "A exceção exige que a situação esteja fora de casa e decorra de educação ou desconhecimento.";
+        }
+    }
+
+    else if(habito.tipo === "viagem"){
+        const viagem = document.getElementById("viagem")?.value;
+
+        if(viagem === "sim"){
+            resultado.status = "PERMITIDO";
+            resultado.classe = "permitido";
+            resultado.icone = "✈️";
+            resultado.motivo = "O protocolo permite esta situação exclusivamente durante uma viagem.";
+        }else{
+            resultado.motivo = "Fora de uma viagem, o muro permanece fechado.";
+        }
+    }
+
+    else if(habito.tipo === "alcool"){
+        const distancia = Number(document.getElementById("distanciaFamilia")?.value);
+        const tempo = Number(document.getElementById("tempoFamilia")?.value);
+
+        if(!Number.isFinite(distancia) || !Number.isFinite(tempo)){
+            resultado.motivo = "Informe a distância e o tempo de distância da família.";
+        }else if(distancia < 60 || tempo < 24){
+            resultado.motivo = "O bloqueio foi acionado porque a situação está dentro de pelo menos um dos limites definidos: menos de 60 km OU menos de 24 horas de distância da família.";
+        }else{
+            resultado.status = "PERMITIDO";
+            resultado.classe = "permitido";
+            resultado.icone = "🛡️";
+            resultado.motivo = "Os dois limites mínimos foram ultrapassados: pelo menos 60 km e pelo menos 24 horas de distância da família.";
+        }
+    }
+
+    else if(habito.tipo === "poluicao"){
+        const distancia = Number(document.getElementById("distanciaLocal")?.value);
+        const tempo = Number(document.getElementById("tempoLocal")?.value);
+
+        if(!Number.isFinite(distancia) || !Number.isFinite(tempo)){
+            resultado.motivo = "Informe a distância e o tempo.";
+        }else if(distancia <= 5 && tempo <= 10){
+            resultado.motivo = "O bloqueio foi acionado: o local está dentro de 5 km E a até 10 minutos.";
+        }else{
+            resultado.status = "PERMITIDO";
+            resultado.classe = "permitido";
+            resultado.icone = "🛡️";
+            resultado.motivo = "A situação está fora da combinação de distância de até 5 km e tempo de até 10 minutos.";
+        }
+    }
+
+    else if(habito.tipo === "bets"){
+        const patrimonio = Number(document.getElementById("patrimonio")?.value);
+        const valor = Number(document.getElementById("valorAposta")?.value);
+        const limite = patrimonio * 0.10;
+
+        if(patrimonio <= 0 || valor < 0){
+            resultado.motivo = "Informe valores válidos de patrimônio líquido e valor pretendido.";
+        }else if(valor > limite){
+            resultado.motivo = "O valor pretendido ultrapassa o limite de 10% do patrimônio em dinheiro líquido.";
+        }else{
+            resultado.status = "PERMITIDO DENTRO DO LIMITE";
+            resultado.classe = "permitido";
+            resultado.icone = "⚖️";
+            resultado.motivo = "O valor pretendido está dentro do limite matemático de 10% do patrimônio em dinheiro líquido.";
+        }
+    }
+
+    else if(habito.tipo === "protocolo"){
+        const dentro = document.getElementById("dentroProtocolo")?.value;
+
+        if(dentro === "sim"){
+            resultado.status = "PERMITIDO";
+            resultado.classe = "permitido";
+            resultado.icone = "🛡️";
+            resultado.motivo = "A situação foi declarada como estando dentro dos padrões definidos pelos protocolos.";
+        }else{
+            resultado.motivo = "A situação foi declarada fora dos protocolos. Portanto, permanece bloqueada.";
+        }
+    }
+
+    mostrarResultado(habito, resultado);
+}
+
+function mostrarResultado(habito, resultado){
+    document.getElementById("resultadoIcone").textContent = resultado.icone;
+
+    const titulo = document.getElementById("resultadoTitulo");
+    titulo.textContent = resultado.status;
+    titulo.className = "resultado-titulo " + resultado.classe;
+
+    document.getElementById("resultadoHabito").textContent = habito.id + ". " + habito.nome;
+    document.getElementById("resultadoMotivo").textContent = resultado.motivo;
+
+    document.getElementById("resultadoProtocolo").innerHTML =
+        "<strong>MURO:</strong> " + escaparHTML(resultado.protocolo);
+
+    document.getElementById("resultadoModal").style.display = "flex";
+    salvarHistorico(habito, resultado);
+}
+
+function fecharModal(){
+    document.getElementById("resultadoModal").style.display = "none";
+}
+
+function salvarHistorico(habito, resultado){
+    let historico = JSON.parse(localStorage.getItem("soberanoHistorico") || "[]");
+
+    historico.unshift({
+        habit:habito.nome,
+        id:habito.id,
+        status:resultado.status,
+        classe:resultado.classe,
+        motivo:resultado.motivo,
+        data:new Date().toLocaleString("pt-BR")
+    });
+
+    localStorage.setItem("soberanoHistorico", JSON.stringify(historico.slice(0,100)));
+    renderizarHistorico();
+}
+
+function renderizarHistorico(){
+    const container = document.getElementById("historico");
+    const historico = JSON.parse(localStorage.getItem("soberanoHistorico") || "[]");
+
+    if(!historico.length){
+        container.innerHTML = `<div class="vazio">Nenhuma decisão registrada.</div>`;
+        return;
+    }
+
+    container.innerHTML = historico.map(function(item){
+        let classe = "hs-no";
+        if(item.classe === "permitido") classe = "hs-ok";
+        else if(item.classe === "ressalva") classe = "hs-warning";
+
+        return `
+            <div class="historico-item">
+                <div class="historico-top">
+                    <div class="historico-habito">${item.id}. ${escaparHTML(item.habit)}</div>
+                    <div class="historico-status ${classe}">${escaparHTML(item.status)}</div>
+                </div>
+                <div class="historico-data">${escaparHTML(item.data)}</div>
+            </div>`;
+    }).join("");
+}
+
+function limparHistorico(){
+    if(!confirm("Deseja apagar todo o histórico?")) return;
+    localStorage.removeItem("soberanoHistorico");
+    renderizarHistorico();
+}
+
+function escaparHTML(texto){
+    return String(texto)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+renderizarHistorico();
+
+document.getElementById("resultadoModal").addEventListener("click", function(event){
+    if(event.target === this) fecharModal();
+});
+</script>
+
+</body>
+</html>
