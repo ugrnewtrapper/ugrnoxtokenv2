@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOBERANO • Área Administrativa</title>
+  <link rel="icon" type="image/png" href="images/logo2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #05070b;
+      --bg-card: #0d1117;
+      --bg-card-hover: #121926;
+      --gold: #c9a24b;
+      --gold-soft: #e7cd8c;
+      --text-main: #eef1f6;
+      --text-muted: #97a1b3;
+      --border-soft: rgba(201,162,75,0.18);
+      --border-strong: rgba(201,162,75,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, #0b1220 0%, #05070b 55%),
+        linear-gradient(180deg, #05070b, #030406);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    main {
+      max-width: 640px;
+      width: 100%;
+      padding: 56px 24px 32px;
+      text-align: center;
+      animation: fadeIn 0.9s ease;
+    }
+
+    .crest {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-link {
+      display: inline-block;
+      margin-bottom: 18px;
+    }
+
+    .logo {
+      width: 100px;
+      filter: drop-shadow(0 0 18px rgba(201,162,75,0.25));
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+
+    .logo-link:hover .logo {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 24px rgba(201,162,75,0.4));
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .divider {
+      width: 64px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 14px auto 18px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .lista {
+      display: grid;
+      gap: 14px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    a.item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-main);
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 20px;
+      transition: all 0.25s ease;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.02rem;
+      letter-spacing: 0.02em;
+    }
+
+    a.item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    footer {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding-top: 20px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .brand { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <div class="crest">
+      <a href="index.html" class="logo-link" title="Voltar à página inicial">
+        <img src="images/logo2.png" alt="SOBERANO" class="logo">
+      </a>
+      <div class="brand">SOBERANO</div>
+      <div class="divider"></div>
+      <h2>Área Administrativa</h2>
+    </div>
+
+    <div class="lista">
+      <a href="control.html" class="item">Disciplina &amp; Fé</a>
+
+      <a href="forte2.html" class="item">Protocolos de Segurança</a>
+
+      <a href="hab.html" class="item">Hábitos</a>
+
+      <a href="restrito.html" class="item">Controle Restrito</a>
+
+      <a href="rico.html" class="item">Investimentos</a>
+    </div>
+
+    <footer>
+      <p>SOBERANO 14.7</p>
+    </footer>
+
+  </main>
+</body>
+</html>
