@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>SOBERANO 14.7 • Meu Reinado</title>
+
+<link rel="icon" href="images/logo2.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================================================
+   SOBERANO 14.7
+   IDENTIDADE VISUAL • TEMA DE REINADO
+   ========================================================= */
+
+:root{
+    --bg-main:#05070b;
+    --bg-card:#0d1117;
+    --bg-card-inner:#0a0e14;
+
+    --gold:#c9a24b;
+    --gold-soft:#e7cd8c;
+
+    --text:#eef1f6;
+    --muted:#97a1b3;
+
+    --border:rgba(201,162,75,.18);
+    --border-strong:rgba(201,162,75,.35);
+
+    --verde:#38ff74;
+    --vermelho:#ff4d4d;
+}
+
+/* RESET */
+
+*{
+    margin:0;
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+}
+
+/* CORPO */
+
+body{
+
+    min-height:100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(201,162,75,.10),
+            transparent 40%
+        ),
+
+        linear-gradient(
+            180deg,
+            #05070b,
+            #030406
+        );
+
+    color:var(--text);
+
+    padding:20px 14px;
+}
+
+/* CONTAINER */
+
+.container{
+
+    width:100%;
+
+    max-width:620px;
+
+    margin:auto;
+}
+
+/* CARD PRINCIPAL */
+
+.card{
+
+    width:100%;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin-bottom:18px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.35);
+}
+
+/* CABEÇALHO */
+
+.header{
+
+    text-align:center;
+
+    padding:28px 20px;
+}
+
+/* LOGO */
+
+.logo{
+
+    width:110px;
+
+    max-width:45%;
+
+    margin-bottom:12px;
+
+    filter: drop-shadow(0 0 16px rgba(201,162,75,.25));
+}
+
+/* NOME */
+
+h1{
+
+    font-family:'Playfair Display', serif;
+
+    color:var(--gold-soft);
+
+    background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    font-size:30px;
+
+    letter-spacing:2px;
+
+    margin-bottom:5px;
+}
+
+/* VERSÃO */
+
+.version{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    letter-spacing:2px;
+}
+
+/* FRASE */
+
+.motivacional{
+
+    margin-top:22px;
+
+    padding:20px;
+
+    background:var(--bg-card-inner);
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+}
+
+.frase{
+
+    font-size:20px;
+
+    line-height:1.5;
+
+    font-weight:bold;
+}
+
+.frase-destaque{
+
+    color:var(--gold-soft);
+}
+
+.subfrase{
+
+    margin-top:13px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.5;
+}
+
+/* TÍTULOS */
+
+.titulo{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+    text-align:center;
+}
+
+/* DATA */
+
+.data-box{
+
+    text-align:center;
+}
+
+.data-box label{
+
+    display:block;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:8px;
+}
+
+#dataAtual{
+
+    width:100%;
+
+    padding:15px;
+
+    background:var(--bg-card-inner);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    color:white;
+
+    font-size:18px;
+
+    text-align:center;
+
+    outline:none;
+}
+
+#dataAtual:focus{
+
+    border-color:var(--gold);
+}
+
+/* BOTÕES */
+
+.botoes-data{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:10px;
+}
+
+.botoes-data button{
+
+    margin-top:0;
+}
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:10px;
+
+    background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+
+    color:#0a0d13;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition: filter .2s ease, transform .2s ease;
+}
+
+button:hover{
+
+    filter:brightness(1.08);
+
+    transform:translateY(-1px);
+}
+
+button.secundario{
+
+    background:var(--bg-card-inner);
+
+    color:var(--gold-soft);
+
+    border:1px solid var(--border-strong);
+}
+
+/* DATA ATUAL EXIBIDA */
+
+.data-exibida{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:10px;
+}
+
+/* HÁBITO */
+
+.habito{
+
+    background:var(--bg-card-inner);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    margin-bottom:14px;
+}
+
+.habito:last-child{
+
+    margin-bottom:0;
+}
+
+/* CABEÇALHO DO HÁBITO */
+
+.habito-header{
+
+    text-align:center;
+}
+
+.habito-nome{
+
+    font-size:19px;
+
+    font-weight:bold;
+
+    display:block;
+}
+
+.estrelas{
+
+    margin-top:8px;
+
+    font-size:18px;
+
+    display:block;
+}
+
+/* CONTADOR */
+
+.contador{
+
+    text-align:center;
+
+    margin:18px 0 3px;
+}
+
+.numero{
+
+    font-size:48px;
+
+    line-height:1;
+
+    font-weight:bold;
+
+    color:var(--verde);
+}
+
+.texto-dias{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    margin-top:7px;
+}
+
+/* INFORMAÇÕES */
+
+.info-habito{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:13px;
+}
+
+/* BLOQUEIO */
+
+.bloqueio{
+
+    margin-top:15px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:rgba(255,77,77,.06);
+
+    border:1px solid rgba(255,77,77,.15);
+
+    color:var(--vermelho);
+
+    text-align:center;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    line-height:1.5;
+}
+
+/* RODAPÉ */
+
+.footer{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+    padding:20px 0 6px;
+
+    line-height:1.6;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:450px){
+
+    .card{
+
+        padding:20px;
+    }
+
+    h1{
+
+        font-size:26px;
+    }
+
+    .frase{
+
+        font-size:18px;
+    }
+
+    .numero{
+
+        font-size:43px;
+    }
+
+    .botoes-data{
+
+        flex-direction:column;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- ======================================================
+     CABEÇALHO
+     ====================================================== -->
+
+<div class="card header">
+
+    <img
+        src="images/logo2.png"
+        class="logo"
+        alt="SOBERANO">
+
+    <h1>SOBERANO</h1>
+
+    <div class="version">
+        14.7
+    </div>
+
+    <div class="motivacional">
+
+        <div class="frase">
+
+            “Vagão não puxa trem.
+            <span class="frase-destaque">
+                Você vai continuar sendo puxado
+            </span>
+            ou vai assumir o comando da sua própria vida?”
+
+        </div>
+
+        <div class="subfrase">
+
+            Quem governa seus hábitos governa seus caminhos.
+            Encerre o que te domina. Assuma o controle.
+            O seu reinado começa quando você decide mudar.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     CONTADORES
+     ====================================================== -->
+
+<div class="card">
+
+    <div class="titulo">
+
+        👑 MEU REINADO
+
+    </div>
+
+    <div
+        class="data-exibida"
+        id="dataExibida">
+
+    </div>
+
+    <div id="listaHabitos"></div>
+
+</div>
+
+
+<!-- RODAPÉ -->
+
+<div class="footer">
+
+    SOBERANO • 14.7<br>
+
+    DOMÍNIO • DISCIPLINA • RECOMEÇO
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   CONFIGURAÇÃO DOS HÁBITOS
+
+   ADICIONE NOVOS HÁBITOS AQUI.
+
+   Formato:
+
+   {
+       nome: "Nome do hábito",
+       inicio: "DD/MM/AAAA",
+       bloqueado: false
+   }
+
+   Para um bloqueio permanente:
+
+   bloqueado: true
+
+   ========================================================= */
+
+const HABITOS = [
+
+    {
+        nome: "ÁLCOOL",
+        inicio: "09/08/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "PROCRASTINAÇÃO E MÍDIAS",
+        inicio: "23/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "CAFÉ",
+        inicio: "12/08/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "INCURSÕES",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "TRANSGRESSÃO",
+        inicio: "15/08/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "DISPERSÃO",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "DEPENDÊNCIA",
+        inicio: "23/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "REQUISIÇÕES",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "BET's (apostas e cassinos)",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "ANTECIPAÇÃO",
+        inicio: "21/09/2026",
+        bloqueado: true
+    },
+
+
+      {
+    nome: "PRODUTOS COCA-COLA",
+    inicio: "23/09/2026",
+    bloqueado: true,
+    link: "restrito.html"
+},
+
+      {
+        nome: "DETRAÇÃO",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+
+      {
+        nome: "MURMÚRIO",
+        inicio: "15/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "DOLUS",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      
+{
+        nome: "EXTRAÇÕES ORDINÁRIAS",
+        inicio: "21/09/2026",
+        bloqueado: true
+    },
+
+{
+        nome: "DESVIO ORÇAMENTÁRIO",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+      
+{
+        nome: "VIOLAÇÃO DE PROTOCOLO",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+{
+        nome: "POLUIÇÃO SONORA",
+        inicio: "23/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "PRODUTOS META",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "ONICOFAGIA",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "ATUALIZAR DADOS",
+        inicio: "24/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "CORRE DE RISCO MÁXIMO",
+        inicio: "23/09/2026",
+        bloqueado: true
+    },
+
+      {
+        nome: "QUEBRAR PROTOCOLO DOS 8",
+        inicio: "23/09/2026",
+        bloqueado: true
+    },
+      
+    /*
+    EXEMPLO DE NOVO HÁBITO:
+
+    {
+        nome: "Outro hábito",
+        inicio: "12/08/2026",
+        bloqueado: false
+    },
+    */
+
+];
+
+
+/* =========================================================
+   CONVERTER DATA DD/MM/AAAA
+   ========================================================= */
+
+function converterData(data){
+
+    const partes = data.split("/");
+
+    return new Date(
+
+        Number(partes[2]),
+
+        Number(partes[1]) - 1,
+
+        Number(partes[0])
+
+    );
+
+}
+
+
+/* =========================================================
+   FORMATAR DATA
+   ========================================================= */
+
+function formatarData(data){
+
+    const dia =
+        String(data.getDate()).padStart(2,"0");
+
+    const mes =
+        String(data.getMonth() + 1).padStart(2,"0");
+
+    const ano =
+        data.getFullYear();
+
+    return `${dia}/${mes}/${ano}`;
+
+}
+
+
+/* =========================================================
+   CALCULAR DIAS
+   ========================================================= */
+
+function calcularDias(inicio, atual){
+
+    const dataInicio =
+        converterData(inicio);
+
+    const dataAtual =
+        new Date(atual);
+
+    /*
+       Remove horas para evitar problemas
+       de horário de verão/fuso.
+    */
+
+    dataInicio.setHours(0,0,0,0);
+
+    dataAtual.setHours(0,0,0,0);
+
+
+    const diferenca =
+        dataAtual - dataInicio;
+
+
+    const dias =
+        Math.floor(
+
+            diferenca /
+            (1000 * 60 * 60 * 24)
+
+        );
+
+
+    return Math.max(0,dias);
+
+}
+
+/* =========================================================
+   CALCULAR ESTRELAS
+   ========================================================= */
+
+function obterEstrelas(dias){
+
+    let estrelas = 1;
+
+    if(dias >= 7) estrelas = 2;
+    if(dias >= 30) estrelas = 3;
+    if(dias >= 180) estrelas = 4;
+    if(dias >= 365) estrelas = 5;
+    if(dias >= 1825) estrelas = 6;
+
+    return "⭐".repeat(estrelas);
+
+}
+      
+/* =========================================================
+   RENDERIZAR HÁBITOS
+
+   Sempre usa a data atual do aparelho. A data de início
+   de cada hábito é definida manualmente no array HABITOS
+   acima — edite "inicio" ali quando quiser reiniciar
+   algum contador.
+   ========================================================= */
+
+function renderizarHabitos(){
+
+    const lista =
+        document.getElementById("listaHabitos");
+
+
+    lista.innerHTML = "";
+
+
+    const dataAtual = new Date();
+
+    dataAtual.setHours(0,0,0,0);
+
+
+    document.getElementById("dataExibida").innerHTML =
+
+        "Hoje: <strong>" +
+
+        formatarData(dataAtual) +
+
+        "</strong>";
+
+
+    HABITOS
+    .slice()
+    .sort(function(a, b){
+
+        return calcularDias(a.inicio, dataAtual) -
+               calcularDias(b.inicio, dataAtual);
+
+    })
+    .forEach(function(habito){
+
+
+        const inicio =
+            habito.inicio;
+
+const dias =
+    calcularDias(
+        inicio,
+        dataAtual
+    );
+
+const estrelas =
+    obterEstrelas(dias);
+          
+        const div =
+            document.createElement("div");
+
+
+        div.className =
+            "habito";
+
+
+        let bloqueioHTML = "";
+
+
+        if(habito.bloqueado){
+
+            bloqueioHTML = `
+
+                <div class="bloqueio">
+
+                    🔒 BLOQUEIO PERMANENTE
+
+                    <br>
+
+                    Este hábito foi encerrado
+                    definitivamente em
+                    ${inicio}.
+
+                </div>
+
+            `;
+
+        }
+
+
+        div.innerHTML = `
+
+            <div class="habito-header">
+
+                <div class="habito-nome">
+
+    ${
+        habito.link
+
+        ?
+
+        `<a href="${escaparHTML(habito.link)}"
+            style="color:inherit;text-decoration:none;">
+            ${escaparHTML(habito.nome)}
+        </a>`
+
+        :
+
+        escaparHTML(habito.nome)
+    }
+
+    <div class="estrelas">
+
+        ${estrelas}
+
+    </div>
+
+</div>
+
+</div>
+
+
+            <div class="contador">
+
+                <div class="numero">
+
+                    ${dias}
+
+                </div>
+
+
+                <div class="texto-dias">
+
+                    ${dias === 1 ? "DIA" : "DIAS"}
+
+                    SEM
+
+                    ${escaparHTML(
+
+                        habito.nome.toUpperCase()
+
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <div class="info-habito">
+
+                Início:
+
+                ${inicio}
+
+            </div>
+
+
+            ${bloqueioHTML}
+
+        `;
+
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
+   SEGURANÇA BÁSICA
+   ========================================================= */
+
+function escaparHTML(texto){
+
+    return texto
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+renderizarHabitos();
+
+
+</script>
+
+
+</body>
+
+</html>
