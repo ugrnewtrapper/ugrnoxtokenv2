@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOBERANO • Objetivo</title>
+<link rel="icon" type="image/png" href="images/logo2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg-main:#05070b;--bg-card:#0d1117;--bg-card-hover:#121926;--gold:#c9a24b;--gold-soft:#e7cd8c;--text-main:#eef1f6;--text-muted:#97a1b3;--border-soft:rgba(201,162,75,0.18);--border-strong:rgba(201,162,75,0.35);--ok:#3ecf72;--no:#d9534f}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',Arial,Helvetica,sans-serif}
+body{min-height:100vh;background:radial-gradient(circle at 50% 0%,#0b1220 0%,#05070b 55%),linear-gradient(180deg,#05070b,#030406);color:var(--text-main);padding:0 16px 40px}
+main{max-width:760px;margin:0 auto;padding-top:40px;animation:fadeIn .9s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.crest{display:flex;flex-direction:column;align-items:center;margin-bottom:24px;text-align:center}
+.crest a{display:flex;flex-direction:column;align-items:center;text-decoration:none;cursor:pointer}
+.logo{width:96px;margin-bottom:14px;filter:drop-shadow(0 0 18px rgba(201,162,75,.25))}
+.brand{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;letter-spacing:.06em;background:linear-gradient(180deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.divider{width:64px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto 14px}
+.crest h2{font-size:1rem;font-weight:400;color:var(--text-muted);letter-spacing:.03em;text-transform:none;margin:0}
+.quote{text-align:center;margin:8px 0 22px;padding:20px;border:1px solid var(--border-soft);border-radius:12px;background:var(--bg-card);min-height:100px}
+.quote p{font-family:'Playfair Display',serif;font-style:italic;font-size:1.15rem;color:var(--gold-soft);line-height:1.5}
+.quote small{display:block;margin-top:10px;color:var(--text-muted);font-size:.72rem;letter-spacing:.08em}
+h2{color:var(--gold);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;margin:26px 0 10px;font-weight:600}
+.mission{background:var(--bg-card);border:1px solid var(--border-soft);border-left:3px solid var(--gold);border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:.95rem}
+.mission.done{border-left-color:var(--ok);color:var(--text-muted)}
+.mission.done::before{content:"✔ ";color:var(--ok)}
+.mission.now::before{content:"⚔ ";color:var(--gold)}
+.total{position:sticky;top:0;z-index:5;background:#05070bee;backdrop-filter:blur(6px);padding:10px 0;margin-top:10px}
+.bar{height:20px;background:#121926;border:1px solid var(--border-soft);border-radius:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width .3s}
+.pct{display:flex;justify-content:space-between;font-size:.82rem;color:var(--gold-soft);margin-bottom:6px}
+.box{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:12px;padding:4px 14px;margin-bottom:12px;transition:border-color .25s}
+.box:hover{border-color:var(--border-strong)}
+.box h3{font-family:'Playfair Display',serif;font-size:1.02rem;color:var(--gold);display:flex;justify-content:space-between;gap:8px}
+.box h3 em{font-family:'Inter',sans-serif;font-style:normal;font-size:.78rem;color:var(--gold-soft);white-space:nowrap}
+.q{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--border-soft);font-size:.88rem}
+.box .q{border-top:0;font-size:.95rem}
+.btns{display:flex;gap:6px;flex-shrink:0}
+.btns button{border:1px solid var(--border-soft);background:var(--bg-card-hover);color:var(--text-muted);padding:6px 13px;border-radius:8px;cursor:pointer;font-size:.8rem}
+.btns button.sim.on{background:var(--ok);color:#06150c;border-color:var(--ok);font-weight:600}
+.btns button.nao.on{background:var(--no);color:#fff;border-color:var(--no);font-weight:600}
+footer{text-align:center;color:var(--text-muted);font-size:.78rem;margin-top:26px}
+</style>
+</head>
+<body>
+
+
+<main>
+  <div class="crest">
+    <a href="index.html" title="Voltar ao início">
+      <img src="images/logo2.png" alt="SOBERANO" class="logo">
+      <div class="brand">SOBERANO</div>
+    </a>
+    <div class="divider"></div>
+    <h2>Objetivo • Missões do dia e os 15 princípios</h2>
+  </div>
+
+  <div class="quote"><p id="qt"></p><small id="qa">— A LEI DO TRIUNFO</small></div>
+
+  <h2>⚔ Missões de hoje</h2>
+  <div id="atuais"></div>
+
+  <h2>✔ Concluídas recentemente</h2>
+  <div id="feitas"></div>
+
+  <h2>👑 Os 15 princípios</h2>
+  <div class="total">
+    <div class="pct"><span>Pontuação total</span><b id="tot">0%</b></div>
+    <div class="bar"><i id="barra"></i></div>
+  </div>
+  <div id="princ"></div>
+  <footer>Cada princípio vale 6,67% • cada "Sim" soma 6,67% • 15 Sim = 100%</footer>
+</main>
+
+<script>
+/* ===== EDITE AQUI AS MISSÕES ===== */
+const MISSOES_ATUAIS = [
+  "Revisar meu objetivo principal e escrevê-lo em uma frase",
+  "Guardar 10% do que receber hoje",
+  "Fazer uma tarefa extra além do combinado"
+];
+const MISSOES_FEITAS = [
+  "Acordar e iniciar o dia sem enrolar",
+  "Ajudar alguém sem esperar nada em troca",
+  "Evitar gasto desnecessário durante a semana"
+];
+/* ================================== */
+
+const FRASES = [
+  "Tudo o que a mente concebe e acredita, ela pode realizar.",
+  "Faça mais do que é pago e logo será pago por mais do que faz.",
+  "Do fracasso nasce a semente de um benefício equivalente.",
+  "Tenha um objetivo definido e vá em frente até alcançá-lo.",
+  "Quem controla a si mesmo pode controlar o próprio destino."
+];
+
+const PRINCIPIOS = [
+  "Objetivo definido","Confiança em si mesmo","Hábito de economizar","Iniciativa e liderança","Imaginação",
+  "Entusiasmo","Autocontrole","Hábito de fazer mais do que é pago","Personalidade agradável","Pensar com segurança",
+  "Concentração","Cooperação","Tirar proveito do fracasso","Tolerância","Regra de ouro: amar ao próximo"
+];
+
+const KEY = "objetivo_respostas_v2";
+let resp = {};
+try { resp = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) {}
+function salvar(){ try { localStorage.setItem(KEY, JSON.stringify(resp)); } catch(e) {} }
+
+// missões
+function lista(id, arr, cls){
+  const el = document.getElementById(id);
+  arr.forEach(t => { const d = document.createElement("div"); d.className = "mission " + cls; d.textContent = t; el.appendChild(d); });
+}
+lista("atuais", MISSOES_ATUAIS, "now");
+lista("feitas", MISSOES_FEITAS, "done");
+
+// frases
+let fi = Math.floor(Math.random()*FRASES.length);
+function frase(){ document.getElementById("qt").textContent = "\u201c" + FRASES[fi] + "\u201d"; fi = (fi+1) % FRASES.length; }
+frase(); setInterval(frase, 9000);
+
+// princípios: título + Sim/Não
+const PESO = 100 / PRINCIPIOS.length;
+const cont = document.getElementById("princ");
+PRINCIPIOS.forEach((nome, i) => {
+  const box = document.createElement("div"); box.className = "box";
+  box.innerHTML = `<div class="q"><span>${i+1}. ${nome}</span><div class="btns"><button class="sim">Sim</button><button class="nao">Não</button></div></div>`;
+  const [bs, bn] = box.querySelectorAll("button");
+  const pinta = () => { bs.classList.toggle("on", resp[i] === 1); bn.classList.toggle("on", resp[i] === 0); };
+  bs.onclick = () => { resp[i] = resp[i] === 1 ? undefined : 1; pinta(); calc(); };
+  bn.onclick = () => { resp[i] = resp[i] === 0 ? undefined : 0; pinta(); calc(); };
+  pinta(); cont.appendChild(box);
+});
+
+function calc(){
+  const sims = PRINCIPIOS.filter((_, i) => resp[i] === 1).length;
+  const total = sims * PESO;
+  document.getElementById("tot").textContent = total.toFixed(1).replace(".", ",") + "%  (" + sims + "/" + PRINCIPIOS.length + ")";
+  document.getElementById("barra").style.width = total + "%";
+  salvar();
+}
+calc();
+</script>
+</body>
+</html>
